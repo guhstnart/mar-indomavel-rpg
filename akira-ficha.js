@@ -1,6 +1,6 @@
 const STORAGE_KEY = "mar_indomavel_ficha_akira_v1";
 const AUTH_SESSION_KEY = "mar_indomavel_auth_akira_v1";
-const PLAYER_PASSWORD = "AkiraTansui";
+const PLAYER_PASSWORD = "PeixeFrito";
 const MASTER_PASSWORD = "ChaveMestra";
 
 const FISHMAN_ENVS = {
