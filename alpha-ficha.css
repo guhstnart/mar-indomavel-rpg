@@ -567,6 +567,12 @@ select:focus {
   border-radius: 8px;
   padding: 0.65rem 0.85rem;
   display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.dice-top-row {
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
@@ -604,6 +610,62 @@ select:focus {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--gold);
+}
+
+.dice-history-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.dice-history-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+}
+
+.dice-history-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.38rem;
+  flex: 1;
+}
+
+.dice-history-chip {
+  font-size: 0.76rem;
+  background: #202026;
+  color: #e5e7eb;
+  border: 1px solid #353540;
+  border-radius: 999px;
+  padding: 0.16rem 0.58rem;
+}
+
+.dice-history-chip.latest {
+  background: rgba(229, 184, 75, 0.14);
+  border-color: rgba(229, 184, 75, 0.45);
+  color: #fef08a;
+  font-weight: 600;
+}
+
+.btn-clear-history {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 0.16rem 0.5rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.btn-clear-history:hover {
+  color: #fca5a5;
+  border-color: rgba(220, 38, 38, 0.5);
 }
 
 .tabs-nav {
@@ -873,13 +935,26 @@ select:focus {
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  touch-action: none;
   transition: transform 0.12s ease, opacity 0.12s ease, border-color 0.12s ease;
+}
+
+.skill-card * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 body.is-dragging-skill,
 body.is-dragging-skill * {
   user-select: none !important;
   -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  cursor: grabbing !important;
 }
 
 .skill-card:active {

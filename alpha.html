@@ -169,16 +169,23 @@
             <div class="attr-grid" id="attr-grid"></div>
 
             <div class="dice-bar">
-              <div class="dice-buttons">
-                <button type="button" class="btn-dice" data-die="4">1d4</button>
-                <button type="button" class="btn-dice" data-die="6">1d6</button>
-                <button type="button" class="btn-dice" data-die="8">1d8</button>
-                <button type="button" class="btn-dice" data-die="10">1d10</button>
-                <button type="button" class="btn-dice" data-die="12">1d12</button>
-                <button type="button" class="btn-dice" data-die="20">1d20</button>
-                <button type="button" class="btn-dice special" id="btn-sentido-felino" title="1d20 + 1d4 + Bônus de SAB">Sentido Felino (1d20+1d4+SAB)</button>
+              <div class="dice-top-row">
+                <div class="dice-buttons">
+                  <button type="button" class="btn-dice" data-die="4">1d4</button>
+                  <button type="button" class="btn-dice" data-die="6">1d6</button>
+                  <button type="button" class="btn-dice" data-die="8">1d8</button>
+                  <button type="button" class="btn-dice" data-die="10">1d10</button>
+                  <button type="button" class="btn-dice" data-die="12">1d12</button>
+                  <button type="button" class="btn-dice" data-die="20">1d20</button>
+                  <button type="button" class="btn-dice special" id="btn-sentido-felino" title="1d20 + 1d4 + Bônus de SAB">Sentido Felino (1d20+1d4+SAB)</button>
+                </div>
+                <div class="dice-result" id="dice-result">Clique em um atributo ou dado para rolar</div>
               </div>
-              <div class="dice-result" id="dice-result">Clique em um atributo ou dado para rolar</div>
+              <div class="dice-history-wrap" id="dice-history-wrap" hidden>
+                <span class="dice-history-label">Últimas 5:</span>
+                <div class="dice-history-list" id="dice-history-list"></div>
+                <button type="button" class="btn-clear-history" id="btn-clear-history" title="Limpar histórico de rolagens">Limpar</button>
+              </div>
             </div>
           </div>
         </div>

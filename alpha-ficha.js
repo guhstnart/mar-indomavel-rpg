@@ -217,6 +217,7 @@ let appInitialized = false;
 let pointerDrag = null;
 let pendingRemove = null;
 let pendingEdit = null;
+let rollHistory = [];
 
 function getZoneArray(zone) {
   if (!Array.isArray(state.memorySkills)) state.memorySkills = [];
@@ -389,16 +390,53 @@ function renderAttributes() {
       const d20 = Math.floor(Math.random() * 20) + 1;
       const mod = Number(state.attributes[abbr].bonus) || 0;
       const total = d20 + mod;
-      showDiceResult(`Teste de ${abbr}: 1d20 (${d20}) ${formatMod(mod)} = ${total}`);
+      showDiceResult(
+        `Teste de ${abbr}: 1d20 (${d20}) ${formatMod(mod)} = ${total}`,
+        `${abbr}: ${total} (${d20}${formatMod(mod)})`
+      );
     });
 
     grid.appendChild(box);
   });
 }
 
-function showDiceResult(text) {
+function renderDiceHistory() {
+  const wrap = document.getElementById("dice-history-wrap");
+  const list = document.getElementById("dice-history-list");
+  if (!wrap || !list) return;
+
+  if (rollHistory.length === 0) {
+    wrap.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+
+  wrap.hidden = false;
+  list.innerHTML = "";
+  rollHistory.forEach((entry, index) => {
+    const chip = document.createElement("span");
+    chip.className = index === 0 ? "dice-history-chip latest" : "dice-history-chip";
+    chip.textContent = `${entry.time} • ${entry.shortText}`;
+    chip.title = entry.fullText;
+    list.appendChild(chip);
+  });
+}
+
+function showDiceResult(text, shortLabel = null) {
   const res = document.getElementById("dice-result");
   res.textContent = text;
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  rollHistory.unshift({
+    time: timeStr,
+    fullText: text,
+    shortText: shortLabel || text.replace(/^Rolagem\s+/i, "")
+  });
+  if (rollHistory.length > 5) {
+    rollHistory.length = 5;
+  }
+  renderDiceHistory();
 }
 
 function setupQuickAdjustButtons() {
@@ -428,7 +466,7 @@ function setupDiceRoller() {
     btn.addEventListener("click", () => {
       const sides = Number(btn.dataset.die);
       const roll = Math.floor(Math.random() * sides) + 1;
-      showDiceResult(`Rolagem 1d${sides}: ${roll}`);
+      showDiceResult(`Rolagem 1d${sides}: ${roll}`, `1d${sides} = ${roll}`);
     });
   });
 
@@ -437,8 +475,19 @@ function setupDiceRoller() {
     const d4 = Math.floor(Math.random() * 4) + 1;
     const sabMod = Number(state.attributes.SAB?.bonus) || 0;
     const total = d20 + d4 + sabMod;
-    showDiceResult(`Sentido Felino (Percepção): 1d20 (${d20}) + 1d4 (${d4}) ${formatMod(sabMod)} = ${total}`);
+    showDiceResult(
+      `Sentido Felino (Percepção): 1d20 (${d20}) + 1d4 (${d4}) ${formatMod(sabMod)} = ${total}`,
+      `Sentido Felino: ${total} (${d20}+${d4}${formatMod(sabMod)})`
+    );
   });
+
+  const btnClearHistory = document.getElementById("btn-clear-history");
+  if (btnClearHistory) {
+    btnClearHistory.addEventListener("click", () => {
+      rollHistory = [];
+      renderDiceHistory();
+    });
+  }
 }
 
 function renderMoonPhase() {
@@ -523,8 +572,17 @@ function clearZoneHighlights() {
   });
 }
 
+function clearBrowserTextSelection() {
+  const sel = window.getSelection ? window.getSelection() : null;
+  if (sel) {
+    if (sel.removeAllRanges) sel.removeAllRanges();
+    else if (sel.empty) sel.empty();
+  }
+}
+
 function cleanupPointerDrag() {
   document.body.classList.remove("is-dragging-skill");
+  clearBrowserTextSelection();
   if (!pointerDrag) return;
   if (pointerDrag.ghost && pointerDrag.ghost.parentNode) {
     pointerDrag.ghost.parentNode.removeChild(pointerDrag.ghost);
@@ -537,13 +595,21 @@ function cleanupPointerDrag() {
 }
 
 function setupGlobalPointerDrag() {
+  document.addEventListener("selectstart", (e) => {
+    if (pointerDrag || e.target.closest(".skill-card")) {
+      e.preventDefault();
+    }
+  });
+
   document.addEventListener("pointermove", (e) => {
     if (!pointerDrag) return;
 
+    e.preventDefault();
+    clearBrowserTextSelection();
+
     const dx = e.clientX - pointerDrag.startX;
     const dy = e.clientY - pointerDrag.startY;
-    if (!pointerDrag.active && Math.hypot(dx, dy) > 6) {
-      window.getSelection()?.removeAllRanges();
+    if (!pointerDrag.active && Math.hypot(dx, dy) > 5) {
       document.body.classList.add("is-dragging-skill");
       pointerDrag.active = true;
       pointerDrag.sourceEl.classList.add("dragging-source");
@@ -558,7 +624,6 @@ function setupGlobalPointerDrag() {
 
     if (!pointerDrag.active || !pointerDrag.ghost) return;
 
-    window.getSelection()?.removeAllRanges();
     pointerDrag.ghost.style.left = `${e.clientX - pointerDrag.offsetX}px`;
     pointerDrag.ghost.style.top = `${e.clientY - pointerDrag.offsetY}px`;
 
@@ -577,7 +642,7 @@ function setupGlobalPointerDrag() {
     if (!pointerDrag) return;
 
     if (pointerDrag.active) {
-      window.getSelection()?.removeAllRanges();
+      clearBrowserTextSelection();
       if (pointerDrag.ghost) pointerDrag.ghost.style.display = "none";
       const underEl = document.elementFromPoint(e.clientX, e.clientY);
       if (pointerDrag.ghost) pointerDrag.ghost.style.display = "";
@@ -606,6 +671,7 @@ function setupGlobalPointerDrag() {
 
   document.addEventListener("pointerup", finishDrag);
   document.addEventListener("pointercancel", cleanupPointerDrag);
+  window.addEventListener("blur", cleanupPointerDrag);
 }
 
 function openRemoveConfirm(zone, idx, permanentDelete = false) {
@@ -776,9 +842,14 @@ function createSkillCard(sk, zone, idx) {
 
   card.appendChild(buildActionButtonsForZone(zone, idx));
 
+  card.addEventListener("dragstart", (e) => e.preventDefault());
+
   card.addEventListener("pointerdown", (e) => {
     if (e.target.closest("button")) return;
     if (e.button !== 0 && e.pointerType === "mouse") return;
+
+    e.preventDefault();
+    clearBrowserTextSelection();
 
     const rect = card.getBoundingClientRect();
     pointerDrag = {
