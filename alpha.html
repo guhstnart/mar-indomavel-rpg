@@ -195,6 +195,39 @@
           <div class="card">
             <h2 class="section-title">Passivas de Raça: Mink</h2>
             <div id="race-passives-list" class="feature-list"></div>
+
+            <!-- FASES DA LUA (EXCLUSIVO MINK / ALPHA) -->
+            <div class="moon-phases-box" id="moon-phases-box">
+              <div class="moon-header">
+                <div>
+                  <span class="moon-badge">Exclusivo Mink</span>
+                  <h3>Fases da Lua &amp; Efeitos</h3>
+                </div>
+                <select id="moon-phase-select" class="moon-select" aria-label="Selecionar Fase da Lua">
+                  <option value="noite-1">🌑 Noite 1 (Lua Nova)</option>
+                  <option value="noite-2">🌓 Noite 2 (Lua Crescente)</option>
+                  <option value="noite-3">🌓 Noite 3 (Lua Crescente)</option>
+                  <option value="noite-4">🌔 Noite 4 (Gibosa Crescente)</option>
+                  <option value="noite-5">🌕 Noite 5 (Cheia - SULONG)</option>
+                  <option value="noite-6">🌖 Noite 6 (Gibosa Minguante)</option>
+                  <option value="noite-7">🌗 Noite 7 (Lua Minguante)</option>
+                  <option value="noite-8">🌗 Noite 8 (Lua Minguante)</option>
+                </select>
+              </div>
+
+              <div class="moon-active-banner" id="moon-active-banner"></div>
+
+              <div class="moon-cycle-strip">
+                🌑 Noite 1 (Nova) / 🌓 Noite 2 (Crescente) / 🌓 Noite 3 (Crescente) / 🌔 Noite 4 (Gibosa) / 🌕 Noite 5 (SULONG) / 🌖 Noite 6 (Gibosa) / 🌗 Noite 7 (Minguante) / 🌗 Noite 8 (Minguante)
+              </div>
+
+              <ul class="moon-effects-ref">
+                <li><strong>1. 🌑 Lua Nova:</strong> +2 Furtividade | Estática cai para +1</li>
+                <li><strong>2. 🌓 / 🌗 Lua Crescente e Minguante:</strong> Neutra (Sem bônus/penalidades extras)</li>
+                <li><strong>3. 🌔 / 🌖 Gibosa:</strong> Estática sobe para +3 | -2 em testes de Carisma</li>
+                <li><strong>4. 🌕 Cheia - SULONG:</strong> +1D4 Dano Elétrico e Destreza | Rolagem de Fúria/Sanidade no início do turno (1D8)</li>
+              </ul>
+            </div>
           </div>
 
           <div class="card">
@@ -208,7 +241,7 @@
           <div class="card-header-flex">
             <h2 class="section-title">Skills Habilitadas (<span id="enabled-count">3</span>/<input type="number" id="max-skills" data-field="maxSkills" class="inline-num">)</h2>
             <div class="header-right-group">
-              <span class="hint-text">Segure e arraste o card para mover entre áreas</span>
+              <span class="hint-text">Segure e arraste o card para mover • Clique em Editar para alterar livremente</span>
               <button type="button" class="btn btn-primary" id="btn-add-skill">+ Nova Skill</button>
             </div>
           </div>
@@ -305,6 +338,47 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- MODAL DE CONFIRMAÇÃO DE REMOÇÃO -->
+  <div id="confirm-modal" class="modal-backdrop" hidden>
+    <div class="modal-box confirm-box">
+      <h3>Confirmar Remoção</h3>
+      <p id="confirm-modal-text">Tem certeza de que deseja remover esta habilidade?</p>
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-remove" class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btn-confirm-remove" class="btn btn-danger">Sim, Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE EDIÇÃO LIVRE DE SKILL -->
+  <div id="edit-skill-modal" class="modal-backdrop" hidden>
+    <div class="modal-box edit-skill-box">
+      <h3>Editar Habilidade</h3>
+      <form id="edit-skill-form" class="edit-skill-form">
+        <div class="field-group">
+          <label for="edit-skill-name">Nome da Habilidade</label>
+          <input type="text" id="edit-skill-name" required>
+        </div>
+        <div class="field-group">
+          <label for="edit-skill-type">Tipo / Execução (escreva livremente: Passiva, Sempre ativa, Ação Padrão, Habilidade Ativa...)</label>
+          <input type="text" id="edit-skill-type" placeholder="Ex: Passiva, Sempre ativa, Ação Padrão...">
+        </div>
+        <div class="field-group">
+          <label for="edit-skill-cost">Custo / Estamina / Condição (escreva livremente)</label>
+          <input type="text" id="edit-skill-cost" placeholder="Ex: Sempre ativa, 4 de Estamina, Ação Bônus | 2 ST...">
+        </div>
+        <div class="field-group">
+          <label for="edit-skill-desc">Descrição &amp; Efeitos</label>
+          <textarea id="edit-skill-desc" rows="4" placeholder="Descreva o funcionamento e efeitos da habilidade..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-edit-skill" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="alpha-ficha.js"></script>

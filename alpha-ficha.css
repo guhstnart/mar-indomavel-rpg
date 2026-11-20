@@ -438,6 +438,14 @@ select:focus {
 
 .btn-mini.mem:hover { background: rgba(168, 85, 247, 0.36); }
 
+.btn-mini.edit {
+  background: rgba(56, 189, 248, 0.18);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+}
+
+.btn-mini.edit:hover { background: rgba(56, 189, 248, 0.34); }
+
 .substats-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -620,7 +628,7 @@ select:focus {
   display: block;
 }
 
-/* FEATURES & SKILLS + POINTER DRAG AND DROP */
+/* FEATURES & MOON PHASES */
 .two-col-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -646,6 +654,87 @@ select:focus {
   color: #d1d5db;
 }
 
+.moon-phases-box {
+  margin-top: 0.9rem;
+  background: #18181c;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-left: 4px solid var(--electric);
+  border-radius: 8px;
+  padding: 0.85rem;
+}
+
+.moon-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.65rem;
+}
+
+.moon-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(56, 189, 248, 0.16);
+  color: var(--electric);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 0.08rem 0.45rem;
+  border-radius: 999px;
+  margin-bottom: 0.2rem;
+}
+
+.moon-header h3 {
+  font-size: 0.96rem;
+  color: var(--gold);
+}
+
+.moon-select {
+  max-width: 245px;
+  font-weight: 600;
+  border-color: rgba(229, 184, 75, 0.45);
+}
+
+.moon-active-banner {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.88rem;
+}
+
+.moon-active-banner.sulong-active {
+  background: rgba(229, 184, 75, 0.14);
+  border-color: var(--gold);
+  color: #fef08a;
+}
+
+.moon-cycle-strip {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  background: #131317;
+  padding: 0.45rem 0.6rem;
+  border-radius: 5px;
+  margin-bottom: 0.65rem;
+  line-height: 1.45;
+}
+
+.moon-effects-ref {
+  list-style: none;
+  font-size: 0.82rem;
+  color: #d1d5db;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.moon-effects-ref strong {
+  color: var(--gold);
+}
+
+/* SKILLS + POINTER DRAG AND DROP */
 .memory-zone-card {
   border-color: rgba(168, 85, 247, 0.45);
 }
@@ -770,6 +859,7 @@ select:focus {
 .skill-desc {
   font-size: 0.85rem;
   color: #d1d5db;
+  white-space: pre-line;
 }
 
 .skill-actions {
@@ -778,6 +868,68 @@ select:focus {
   justify-content: flex-end;
   gap: 0.4rem;
   margin-top: 0.35rem;
+}
+
+/* MODALS (CONFIRMAÇÃO E EDIÇÃO) */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 9500;
+}
+
+.modal-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.4rem;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+.confirm-box {
+  max-width: 420px;
+  border-top: 4px solid var(--hp-color);
+}
+
+.confirm-box h3 {
+  color: #fca5a5;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.confirm-box p {
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  margin-bottom: 1.15rem;
+}
+
+.edit-skill-box {
+  max-width: 540px;
+  border-top: 4px solid var(--gold);
+}
+
+.edit-skill-box h3 {
+  color: var(--gold);
+  margin-bottom: 0.85rem;
+  font-size: 1.1rem;
+}
+
+.edit-skill-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
 }
 
 /* INVENTORY TABLE */

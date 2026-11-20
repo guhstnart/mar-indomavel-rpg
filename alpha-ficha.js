@@ -3,6 +3,49 @@ const AUTH_SESSION_KEY = "mar_indomavel_auth_alpha_v1";
 const PLAYER_PASSWORD = "RaitoRaijin";
 const MASTER_PASSWORD = "ChaveMestra";
 
+const MOON_PHASES = {
+  "noite-1": {
+    label: "🌑 Noite 1 — Lua Nova",
+    summary: "+2 Furtividade | Estática cai para +1",
+    isSulong: false
+  },
+  "noite-2": {
+    label: "🌓 Noite 2 — Lua Crescente",
+    summary: "Neutra (Sem bônus/penalidades extras)",
+    isSulong: false
+  },
+  "noite-3": {
+    label: "🌓 Noite 3 — Lua Crescente",
+    summary: "Neutra (Sem bônus/penalidades extras)",
+    isSulong: false
+  },
+  "noite-4": {
+    label: "🌔 Noite 4 — Gibosa",
+    summary: "Estática sobe para +3 | -2 em testes de Carisma",
+    isSulong: false
+  },
+  "noite-5": {
+    label: "🌕 Noite 5 — Cheia (SULONG)",
+    summary: "+1D4 Dano Elétrico e Destreza | Rolagem de Fúria/Sanidade no início do turno (1D8)",
+    isSulong: true
+  },
+  "noite-6": {
+    label: "🌖 Noite 6 — Gibosa",
+    summary: "Estática sobe para +3 | -2 em testes de Carisma",
+    isSulong: false
+  },
+  "noite-7": {
+    label: "🌗 Noite 7 — Lua Minguante",
+    summary: "Neutra (Sem bônus/penalidades extras)",
+    isSulong: false
+  },
+  "noite-8": {
+    label: "🌗 Noite 8 — Lua Minguante",
+    summary: "Neutra (Sem bônus/penalidades extras)",
+    isSulong: false
+  }
+};
+
 const DEFAULT_DATA = {
   name: "Alpha (Raito Raijin)",
   race: "Mink (?)",
@@ -24,6 +67,7 @@ const DEFAULT_DATA = {
   tempStatus: "",
   maxSkills: 5,
   slotsMax: 7,
+  moonPhase: "noite-8",
   attributes: {
     FOR: { base: 16, bonus: 3 },
     DES: { base: 20, bonus: 5 },
@@ -162,9 +206,9 @@ Após dias à deriva, você encontrou terra firme. Para sobreviver, tornou-se um
 
 let state = loadState();
 let appInitialized = false;
-
-// Pointer drag state (funciona de forma confiável em qualquer navegador / GitHub Pages)
 let pointerDrag = null;
+let pendingRemove = null;
+let pendingEdit = null;
 
 function getZoneArray(zone) {
   if (!Array.isArray(state.memorySkills)) state.memorySkills = [];
@@ -189,7 +233,9 @@ function unlockSheet(role) {
     setupTabs();
     setupQuickAdjustButtons();
     setupDiceRoller();
+    setupMoonPhase();
     setupGlobalPointerDrag();
+    setupModals();
     setupActions();
     init();
     appInitialized = true;
@@ -237,6 +283,7 @@ function loadState() {
       return {
         ...structuredClone(DEFAULT_DATA),
         ...parsed,
+        moonPhase: parsed.moonPhase || DEFAULT_DATA.moonPhase,
         memorySkills: Array.isArray(parsed.memorySkills) ? parsed.memorySkills : []
       };
     }
@@ -385,6 +432,26 @@ function setupDiceRoller() {
   });
 }
 
+function renderMoonPhase() {
+  const select = document.getElementById("moon-phase-select");
+  const banner = document.getElementById("moon-active-banner");
+  const phaseKey = MOON_PHASES[state.moonPhase] ? state.moonPhase : "noite-8";
+  const info = MOON_PHASES[phaseKey];
+
+  select.value = phaseKey;
+  banner.classList.toggle("sulong-active", Boolean(info.isSulong));
+  banner.innerHTML = `<strong>Buffs Atuais — ${info.label}:</strong> ${info.summary}`;
+}
+
+function setupMoonPhase() {
+  const select = document.getElementById("moon-phase-select");
+  select.addEventListener("change", () => {
+    state.moonPhase = select.value;
+    renderMoonPhase();
+    saveState();
+  });
+}
+
 function renderStaticFeatures() {
   const raceList = document.getElementById("race-passives-list");
   raceList.innerHTML = state.racePassives
@@ -462,7 +529,6 @@ function setupGlobalPointerDrag() {
     pointerDrag.ghost.style.left = `${e.clientX - pointerDrag.offsetX}px`;
     pointerDrag.ghost.style.top = `${e.clientY - pointerDrag.offsetY}px`;
 
-    // Detecta qual zona está sob o ponteiro (ocultando temporariamente o ghost)
     pointerDrag.ghost.style.display = "none";
     const underEl = document.elementFromPoint(e.clientX, e.clientY);
     pointerDrag.ghost.style.display = "";
@@ -508,9 +574,91 @@ function setupGlobalPointerDrag() {
   document.addEventListener("pointercancel", cleanupPointerDrag);
 }
 
+function openRemoveConfirm(zone, idx, permanentDelete = false) {
+  const arr = getZoneArray(zone);
+  const sk = arr[idx];
+  if (!sk) return;
+
+  pendingRemove = { zone, idx, permanentDelete };
+  const textEl = document.getElementById("confirm-modal-text");
+  if (permanentDelete) {
+    textEl.textContent = `Tem certeza de que deseja excluir permanentemente a skill "${sk.name}"?`;
+  } else {
+    textEl.textContent = `Tem certeza de que deseja remover "${sk.name}" de Skills Habilitadas e devolvê-la para a Árvore de Skills?`;
+  }
+  document.getElementById("confirm-modal").hidden = false;
+}
+
+function openEditSkillModal(zone, idx) {
+  const arr = getZoneArray(zone);
+  const sk = arr[idx];
+  if (!sk) return;
+
+  pendingEdit = { zone, idx };
+  document.getElementById("edit-skill-name").value = sk.name || "";
+  document.getElementById("edit-skill-type").value = sk.type || "";
+  document.getElementById("edit-skill-cost").value = sk.cost || "";
+  document.getElementById("edit-skill-desc").value = sk.desc || "";
+  document.getElementById("edit-skill-modal").hidden = false;
+  document.getElementById("edit-skill-name").focus();
+}
+
+function setupModals() {
+  const confirmModal = document.getElementById("confirm-modal");
+  document.getElementById("btn-cancel-remove").addEventListener("click", () => {
+    pendingRemove = null;
+    confirmModal.hidden = true;
+  });
+
+  document.getElementById("btn-confirm-remove").addEventListener("click", () => {
+    if (pendingRemove) {
+      const { zone, idx, permanentDelete } = pendingRemove;
+      if (permanentDelete) {
+        const arr = getZoneArray(zone);
+        arr.splice(idx, 1);
+        saveState();
+        renderSkills();
+      } else {
+        moveSkill(zone, idx, "learnable");
+      }
+      pendingRemove = null;
+    }
+    confirmModal.hidden = true;
+  });
+
+  const editModal = document.getElementById("edit-skill-modal");
+  document.getElementById("btn-cancel-edit-skill").addEventListener("click", () => {
+    pendingEdit = null;
+    editModal.hidden = true;
+  });
+
+  document.getElementById("edit-skill-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!pendingEdit) return;
+    const arr = getZoneArray(pendingEdit.zone);
+    const sk = arr[pendingEdit.idx];
+    if (sk) {
+      sk.name = document.getElementById("edit-skill-name").value.trim() || sk.name;
+      sk.type = document.getElementById("edit-skill-type").value.trim();
+      sk.cost = document.getElementById("edit-skill-cost").value.trim();
+      sk.desc = document.getElementById("edit-skill-desc").value;
+      saveState();
+      renderSkills();
+    }
+    pendingEdit = null;
+    editModal.hidden = true;
+  });
+}
+
 function buildActionButtonsForZone(zone, idx) {
   const wrap = document.createElement("div");
   wrap.className = "skill-actions";
+
+  const btnEdit = document.createElement("button");
+  btnEdit.type = "button";
+  btnEdit.className = "btn-mini edit";
+  btnEdit.textContent = "Editar";
+  btnEdit.addEventListener("click", () => openEditSkillModal(zone, idx));
 
   if (zone === "enabled") {
     const btnMem = document.createElement("button");
@@ -523,9 +671,9 @@ function buildActionButtonsForZone(zone, idx) {
     btnRem.type = "button";
     btnRem.className = "btn-mini dmg";
     btnRem.textContent = "Remover";
-    btnRem.addEventListener("click", () => moveSkill("enabled", idx, "learnable"));
+    btnRem.addEventListener("click", () => openRemoveConfirm("enabled", idx, false));
 
-    wrap.append(btnMem, btnRem);
+    wrap.append(btnEdit, btnMem, btnRem);
   } else if (zone === "memory") {
     const btnHab = document.createElement("button");
     btnHab.type = "button";
@@ -539,7 +687,7 @@ function buildActionButtonsForZone(zone, idx) {
     btnRem.textContent = "Devolver p/ Árvore";
     btnRem.addEventListener("click", () => moveSkill("memory", idx, "learnable"));
 
-    wrap.append(btnHab, btnRem);
+    wrap.append(btnEdit, btnHab, btnRem);
   } else {
     const btnHab = document.createElement("button");
     btnHab.type = "button";
@@ -553,7 +701,7 @@ function buildActionButtonsForZone(zone, idx) {
     btnMem.textContent = "Guardar na Memória";
     btnMem.addEventListener("click", () => moveSkill("learnable", idx, "memory"));
 
-    wrap.append(btnHab, btnMem);
+    wrap.append(btnEdit, btnHab, btnMem);
   }
 
   return wrap;
@@ -565,13 +713,16 @@ function createSkillCard(sk, zone, idx) {
   card.dataset.zone = zone;
   card.dataset.index = idx;
 
+  const tagHtml = sk.type ? `<span class="skill-tag">${sk.type}</span>` : "";
+  const costHtml = sk.cost ? `<div class="skill-cost">${sk.cost}</div>` : "";
+
   card.innerHTML = `
     <div>
       <div class="skill-top">
         <span class="skill-title"><span class="drag-grip" title="Segure e arraste para mover">⋮⋮</span>${sk.name}</span>
-        <span class="skill-tag">${sk.type}</span>
+        ${tagHtml}
       </div>
-      <div class="skill-cost">${sk.cost}</div>
+      ${costHtml}
       <p class="skill-desc">${sk.desc}</p>
     </div>
   `;
@@ -579,7 +730,6 @@ function createSkillCard(sk, zone, idx) {
   card.appendChild(buildActionButtonsForZone(zone, idx));
 
   card.addEventListener("pointerdown", (e) => {
-    // Não inicia arraste ao clicar nos botões de ação
     if (e.target.closest("button")) return;
     if (e.button !== 0 && e.pointerType === "mouse") return;
 
@@ -759,6 +909,7 @@ function setupActions() {
         state = {
           ...structuredClone(DEFAULT_DATA),
           ...imported,
+          moonPhase: imported.moonPhase || DEFAULT_DATA.moonPhase,
           memorySkills: Array.isArray(imported.memorySkills) ? imported.memorySkills : []
         };
         saveState();
@@ -784,6 +935,7 @@ function init() {
   renderSimpleFields();
   renderAttributes();
   renderStaticFeatures();
+  renderMoonPhase();
   renderSkills();
   renderInventory();
 }
