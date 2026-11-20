@@ -4,19 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mar Indomável RPG – Lobby</title>
-<link rel="icon" type="image/png" href="SimboloRpg2.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Pirata+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="lobby.css">
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="leme" viewBox="-100 -100 200 200"><g fill="none" stroke="currentColor" stroke-linecap="round"><circle r="58" stroke-width="10"/><path stroke-width="8" d="M0-84V84M-84 0H84M-59-59L59 59M-59 59L59-59"/><path stroke-width="18" d="M0-90v.01M0 90v.01M-90 0h.01M90 0h.01M-64-64v.01M64-64v.01M-64 64v.01M64 64v.01"/></g><circle r="17" fill="currentColor"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="madeira" gradientUnits="userSpaceOnUse" x1="-90" y1="-90" x2="90" y2="90"><stop offset="0" stop-color="#c58a4a"/><stop offset=".5" stop-color="#8e5a2b"/><stop offset="1" stop-color="#5a3416"/></linearGradient>
+<filter id="veios" filterUnits="userSpaceOnUse" x="-100" y="-100" width="200" height="200"><feTurbulence type="fractalNoise" baseFrequency=".03 .5" numOctaves="3" seed="7" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 .22 0 0 0 0 .11 0 0 0 0 .04 0 0 0 -1.4 .95" result="v"/><feComposite in="v" in2="SourceAlpha" operator="in" result="g"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="g"/></feMerge></filter>
+</defs><symbol id="leme" viewBox="-100 -100 200 200"><g filter="url(#veios)" fill="none" stroke="url(#madeira)" stroke-linecap="round"><circle r="58" stroke-width="11"/><path stroke-width="9" d="M0-84V84M-84 0H84M-59-59L59 59M-59 59L59-59"/><circle r="18" fill="url(#madeira)" stroke="none"/></g><path fill="none" stroke="#d9aa4f" stroke-width="15" stroke-linecap="round" d="M0-90v.01M0 90v.01M-90 0h.01M90 0h.01M-64-64v.01M64-64v.01M-64 64v.01M64 64v.01"/><circle r="12" fill="none" stroke="#d9aa4f" stroke-width="3"/><circle r="5" fill="#d9aa4f"/></symbol></svg>
 <div class="raios" aria-hidden="true"></div>
 <div class="ondas" aria-hidden="true"><i></i><i></i></div>
 <div class="mar" aria-hidden="true"></div>
 <main>
   <header>
-    <div class="placa"><img class="logo" src="logo.png" alt="Logo One Piece – Mar Indomável"></div>
+    <img class="logo" src="logo.png" alt="Logo One Piece – Mar Indomável">
     <p class="lema">Escolha seu rumo, pirata.</p>
   </header>
 
@@ -45,6 +47,7 @@
       </a>
     </div>
   </section>
+  <footer>Mar Indomável RPG</footer>
 </main>
 <script src="lobby.js"></script>
 </body>
