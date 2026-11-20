@@ -1576,3 +1576,157 @@ body.is-dragging-item * {
     grid-template-columns: 1fr;
   }
 }
+
+/* ZONA DE PERIGO (SOUL HENRI) */
+.danger-zone-box {
+  margin-top: 0.35rem;
+  background: linear-gradient(135deg, #2d0c12 0%, #1c080c 100%);
+  border: 1px solid rgba(153, 27, 27, 0.7);
+  border-left: 4px solid #881337;
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  transition: all 0.25s ease;
+}
+
+.danger-zone-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.danger-zone-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #fca5a5;
+}
+
+.danger-zone-badge {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(127, 29, 29, 0.45);
+  color: #fecaca;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.danger-zone-value {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fee2e2;
+  line-height: 1.35;
+}
+
+.danger-zone-sub {
+  font-size: 0.72rem;
+  color: #fca5a5;
+  opacity: 0.85;
+  margin-top: 0.15rem;
+}
+
+.danger-zone-box.is-active {
+  background: linear-gradient(125deg, #991b1b 0%, #dc2626 48%, #7f1d1d 100%);
+  background-size: 200% 200%;
+  border-color: #f87171;
+  border-left-color: #fef08a;
+  box-shadow: 0 0 22px rgba(220, 38, 38, 0.55), inset 0 0 12px rgba(254, 202, 202, 0.2);
+  animation: dangerPulseGrad 2.2s ease infinite;
+}
+
+.danger-zone-box.is-active .danger-zone-title {
+  color: #ffffff;
+}
+
+.danger-zone-box.is-active .danger-zone-badge {
+  background: #fef08a;
+  color: #450a0a;
+  border-color: #fef08a;
+}
+
+.danger-zone-box.is-active .danger-zone-value {
+  color: #ffffff;
+}
+
+.danger-zone-box.is-active .danger-zone-sub {
+  color: #fef2f2;
+  opacity: 0.98;
+}
+
+@keyframes dangerPulseGrad {
+  0% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.45);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 28px rgba(239, 68, 68, 0.78);
+  }
+  100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.45);
+  }
+}
+
+.danger-zone-toast {
+  position: fixed;
+  top: 5.2rem;
+  right: 1.25rem;
+  z-index: 9950;
+  max-width: 360px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 55%, #450a0a 100%);
+  border: 1.5px solid #fca5a5;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.72), 0 0 20px rgba(220, 38, 38, 0.5);
+  color: #fff;
+  animation: toastSlideIn 0.28s ease-out;
+}
+
+.danger-zone-toast-icon {
+  font-size: 1.25rem;
+  line-height: 1.1;
+  flex-shrink: 0;
+}
+
+.danger-zone-toast-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fef08a;
+  letter-spacing: 0.2px;
+}
+
+.danger-zone-toast-desc {
+  font-size: 0.78rem;
+  color: #fee2e2;
+  margin-top: 0.15rem;
+  line-height: 1.35;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .danger-zone-toast {
+    top: 4.6rem;
+    right: 0.75rem;
+    left: 0.75rem;
+    max-width: none;
+  }
+}

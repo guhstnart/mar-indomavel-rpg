@@ -85,6 +85,15 @@
               <label for="char-akuma">Akuma no Mi</label>
               <input type="text" id="char-akuma" data-field="akuma">
             </div>
+
+            <div class="danger-zone-box" id="danger-zone-box" aria-live="polite">
+              <div class="danger-zone-header">
+                <span class="danger-zone-title">Zona de Perigo</span>
+                <span class="danger-zone-badge" id="danger-zone-badge">Inativa</span>
+              </div>
+              <div class="danger-zone-value" id="danger-zone-threshold">Limite (25%): 15 / 60 HP</div>
+              <div class="danger-zone-sub" id="danger-zone-status-text">Ativa quando HP atual ≤ 25% do HP máximo</div>
+            </div>
           </div>
         </div>
 
@@ -245,14 +254,6 @@
 
           <div class="card">
             <h2 class="section-title">Profissão: O Pescador</h2>
-            <div id="job-features-list" class="feature-list"></div>
-          </div>
-        </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2 class="section-title">Profissão: O Vigia (Guarda do Navio)</h2>
             <div id="job-features-list" class="feature-list"></div>
           </div>
         </div>
@@ -462,6 +463,14 @@
     <div class="portrait-lightbox-stage">
       <img id="portrait-lightbox-img" src="" alt="Arte ampliada do personagem Soul Henri e Fen">
       <p class="portrait-lightbox-caption">Soul Henri &amp; Fen — Clique fora da imagem ou pressione Esc para fechar</p>
+    </div>
+  </div>
+
+  <div id="danger-zone-toast" class="danger-zone-toast" role="status" aria-live="assertive" hidden>
+    <span class="danger-zone-toast-icon">⚠️</span>
+    <div>
+      <div class="danger-zone-toast-title">Habilidade Zona de Perigo Ativada</div>
+      <div class="danger-zone-toast-desc" id="danger-zone-toast-desc">Vontade de Sobrevivência: ignora penalidades e +2 em ataques.</div>
     </div>
   </div>
 

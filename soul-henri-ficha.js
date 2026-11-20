@@ -301,11 +301,110 @@ function formatMod(mod) {
   return mod >= 0 ? `+${mod}` : `${mod}`;
 }
 
+
+let wasInDangerZone = false;
+let dangerToastTimer = null;
+
+function playDangerZoneSound() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+
+    const now = ctx.currentTime;
+    const notes = [
+      { freq: 196.0, start: 0.0, dur: 0.14, peak: 0.14 },
+      { freq: 293.66, start: 0.11, dur: 0.16, peak: 0.16 },
+      { freq: 440.0, start: 0.24, dur: 0.28, peak: 0.15 }
+    ];
+
+    notes.forEach((n) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(n.freq, now + n.start);
+      osc.frequency.exponentialRampToValueAtTime(n.freq * 1.04, now + n.start + n.dur);
+
+      gain.gain.setValueAtTime(0.0001, now + n.start);
+      gain.gain.linearRampToValueAtTime(n.peak, now + n.start + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now + n.start);
+      osc.stop(now + n.start + n.dur + 0.02);
+    });
+
+    setTimeout(() => {
+      ctx.close().catch(() => {});
+    }, 900);
+  } catch (e) {
+    // Ignora caso o navegador bloqueie áudio antes de interação
+  }
+}
+
+function showDangerZoneNotification(hpAtual, hpMax, threshold) {
+  const toast = document.getElementById("danger-zone-toast");
+  const desc = document.getElementById("danger-zone-toast-desc");
+  if (!toast) return;
+
+  if (desc) {
+    desc.textContent = `HP ${hpAtual}/${hpMax} (≤ ${threshold} de 25% máx.) • +2 em ataques e ignora penalidades.`;
+  }
+  toast.hidden = false;
+  playDangerZoneSound();
+
+  clearTimeout(dangerToastTimer);
+  dangerToastTimer = setTimeout(() => {
+    toast.hidden = true;
+  }, 4200);
+}
+
+function updateDangerZone() {
+  const box = document.getElementById("danger-zone-box");
+  const badge = document.getElementById("danger-zone-badge");
+  const thresholdEl = document.getElementById("danger-zone-threshold");
+  const statusTextEl = document.getElementById("danger-zone-status-text");
+
+  const hpMax = Math.max(0, Number(state.hpMax) || 0);
+  const hpAtual = Number(state.hpAtual) || 0;
+  const threshold = Math.floor(hpMax * 0.25);
+  const isDanger = hpMax > 0 && hpAtual <= threshold;
+
+  if (thresholdEl) {
+    thresholdEl.textContent = `Limite (25%): ${threshold} / ${hpMax} HP`;
+  }
+
+  if (box) {
+    box.classList.toggle("is-active", isDanger);
+  }
+
+  if (badge) {
+    badge.textContent = isDanger ? "Ativada" : "Inativa";
+  }
+
+  if (statusTextEl) {
+    statusTextEl.textContent = isDanger
+      ? `Vontade de Sobrevivência ativa! HP atual (${hpAtual}) ≤ ${threshold} (25% de ${hpMax})`
+      : `Ativa quando HP atual ≤ ${threshold} (25% de ${hpMax} HP)`;
+  }
+
+  if (isDanger && !wasInDangerZone) {
+    showDangerZoneNotification(hpAtual, hpMax, threshold);
+  }
+  wasInDangerZone = isDanger;
+}
+
 function updateBars() {
   const hpPct = state.hpMax > 0 ? Math.max(0, Math.min(100, (state.hpAtual / state.hpMax) * 100)) : 0;
   const stPct = state.stMax > 0 ? Math.max(0, Math.min(100, (state.stAtual / state.stMax) * 100)) : 0;
   document.getElementById("hp-bar").style.width = `${hpPct}%`;
   document.getElementById("st-bar").style.width = `${stPct}%`;
+  updateDangerZone();
 }
 
 function renderSimpleFields() {
