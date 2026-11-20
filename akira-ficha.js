@@ -1,5 +1,5 @@
-const STORAGE_KEY = "mar_indomavel_ficha_akira_v1";
-const AUTH_SESSION_KEY = "mar_indomavel_auth_akira_v1";
+const STORAGE_KEY = "mar_indomavel_ficha_akira";
+const AUTH_SESSION_KEY = "mar_indomavel_auth_akira";
 const PLAYER_PASSWORDS = ["peixefrito"];
 const MASTER_PASSWORDS = ["chavemestra", "chave mestra"];
 
