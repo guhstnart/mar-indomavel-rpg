@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mar Indomável RPG OnePiece – Livro de Regras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Pirata+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav id="menu">
+  <h1>Mar Indomável RPG</h1>
+  <input id="busca" type="search" placeholder="Buscar regra…" aria-label="Buscar regra">
+  <a href="#atributos">Atributos</a>
+  <a href="#combate">Combate</a>
+  <a href="#estamina">Estamina e CA</a>
+  <a href="#status">Status e HP zerado</a>
+  <a href="#evolucao">Evolução (PP)</a>
+  <a href="#akuma">Akuma no Mi</a>
+  <a href="#habilidades">Habilidades</a>
+  <a href="#profissoes">Profissões</a>
+  <a href="#inventario">Inventário</a>
+  <a href="#economia">Economia</a>
+  <a href="#reputacao">Recompensa e Reputação</a>
+  <a href="#navegacao">Navegação e clima</a>
+</nav>
+<main>
+<header>
+  <img class="logo" src="logo.png" alt="Logo One Piece – Mar Indomável">
+  <h2>Livro de Regras</h2>
+  <p>Tudo o que a tripulação precisa saber para sobreviver ao mar. Em testes, role 1d20 + modificador contra a dificuldade do Mestre.</p>
+</header>
+
+<section id="atributos">
+<h3>Atributos</h3>
+<p>Sempre que o sucesso não é garantido, role 1d20 + o modificador do atributo.</p>
+<table>
+<tr><th>Atributo</th><th>Mede</th><th>Exemplos de teste</th></tr>
+<tr><td>Força (FOR)</td><td>Poder físico bruto</td><td>Arrombar porta, segurar amarras, agarrar inimigo</td></tr>
+<tr><td>Destreza (DES)</td><td>Agilidade e reflexos</td><td>Furtividade, equilíbrio no mastro, tiros à distância, iniciativa</td></tr>
+<tr><td>Constituição (CON)</td><td>Saúde e resistência</td><td>Resistir a veneno, fôlego ao nadar. Define Vida, Estamina e slots de carga</td></tr>
+<tr><td>Inteligência (INT)</td><td>Raciocínio e memória</td><td>Decifrar mapas, consertar o navio, criar engenhocas</td></tr>
+<tr><td>Sabedoria (SAB)</td><td>Percepção e intuição</td><td>Notar mentiras, perceber emboscadas, primeiros socorros</td></tr>
+<tr><td>Carisma (CAR)</td><td>Presença e persuasão</td><td>Barganhar, comandar, blefar, intimidar</td></tr>
+</table>
+</section>
+
+<section id="combate">
+<h3>Combate</h3>
+<p>Uma rodada dura cerca de 6 segundos. Na iniciativa, role 1d20 + DES; a ordem vai do maior para o menor e não muda até o fim.</p>
+<p><b>Surpresa:</b> quem emboscar o outro lado ganha uma rodada só sua. Os alvos não podem se mover, atacar nem reagir.</p>
+<h4>No seu turno</h4>
+<ul>
+<li><b>Ação Normal:</b> atacar, usar habilidade (gasta Estamina), interagir com o cenário ou usar Foco.</li>
+<li><b>Ação Rápida (1 por turno):</b> sacar ou guardar arma, usar item rápido, ativar postura.</li>
+<li><b>Movimento:</b> cerca de 6 m, que pode ser dividido antes e depois da ação.</li>
+</ul>
+<h4>Fora do seu turno (1 Reação por rodada)</h4>
+<ul>
+<li><b>Esquivar (2 Estamina):</b> 1d20 + DES. Se superar o ataque, não sofre dano.</li>
+<li><b>Defender:</b> role o Dado de Defesa da arma + FOR/CON e reduza do dano recebido.</li>
+</ul>
+</section>
+
+<section id="estamina">
+<h3>Estamina e Classe de Armadura</h3>
+<p><b>Foco (Ação Normal):</b> não ataca, recupera 1 + mod. CON de Estamina (mínimo 1), ganha +2 na CA até o próximo turno e Vantagem contra ser derrubado ou empurrado.</p>
+<p>Envenenado recupera metade; Exausto recupera 0. Fora de combate a Estamina só volta com descanso e comida.</p>
+<ul>
+<li><b>Descanso longo (8 h):</b> recupera 100% de Vida e Estamina e remove Gravemente Ferido.</li>
+<li><b>Refeição simples:</b> +2 de Estamina. <b>Completa:</b> +15.</li>
+</ul>
+<p><b>CA</b> = 10 + maior modificador entre CON e DES + bônus de equipamento. Ataque: 1d20 + bônus de acerto. Se for maior ou igual à CA, acerta.</p>
+</section>
+
+<section id="status">
+<h3>Status e HP zerado</h3>
+<p>Condições não se acumulam: sofrer a mesma de novo só reinicia a duração.</p>
+<table>
+<tr><th>Status</th><th>Efeito</th><th>Cura</th></tr>
+<tr><td>Sangramento</td><td>1d4 de dano direto no início do turno</td><td>Kit Médico ou Medicina</td></tr>
+<tr><td>Queimado</td><td>1d6 de dano no início do turno e -2 nos acertos</td><td>Rolar no chão</td></tr>
+<tr><td>Envenenado</td><td>1d4 de dano e metade da Estamina</td><td>Antídoto ou fim do combate</td></tr>
+<tr><td>Atordoado</td><td>Perde ações e reação, movimento pela metade (1 rodada)</td><td>Passa sozinho</td></tr>
+<tr><td>Cegueira</td><td>Desvantagem em ataques, inimigos ganham +2</td><td>Limpar os olhos</td></tr>
+<tr><td>Lento</td><td>Movimento pela metade e -2 na CA</td><td>Fim do efeito</td></tr>
+<tr><td>Caído / Imobilizado</td><td>Movimento 0, inimigos corpo a corpo ganham +2</td><td>Levantar (metade do movimento) ou teste de FOR</td></tr>
+<tr><td>Amedrontado</td><td>Desvantagem em ataques e atributos</td><td>Teste de SAB ou encorajamento</td></tr>
+<tr><td>Exausto</td><td>Sem Estamina nem habilidades; só ataque básico e movimento</td><td>Descanso</td></tr>
+</table>
+<h4>HP em 0</h4>
+<p>O personagem fica Incapacitado. Cada ataque sofrido causa 1 falha automática; com 3 falhas ele morre. Um aliado adjacente o socorre com Ação Normal + Kit Médico (1 HP) ou teste de Medicina CD 12 (1 HP).</p>
+<p>Se a batalha termina com ele caído, acorda com 1 HP <b>Gravemente Ferido</b>: -3 em rolagens físicas e Estamina máxima pela metade, até um descanso longo.</p>
+</section>
+
+<section id="evolucao">
+<h3>Evolução: Pontos de Progresso (PP)</h3>
+<p>Os PP são escassos e divididos igualmente entre toda a tripulação ativa. Gastos são permanentes e só podem ser feitos em pontos demarcados pelo Mestre, normalmente durante viagens de navio.</p>
+<table>
+<tr><th>Ação</th><th>Custo</th><th>Pré-requisito</th></tr>
+<tr><td>Aprender técnica nova</td><td>3 PP (+1 por skill já adquirida)</td><td>Ter visto a técnica ou treinado</td></tr>
+<tr><td>Melhorar técnica</td><td>10 PP (+5 por melhoria na mesma skill)</td><td>Ter usado com sucesso</td></tr>
+<tr><td>Slot de inventário (máx. +10)</td><td>12 PP (+1 por slot)</td><td>–</td></tr>
+<tr><td>Slot de habilidade (máx. +5)</td><td>20 PP (+2 por slot)</td><td>–</td></tr>
+</table>
+<h4>Como ganhar PP</h4>
+<ul>
+<li><b>Missões:</b> 1 a 3 PP por jogador, com teto de 3 PP por ilha.</li>
+<li><b>Grandes batalhas e chefes:</b> o Mestre decide se valeu 1 PP. Não entra no teto da ilha.</li>
+<li><b>Conclusão de arcos e exploração épica:</b> 1 a 3 PP, conforme o impacto.</li>
+</ul>
+</section>
+
+<section id="akuma">
+<h3>Akuma no Mi e fraquezas</h3>
+<p>Habilidades da fruta ocupam slots normais e gastam Estamina. <b>Regra da Cobiça:</b> comer uma segunda fruta, mesmo uma mordida, causa morte instantânea e definitiva.</p>
+<h4>Maldição do Mar</h4>
+<p>Vale em água parada (mar, rio, lago, banheira grande). Chuva e chuveiro não contam.</p>
+<ul>
+<li><b>Acima do joelho:</b> Movimento 0, sem esquivas ou saltos, Lento (-2 CA) e ataques com Desvantagem.</li>
+<li><b>Submerso:</b> Paralisado, Exausto, passivas desativadas e 1d6 de dano por turno até ser resgatado.</li>
+</ul>
+<h4>Kairouseki</h4>
+<ul>
+<li><b>Contato contínuo:</b> anula todas as habilidades da fruta, deixa Exausto e dá -2 em FOR, DES e CON.</li>
+<li><b>Golpe rápido (bala, ponta de arma):</b> dano normal que ignora imunidades da fruta e bloqueia as habilidades até o início do seu próximo turno.</li>
+</ul>
+</section>
+
+<section id="habilidades">
+<h3>Habilidades</h3>
+<ul>
+<li><b>Aquisição:</b> novas habilidades são compradas com Pontos de Progresso (PP).</li>
+<li><b>Slots ativos:</b> você mantém até 5 habilidades ativas, com apenas uma Ultimate.</li>
+<li><b>Ultimate:</b> só pode ser usada 1 vez por batalha, depois de pelo menos 2 ações de combate (ataque ou defesa) na mesma cena.</li>
+<li><b>Aprendeu com os 5 slots cheios:</b> escolha na hora entre trocar uma habilidade ativa pela nova ou mandar a nova para a memória.</li>
+<li><b>Biblioteca de Memória:</b> habilidades fora dos slots não se perdem. Você as troca livremente durante viagens de navio ou em Zonas Seguras marcadas pelo Mestre.</li>
+</ul>
+</section>
+
+<section id="profissoes">
+<h3>Profissões da tripulação</h3>
+<p>Cada personagem escolhe apenas uma Função de Bordo.</p>
+<table>
+<tr><th>Profissão</th><th>Habilidades</th></tr>
+<tr><td>Capitão</td><td><b>Voz de Comando:</b> dá Vantagem em um teste de CAR para si ou aliado, 1 vez por ilha. <b>Presença Imponente:</b> +2 em Intimidação.</td></tr>
+<tr><td>Médico</td><td><b>Primeiros Socorros:</b> o aliado levantado volta com 1d4 + mod. INT de HP. <b>Cirurgia de Emergência:</b> 1 vez por descanso longo, teste de SAB (Medicina) CD 14 remove Gravemente Ferido na hora.</td></tr>
+<tr><td>Carpinteiro</td><td><b>Manutenção de Casco:</b> teste de INT CD 12 corta o reparo de 500 para 250 Berrys. <b>Reparo de Fortuna:</b> gasta 3 Estamina e a Ação Normal para ignorar as penalidades de Navio em Mau Estado por 2 horas.</td></tr>
+<tr><td>Navegador</td><td><b>Língua dos Ventos:</b> +2 nos Testes de Viagem. <b>Desvio de Rota:</b> 1 vez por viagem, gasta 2 Estamina para transformar Falha Crítica em Falha Normal.</td></tr>
+<tr><td>Músico</td><td><b>Canção de Descanso:</b> no descanso rápido, a tripulação recupera +2 de Estamina. <b>Fama Local:</b> teste de CAR CD 12 na taverna rende boatos ou 10% de desconto em consumíveis.</td></tr>
+<tr><td>Cozinheiro</td><td><b>Bônus em Consumíveis:</b> refeição feita com ingredientes locais dá +2 de Estamina a todos. <b>Especialista em Tavernas:</b> +2 em SAB ou CAR em cozinhas, feiras e tavernas.</td></tr>
+<tr><td>Arqueólogo</td><td><b>Textos Antigos:</b> único que traduz dialetos mortos, +3 em INT para história, geografia e ruínas. <b>Avaliador de Relíquias:</b> vende artefatos por 20% a mais.</td></tr>
+<tr><td>Cientista / Inventor</td><td><b>Alquimia e Balística:</b> na navegação, teste de INT CD 12 cria 1 Kit de Primeiros Socorros ou munição especial sem gastar Berrys. <b>Engenharia Reversa:</b> entende armas e tecnologias capturadas, e o Carpinteiro pode replicar no navio.</td></tr>
+<tr><td>Pescador</td><td><b>Fartura dos Mares:</b> 1 vez por dia, teste de SAB (Sobrevivência) CD 13 gera 1d4 + mod. SAB itens de cura. Um 20 natural dobra o resultado ou acha um ingrediente raro. <b>Fisgada Implacável:</b> gasta 2 Estamina para prender um inimigo a até 9 m; se ele falhar na resistência contra a FOR do Pescador, é puxado até 4,5 m.</td></tr>
+<tr><td>Vigia</td><td><b>Sentinela da Gávea:</b> enquanto estiver em posto e consciente, o grupo não sofre Rodada Surpresa. Em viagem, 1 vez, teste de SAB (Percepção) CD 13 avista frotas, tempestades ou ilhas ocultas. <b>Reflexo de Interceptação:</b> 1 vez por combate, gasta 2 Estamina e a Reação para proteger um aliado a até 9 m, com teste de DES (Acrobacia) contra o acerto.</td></tr>
+</table>
+</section>
+
+<section id="inventario">
+<h3>Inventário e carga</h3>
+<p><b>Slots totais = (CON × 2) + 5.</b> Só itens guardados na mochila ocupam slot. Itens equipados no corpo e armas em punho não ocupam.</p>
+<ul>
+<li><b>Itens-Chave:</b> missão e pertences pessoais. Não ocupam slots.</li>
+<li><b>Consumíveis Rápidos:</b> curam pouco e podem ser usados em combate.</li>
+<li><b>Consumíveis Restauradores:</b> curam muito, mas só em Zonas Seguras.</li>
+<li><b>Armas:</b> katanas, pistolas etc. Não ocupam slot enquanto equipadas.</li>
+<li><b>Equipamentos:</b> anéis, pulseiras e amuletos, com bônus passivos. Não ocupam slot equipados.</li>
+</ul>
+<p><b>Armazenamento:</b> no Navio você guarda e retira itens sem limite de carga. Se tirar uma arma ou equipamento do corpo e levá-lo na mochila, ele passa a ocupar slot.</p>
+</section>
+
+<section id="economia">
+<h3>Economia e viagens</h3>
+<h4>Como ganhar Berrys</h4>
+<ul>
+<li><b>Mural de Missões:</b> caça de recompensas, exploração, busca de tesouros e caça a criaturas. A recompensa escala com o Rank.</li>
+<li><b>Atividades piratas:</b> roubar cidadãos é rápido, mas gera má fama e atrai as autoridades. Saquear a Marinha ou piratas rivais é perigoso e rende espólios e equipamentos melhores.</li>
+</ul>
+<h4>Taxa do Navio</h4>
+<p>Ao zarpar para uma nova ilha, a tripulação paga 200 Berrys por jogador em suprimentos. Sem esse valor, o navio não sai. Quem viaja à força começa a próxima sessão com o efeito Fome ou Navio em Mau Estado, com penalidades severas em testes de perícia e de combate até se reabastecer.</p>
+<table>
+<tr><th>Referencia Economica - Item</th><th>Custo (Berrys)</th></tr>
+<tr><td>Refeição simples</td><td>10</td></tr>
+<tr><td>Pernoite em estalagem</td><td>50</td></tr>
+<tr><td>Kit de Primeiros Socorros</td><td>100</td></tr>
+<tr><td>Reparo simples no navio</td><td>500</td></tr>
+<tr><td>Espada ou equipamento bom</td><td>1.000</td></tr>
+<tr><td>Equipamento de luxo</td><td>5.000</td></tr>
+</table>
+<table>
+<tr><th>Rank da missão</th><th>Recompensa por jogador</th><th>Poder de compra</th></tr>
+<tr><td>D (Iniciante)</td><td>200 a 500</td><td>Comida do mês ou um reparo básico</td></tr>
+<tr><td>C (Aventureiro)</td><td>1.000 a 2.000</td><td>Uma arma ou acessório melhor</td></tr>
+<tr><td>B (Veterano)</td><td>5.000 a 10.000</td><td>Upgrade significativo no navio</td></tr>
+<tr><td>A (Épico)</td><td>20.000+</td><td>Riqueza para objetivos de longo prazo</td></tr>
+<tr><td>S (Lenda)</td><td>100.000+</td><td>Pedidos que só as lendas dos mares aceitam</td></tr>
+</table>
+</section>
+
+<section id="reputacao">
+<h3>Recompensa e Reputação</h3>
+<h4>Recompensa (Bounty): nível de ameaça</h4>
+<p>Mede só o perigo para o Governo Mundial e a Marinha, não bondade nem maldade. Sobe com atos diretos contra a lei: atacar bases, derrotar oficiais, invadir instalações restritas, roubar artefatos protegidos.</p>
+<ul>
+<li><b>Caçadores:</b> quanto maior o valor, mais frequentes e perigosos os encontros, com caçadores e navios de guerra rastreando o bando.</li>
+<li><b>Portos restritos:</b> em ilhas da Marinha, só com disfarce (testes de Enganação ou Furtividade). Comerciantes podem se recusar a vender ou dar o alarme.</li>
+<li><b>Submundo:</b> bounties altos abrem o mercado negro, armas restritas e informações raras.</li>
+</ul>
+<h4>Reputação: a voz do povo</h4>
+<p>O Mestre revisa ao fim de cada ilha ou arco.</p>
+<ul>
+<li><b>Heroica:</b> abrigo e informações dos moradores, Vantagem em Investigação nas vilas e 10% a 20% de desconto no comércio.</li>
+<li><b>Neutra:</b> sem bônus nem penalidade.</li>
+<li><b>Temida:</b> +3 em Intimidação, mas ninguém ajuda por vontade própria, não há missões de resgate nos murais e estalagens podem fechar as portas.</li>
+</ul>
+</section>
+
+<section id="navegacao">
+<h3>Navegação e clima</h3>
+<p>Depois de pagar a Taxa do Navio, um tripulante (geralmente o Navegador) faz o Teste de Viagem: 1d20 + SAB (intuição e clima) ou INT (mapas e instrumentos). A CD padrão entre ilhas vizinhas é 12.</p>
+<table>
+<tr><th>Resultado</th><th>Mar</th><th>Consequência</th></tr>
+<tr><td>Sucesso crítico (20)</td><td>Navegação perfeita</td><td>Viagem rápida e segura, e +2 de Estamina máxima temporária na próxima sessão</td></tr>
+<tr><td>Sucesso (CD ou mais)</td><td>Tempo limpo</td><td>Chega sem imprevistos nem custo extra</td></tr>
+<tr><td>Falha (abaixo da CD)</td><td>Tempestade</td><td>O navio chega avariado e precisa de Reparo Simples (500 Berrys) para zarpar de novo</td></tr>
+<tr><td>Falha crítica (1)</td><td>Ciclone</td><td>Reparo de 500 Berrys e todos começam a próxima sessão Exaustos, até um descanso longo em terra firme</td></tr>
+</table>
+<p><b>Carpinteiro:</b> em falha, um teste de INT CD 12 reduz o reparo para 250 Berrys. <b>Navegador:</b> +2 nos testes e, 1 vez por viagem, gasta 2 Estamina para converter Falha Crítica em Falha Normal (sem o status Exausto).</p>
+</section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
