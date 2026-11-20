@@ -80,6 +80,7 @@ const DEFAULT_DATA = {
       desc: "Soco focado em sobrecarregar o sistema nervoso. Não causa dano, mas o inimigo faz um Teste de CON; se falhar, sofre paralisia temporária (não realiza Ações, apenas se move no próximo turno)."
     }
   ],
+  memorySkills: [],
   learnableSkills: [
     {
       name: "1. Pelagem Estática",
@@ -161,7 +162,14 @@ Após dias à deriva, você encontrou terra firme. Para sobreviver, tornou-se um
 
 let state = loadState();
 let appInitialized = false;
-let draggedSkill = null;
+let draggedSkill = null; // { fromZone: 'enabled' | 'memory' | 'learnable', index: number }
+
+function getZoneArray(zone) {
+  if (!Array.isArray(state.memorySkills)) state.memorySkills = [];
+  if (zone === "enabled") return state.enabledSkills;
+  if (zone === "memory") return state.memorySkills;
+  return state.learnableSkills;
+}
 
 function unlockSheet(role) {
   sessionStorage.setItem(AUTH_SESSION_KEY, role);
@@ -223,7 +231,12 @@ function loadState() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return { ...structuredClone(DEFAULT_DATA), ...JSON.parse(saved) };
+      const parsed = JSON.parse(saved);
+      return {
+        ...structuredClone(DEFAULT_DATA),
+        ...parsed,
+        memorySkills: Array.isArray(parsed.memorySkills) ? parsed.memorySkills : []
+      };
     }
   } catch (e) {
     console.error("Erro ao carregar ficha:", e);
@@ -332,6 +345,7 @@ function showDiceResult(text) {
 
 function setupQuickAdjustButtons() {
   document.querySelectorAll(".btn-mini").forEach((btn) => {
+    if (!btn.dataset.target) return;
     btn.addEventListener("click", () => {
       const target = btn.dataset.target;
       const op = btn.dataset.op;
@@ -382,8 +396,8 @@ function renderStaticFeatures() {
 }
 
 function moveSkill(fromZone, fromIndex, toZone, targetIndex = null) {
-  const sourceArr = fromZone === "enabled" ? state.enabledSkills : state.learnableSkills;
-  const destArr = toZone === "enabled" ? state.enabledSkills : state.learnableSkills;
+  const sourceArr = getZoneArray(fromZone);
+  const destArr = getZoneArray(toZone);
 
   if (!sourceArr[fromIndex]) return;
 
@@ -405,17 +419,63 @@ function moveSkill(fromZone, fromIndex, toZone, targetIndex = null) {
   renderSkills();
 }
 
+function buildActionButtonsForZone(zone, idx) {
+  const wrap = document.createElement("div");
+  wrap.className = "skill-actions";
+
+  if (zone === "enabled") {
+    const btnMem = document.createElement("button");
+    btnMem.type = "button";
+    btnMem.className = "btn-mini mem";
+    btnMem.textContent = "Enviar p/ Memória";
+    btnMem.addEventListener("click", () => moveSkill("enabled", idx, "memory"));
+
+    const btnRem = document.createElement("button");
+    btnRem.type = "button";
+    btnRem.className = "btn-mini dmg";
+    btnRem.textContent = "Remover";
+    btnRem.addEventListener("click", () => moveSkill("enabled", idx, "learnable"));
+
+    wrap.append(btnMem, btnRem);
+  } else if (zone === "memory") {
+    const btnHab = document.createElement("button");
+    btnHab.type = "button";
+    btnHab.className = "btn-mini heal";
+    btnHab.textContent = "Habilitar Skill";
+    btnHab.addEventListener("click", () => moveSkill("memory", idx, "enabled"));
+
+    const btnRem = document.createElement("button");
+    btnRem.type = "button";
+    btnRem.className = "btn-mini dmg";
+    btnRem.textContent = "Devolver p/ Árvore";
+    btnRem.addEventListener("click", () => moveSkill("memory", idx, "learnable"));
+
+    wrap.append(btnHab, btnRem);
+  } else {
+    const btnHab = document.createElement("button");
+    btnHab.type = "button";
+    btnHab.className = "btn-mini heal";
+    btnHab.textContent = "Habilitar Skill";
+    btnHab.addEventListener("click", () => moveSkill("learnable", idx, "enabled"));
+
+    const btnMem = document.createElement("button");
+    btnMem.type = "button";
+    btnMem.className = "btn-mini mem";
+    btnMem.textContent = "Guardar na Memória";
+    btnMem.addEventListener("click", () => moveSkill("learnable", idx, "memory"));
+
+    wrap.append(btnHab, btnMem);
+  }
+
+  return wrap;
+}
+
 function createSkillCard(sk, zone, idx) {
   const card = document.createElement("div");
   card.className = `skill-card ${zone}`;
   card.draggable = true;
   card.dataset.zone = zone;
   card.dataset.index = idx;
-
-  const actionBtnHtml =
-    zone === "enabled"
-      ? `<button type="button" class="btn-mini dmg">Remover</button>`
-      : `<button type="button" class="btn-mini heal">Habilitar Skill</button>`;
 
   card.innerHTML = `
     <div>
@@ -426,17 +486,16 @@ function createSkillCard(sk, zone, idx) {
       <div class="skill-cost">${sk.cost}</div>
       <p class="skill-desc">${sk.desc}</p>
     </div>
-    <div class="skill-actions">
-      ${actionBtnHtml}
-    </div>
   `;
+
+  card.appendChild(buildActionButtonsForZone(zone, idx));
 
   card.addEventListener("dragstart", (e) => {
     draggedSkill = { fromZone: zone, index: idx };
     card.classList.add("dragging");
     if (e.dataTransfer) {
       e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", `${zone}:${idx}`);
+      e.dataTransfer.setData("text/plain", JSON.stringify({ fromZone: zone, index: idx }));
     }
   });
 
@@ -458,21 +517,29 @@ function createSkillCard(sk, zone, idx) {
   card.addEventListener("drop", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!draggedSkill) return;
-    moveSkill(draggedSkill.fromZone, draggedSkill.index, zone, idx);
+    const payload = getDragPayload(e);
+    if (!payload) return;
+    moveSkill(payload.fromZone, payload.index, zone, idx);
     draggedSkill = null;
   });
 
-  const btn = card.querySelector(".skill-actions button");
-  btn.addEventListener("click", () => {
-    if (zone === "enabled") {
-      moveSkill("enabled", idx, "learnable");
-    } else {
-      moveSkill("learnable", idx, "enabled");
-    }
-  });
-
   return card;
+}
+
+function getDragPayload(e) {
+  if (draggedSkill) return draggedSkill;
+  try {
+    const raw = e.dataTransfer?.getData("text/plain");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.fromZone && typeof parsed.index === "number") {
+        return parsed;
+      }
+    }
+  } catch {
+    return null;
+  }
+  return null;
 }
 
 function setupSkillDropZones() {
@@ -496,27 +563,50 @@ function setupSkillDropZones() {
     zoneCard.addEventListener("drop", (e) => {
       e.preventDefault();
       zoneCard.classList.remove("drag-over");
-      if (!draggedSkill) return;
-      moveSkill(draggedSkill.fromZone, draggedSkill.index, targetZone);
+      const payload = getDragPayload(e);
+      if (!payload) return;
+      moveSkill(payload.fromZone, payload.index, targetZone);
       draggedSkill = null;
     });
   });
 }
 
 function renderSkills() {
+  if (!Array.isArray(state.memorySkills)) state.memorySkills = [];
+
   const enabledContainer = document.getElementById("enabled-skills-list");
+  const memoryContainer = document.getElementById("memory-skills-list");
   const learnableContainer = document.getElementById("learnable-skills-list");
+
   document.getElementById("enabled-count").textContent = state.enabledSkills.length;
+  document.getElementById("memory-count").textContent = state.memorySkills.length;
 
   enabledContainer.innerHTML = "";
-  state.enabledSkills.forEach((sk, idx) => {
-    enabledContainer.appendChild(createSkillCard(sk, "enabled", idx));
-  });
+  if (state.enabledSkills.length === 0) {
+    enabledContainer.innerHTML = `<div class="empty-zone-msg">Nenhuma skill habilitada no momento. Arraste uma habilidade para cá ou clique em "Habilitar Skill".</div>`;
+  } else {
+    state.enabledSkills.forEach((sk, idx) => {
+      enabledContainer.appendChild(createSkillCard(sk, "enabled", idx));
+    });
+  }
+
+  memoryContainer.innerHTML = "";
+  if (state.memorySkills.length === 0) {
+    memoryContainer.innerHTML = `<div class="empty-zone-msg">Biblioteca de Memória vazia (sem limite de capacidade). Arraste habilidades extras para cá para aprender depois.</div>`;
+  } else {
+    state.memorySkills.forEach((sk, idx) => {
+      memoryContainer.appendChild(createSkillCard(sk, "memory", idx));
+    });
+  }
 
   learnableContainer.innerHTML = "";
-  state.learnableSkills.forEach((sk, idx) => {
-    learnableContainer.appendChild(createSkillCard(sk, "learnable", idx));
-  });
+  if (state.learnableSkills.length === 0) {
+    learnableContainer.innerHTML = `<div class="empty-zone-msg">Todas as skills aprendíveis foram movidas.</div>`;
+  } else {
+    state.learnableSkills.forEach((sk, idx) => {
+      learnableContainer.appendChild(createSkillCard(sk, "learnable", idx));
+    });
+  }
 }
 
 function updateSlotCount() {
@@ -636,7 +726,11 @@ function setupActions() {
     reader.onload = () => {
       try {
         const imported = JSON.parse(reader.result);
-        state = { ...structuredClone(DEFAULT_DATA), ...imported };
+        state = {
+          ...structuredClone(DEFAULT_DATA),
+          ...imported,
+          memorySkills: Array.isArray(imported.memorySkills) ? imported.memorySkills : []
+        };
         saveState();
         init();
         alert("Ficha importada com sucesso!");

@@ -202,21 +202,34 @@
           </div>
         </div>
 
+        <!-- 1. SKILLS HABILITADAS -->
         <div class="card drop-zone-card" id="dropzone-enabled" data-zone="enabled">
           <div class="card-header-flex">
             <h2 class="section-title">Skills Habilitadas (<span id="enabled-count">3</span>/<input type="number" id="max-skills" data-field="maxSkills" class="inline-num">)</h2>
             <div class="header-right-group">
-              <span class="hint-text">Arraste para cá ou use o botão</span>
+              <span class="hint-text">Arraste pelo card ou pegador para mover</span>
               <button type="button" class="btn btn-primary" id="btn-add-skill">+ Nova Skill</button>
             </div>
           </div>
           <div id="enabled-skills-list" class="skills-grid drop-list" data-zone="enabled"></div>
         </div>
 
+        <!-- 2. BIBLIOTECA DE MEMÓRIA (SEM LIMITE) -->
+        <div class="card drop-zone-card memory-zone-card" id="dropzone-memory" data-zone="memory">
+          <div class="card-header-flex">
+            <div>
+              <h2 class="section-title">Biblioteca de Memória (<span id="memory-count">0</span> guardadas • Sem limite)</h2>
+            </div>
+            <span class="hint-text">Guarde aqui habilidades extras aprendidas para habilitar depois</span>
+          </div>
+          <div id="memory-skills-list" class="skills-grid drop-list" data-zone="memory"></div>
+        </div>
+
+        <!-- 3. ÁRVORE DE SKILLS (APRENDÍVEIS) -->
         <div class="card drop-zone-card" id="dropzone-learnable" data-zone="learnable">
           <div class="card-header-flex">
             <h2 class="section-title">Árvore de Skills (Aprendíveis)</h2>
-            <span class="hint-text">Arraste para cá ou clique em "Remover" / "Habilitar Skill" para mover entre os lados</span>
+            <span class="hint-text">Arraste ou use os botões para mover entre Habilitadas, Biblioteca de Memória e Aprendíveis</span>
           </div>
           <div id="learnable-skills-list" class="skills-grid drop-list" data-zone="learnable"></div>
         </div>
