@@ -162,7 +162,9 @@ Após dias à deriva, você encontrou terra firme. Para sobreviver, tornou-se um
 
 let state = loadState();
 let appInitialized = false;
-let draggedSkill = null; // { fromZone: 'enabled' | 'memory' | 'learnable', index: number }
+
+// Pointer drag state (funciona de forma confiável em qualquer navegador / GitHub Pages)
+let pointerDrag = null;
 
 function getZoneArray(zone) {
   if (!Array.isArray(state.memorySkills)) state.memorySkills = [];
@@ -187,7 +189,7 @@ function unlockSheet(role) {
     setupTabs();
     setupQuickAdjustButtons();
     setupDiceRoller();
-    setupSkillDropZones();
+    setupGlobalPointerDrag();
     setupActions();
     init();
     appInitialized = true;
@@ -419,6 +421,93 @@ function moveSkill(fromZone, fromIndex, toZone, targetIndex = null) {
   renderSkills();
 }
 
+function clearZoneHighlights() {
+  document.querySelectorAll(".drop-zone-card.drag-over").forEach((el) => {
+    el.classList.remove("drag-over");
+  });
+}
+
+function cleanupPointerDrag() {
+  if (!pointerDrag) return;
+  if (pointerDrag.ghost && pointerDrag.ghost.parentNode) {
+    pointerDrag.ghost.parentNode.removeChild(pointerDrag.ghost);
+  }
+  if (pointerDrag.sourceEl) {
+    pointerDrag.sourceEl.classList.remove("dragging-source");
+  }
+  clearZoneHighlights();
+  pointerDrag = null;
+}
+
+function setupGlobalPointerDrag() {
+  document.addEventListener("pointermove", (e) => {
+    if (!pointerDrag) return;
+
+    const dx = e.clientX - pointerDrag.startX;
+    const dy = e.clientY - pointerDrag.startY;
+    if (!pointerDrag.active && Math.hypot(dx, dy) > 6) {
+      pointerDrag.active = true;
+      pointerDrag.sourceEl.classList.add("dragging-source");
+
+      const ghost = pointerDrag.sourceEl.cloneNode(true);
+      ghost.classList.add("floating-drag");
+      ghost.style.width = `${pointerDrag.rect.width}px`;
+      ghost.style.height = `${pointerDrag.rect.height}px`;
+      document.body.appendChild(ghost);
+      pointerDrag.ghost = ghost;
+    }
+
+    if (!pointerDrag.active || !pointerDrag.ghost) return;
+
+    pointerDrag.ghost.style.left = `${e.clientX - pointerDrag.offsetX}px`;
+    pointerDrag.ghost.style.top = `${e.clientY - pointerDrag.offsetY}px`;
+
+    // Detecta qual zona está sob o ponteiro (ocultando temporariamente o ghost)
+    pointerDrag.ghost.style.display = "none";
+    const underEl = document.elementFromPoint(e.clientX, e.clientY);
+    pointerDrag.ghost.style.display = "";
+
+    const zoneCard = underEl ? underEl.closest(".drop-zone-card") : null;
+    clearZoneHighlights();
+    if (zoneCard) {
+      zoneCard.classList.add("drag-over");
+    }
+  });
+
+  const finishDrag = (e) => {
+    if (!pointerDrag) return;
+
+    if (pointerDrag.active) {
+      if (pointerDrag.ghost) pointerDrag.ghost.style.display = "none";
+      const underEl = document.elementFromPoint(e.clientX, e.clientY);
+      if (pointerDrag.ghost) pointerDrag.ghost.style.display = "";
+
+      const targetCard = underEl ? underEl.closest(".skill-card") : null;
+      const targetZoneCard = underEl ? underEl.closest(".drop-zone-card") : null;
+
+      const fromZone = pointerDrag.fromZone;
+      const fromIndex = pointerDrag.index;
+
+      cleanupPointerDrag();
+
+      if (targetCard && targetCard.dataset.zone) {
+        const toZone = targetCard.dataset.zone;
+        const targetIdx = Number(targetCard.dataset.index);
+        moveSkill(fromZone, fromIndex, toZone, targetIdx);
+      } else if (targetZoneCard && targetZoneCard.dataset.zone) {
+        const toZone = targetZoneCard.dataset.zone;
+        moveSkill(fromZone, fromIndex, toZone);
+      }
+      return;
+    }
+
+    cleanupPointerDrag();
+  };
+
+  document.addEventListener("pointerup", finishDrag);
+  document.addEventListener("pointercancel", cleanupPointerDrag);
+}
+
 function buildActionButtonsForZone(zone, idx) {
   const wrap = document.createElement("div");
   wrap.className = "skill-actions";
@@ -473,14 +562,13 @@ function buildActionButtonsForZone(zone, idx) {
 function createSkillCard(sk, zone, idx) {
   const card = document.createElement("div");
   card.className = `skill-card ${zone}`;
-  card.draggable = true;
   card.dataset.zone = zone;
   card.dataset.index = idx;
 
   card.innerHTML = `
     <div>
       <div class="skill-top">
-        <span class="skill-title"><span class="drag-grip" title="Arraste para mover">⋮⋮</span>${sk.name}</span>
+        <span class="skill-title"><span class="drag-grip" title="Segure e arraste para mover">⋮⋮</span>${sk.name}</span>
         <span class="skill-tag">${sk.type}</span>
       </div>
       <div class="skill-cost">${sk.cost}</div>
@@ -490,85 +578,27 @@ function createSkillCard(sk, zone, idx) {
 
   card.appendChild(buildActionButtonsForZone(zone, idx));
 
-  card.addEventListener("dragstart", (e) => {
-    draggedSkill = { fromZone: zone, index: idx };
-    card.classList.add("dragging");
-    if (e.dataTransfer) {
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", JSON.stringify({ fromZone: zone, index: idx }));
-    }
-  });
+  card.addEventListener("pointerdown", (e) => {
+    // Não inicia arraste ao clicar nos botões de ação
+    if (e.target.closest("button")) return;
+    if (e.button !== 0 && e.pointerType === "mouse") return;
 
-  card.addEventListener("dragend", () => {
-    card.classList.remove("dragging");
-    draggedSkill = null;
-    document.querySelectorAll(".drop-zone-card.drag-over").forEach((el) => {
-      el.classList.remove("drag-over");
-    });
-  });
-
-  card.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    if (e.dataTransfer) {
-      e.dataTransfer.dropEffect = "move";
-    }
-  });
-
-  card.addEventListener("drop", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const payload = getDragPayload(e);
-    if (!payload) return;
-    moveSkill(payload.fromZone, payload.index, zone, idx);
-    draggedSkill = null;
+    const rect = card.getBoundingClientRect();
+    pointerDrag = {
+      fromZone: zone,
+      index: idx,
+      sourceEl: card,
+      rect,
+      startX: e.clientX,
+      startY: e.clientY,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+      active: false,
+      ghost: null
+    };
   });
 
   return card;
-}
-
-function getDragPayload(e) {
-  if (draggedSkill) return draggedSkill;
-  try {
-    const raw = e.dataTransfer?.getData("text/plain");
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && parsed.fromZone && typeof parsed.index === "number") {
-        return parsed;
-      }
-    }
-  } catch {
-    return null;
-  }
-  return null;
-}
-
-function setupSkillDropZones() {
-  document.querySelectorAll(".drop-zone-card").forEach((zoneCard) => {
-    const targetZone = zoneCard.dataset.zone;
-
-    zoneCard.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      if (e.dataTransfer) {
-        e.dataTransfer.dropEffect = "move";
-      }
-      zoneCard.classList.add("drag-over");
-    });
-
-    zoneCard.addEventListener("dragleave", (e) => {
-      if (!zoneCard.contains(e.relatedTarget)) {
-        zoneCard.classList.remove("drag-over");
-      }
-    });
-
-    zoneCard.addEventListener("drop", (e) => {
-      e.preventDefault();
-      zoneCard.classList.remove("drag-over");
-      const payload = getDragPayload(e);
-      if (!payload) return;
-      moveSkill(payload.fromZone, payload.index, targetZone);
-      draggedSkill = null;
-    });
-  });
 }
 
 function renderSkills() {

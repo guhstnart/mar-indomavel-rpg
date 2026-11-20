@@ -32,6 +32,7 @@
       </div>
       <div class="header-actions">
         <span id="save-status" class="save-badge">Salvo automaticamente</span>
+        <a href="https://guhstnart.github.io/mar-indomavel-rpg/#atributos" target="_blank" rel="noopener noreferrer" class="btn btn-wiki" title="Abrir Wiki de Mar Indomável RPG">Wiki</a>
         <button type="button" id="btn-export" class="btn btn-secondary" title="Baixar backup em JSON">Exportar JSON</button>
         <label for="import-file" class="btn btn-secondary" title="Carregar backup JSON">Importar JSON</label>
         <input type="file" id="import-file" accept=".json" hidden>
@@ -207,7 +208,7 @@
           <div class="card-header-flex">
             <h2 class="section-title">Skills Habilitadas (<span id="enabled-count">3</span>/<input type="number" id="max-skills" data-field="maxSkills" class="inline-num">)</h2>
             <div class="header-right-group">
-              <span class="hint-text">Arraste pelo card ou pegador para mover</span>
+              <span class="hint-text">Segure e arraste o card para mover entre áreas</span>
               <button type="button" class="btn btn-primary" id="btn-add-skill">+ Nova Skill</button>
             </div>
           </div>
@@ -220,7 +221,7 @@
             <div>
               <h2 class="section-title">Biblioteca de Memória (<span id="memory-count">0</span> guardadas • Sem limite)</h2>
             </div>
-            <span class="hint-text">Guarde aqui habilidades extras aprendidas para habilitar depois</span>
+            <span class="hint-text">Solte aqui habilidades extras aprendidas para habilitar depois</span>
           </div>
           <div id="memory-skills-list" class="skills-grid drop-list" data-zone="memory"></div>
         </div>
