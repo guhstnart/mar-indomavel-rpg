@@ -732,11 +732,12 @@ select:focus {
 
 .fishman-state-box {
   margin-top: 1rem;
-  background: linear-gradient(180deg, #171b24 0%, #141419 100%);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  border-top: 3px solid var(--electric);
+  background: linear-gradient(135deg, #0b2d48 0%, #091c33 52%, #071122 100%);
+  border: 1.5px solid #38bdf8;
+  border-top: 3px solid #38bdf8;
   border-radius: 10px;
   padding: 1rem;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.25), 0 8px 24px rgba(2, 132, 199, 0.24);
 }
 
 .fishman-header {
@@ -775,8 +776,8 @@ select:focus {
 }
 
 .fishman-active-banner {
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.4);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.32), rgba(7, 28, 56, 0.9));
+  border: 1px solid rgba(56, 189, 248, 0.48);
   border-radius: 8px;
   padding: 0.7rem 0.85rem;
   margin-bottom: 0.85rem;
@@ -826,9 +827,22 @@ select:focus {
 }
 
 .fishman-env-chip.active {
-  background: rgba(56, 189, 248, 0.22);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.48), rgba(8, 33, 66, 0.95));
   border-color: var(--electric);
   color: #fff;
+}
+
+.ship-storage-card {
+  margin-top: 1.25rem;
+  background: linear-gradient(135deg, #0b2d48 0%, #091c33 52%, #071122 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+}
+
+.empty-ship-row td {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 1rem;
 }
 
 .fishman-env-chip.heat-chip.active {
@@ -837,7 +851,6 @@ select:focus {
   color: #fed7aa;
 }
 
-/* SKILLS + POINTER DRAG AND DROP (SEM SELEÇÃO DE TEXTO) */
 .memory-zone-card {
   border-color: rgba(168, 85, 247, 0.45);
 }
@@ -1238,4 +1251,104 @@ body.is-dragging-skill * {
   .fishman-env-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.portrait-box {
+  position: relative;
+  cursor: zoom-in;
+}
+
+.portrait-box img {
+  transition: transform 0.2s ease;
+}
+
+.portrait-box:hover img {
+  transform: scale(1.02);
+}
+
+.portrait-zoom-hint {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  background: rgba(10, 10, 14, 0.78);
+  color: var(--gold);
+  border: 1px solid rgba(229, 184, 75, 0.5);
+  border-radius: 999px;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+.portrait-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 9800;
+  cursor: zoom-out;
+}
+
+.portrait-lightbox-stage {
+  position: relative;
+  max-width: min(92vw, 920px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: default;
+}
+
+.portrait-lightbox-stage img {
+  max-width: 100%;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  border: 2px solid var(--gold);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+  object-fit: contain;
+  background: rgba(17, 17, 21, 0.6);
+}
+
+.portrait-lightbox-caption {
+  font-size: 0.82rem;
+  color: #e5e7eb;
+  background: rgba(15, 15, 20, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 0.28rem 0.85rem;
+  text-align: center;
+}
+
+.lightbox-close-btn {
+  position: fixed;
+  top: 1.1rem;
+  right: 1.25rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(15, 15, 20, 0.82);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 9810;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.lightbox-close-btn:hover {
+  background: var(--crimson);
+  border-color: var(--gold);
+  transform: scale(1.06);
 }

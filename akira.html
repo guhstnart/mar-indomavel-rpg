@@ -44,8 +44,9 @@
     <main class="container">
       <section class="hero-grid">
         <div class="card profile-card">
-          <div class="portrait-box">
+          <div class="portrait-box" id="portrait-zoom-trigger" title="Clique para ampliar a ilustração" role="button" tabindex="0" aria-label="Ampliar ilustração do personagem Akira Tansui">
             <img src="AkiraFundoVers.jpg" alt="Arte do personagem Akira Tansui" id="char-portrait" onerror="this.src='Akira Fundo Vers 2.jpg'">
+            <span class="portrait-zoom-hint">🔍 Ampliar arte</span>
           </div>
           <div class="basic-fields">
             <div class="field-group full">
@@ -271,7 +272,7 @@
               <p class="slot-counter">
                 Slots Ocupados: <strong id="slots-used">1</strong> /
                 <input type="number" id="slots-max" data-field="slotsMax" class="inline-num"> Slots Máximos
-                <span class="hint-inline">(Itens com status "Equipado" não contam nos slots)</span>
+                <span class="hint-inline">(Itens com status "Equipado" ou "Guardado no Navio" não contam nos slots pessoais)</span>
               </p>
             </div>
             <button type="button" class="btn btn-primary" id="btn-add-item">+ Adicionar Item</button>
@@ -292,6 +293,33 @@
                 </tr>
               </thead>
               <tbody id="inventory-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card ship-storage-card">
+          <div class="card-header-flex">
+            <div>
+              <h2 class="section-title">⚓ Itens Guardados no Navio (<span id="ship-items-count">0</span>)</h2>
+              <p class="hint-text">Itens com status "Guardado no Navio" aparecem aqui automaticamente • Total no porão: <strong id="ship-slots-used">0</strong> slots</p>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="inv-table ship-inv-table">
+              <thead>
+                <tr>
+                  <th>Nome do Item</th>
+                  <th>Categoria</th>
+                  <th>Status</th>
+                  <th>Peso (Slots)</th>
+                  <th>Usos</th>
+                  <th>Valor (B$)</th>
+                  <th>Descrição / Efeitos</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="ship-inventory-tbody"></tbody>
             </table>
           </div>
         </div>
@@ -397,6 +425,15 @@
           <button type="submit" class="btn btn-primary">Salvar Alterações</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  
+  <div id="portrait-lightbox" class="portrait-lightbox" hidden role="dialog" aria-modal="true" aria-label="Visualização ampliada da arte de Akira Tansui">
+    <button type="button" id="btn-close-lightbox" class="lightbox-close-btn" aria-label="Fechar visualização ampliada" title="Fechar (Esc)">✕</button>
+    <div class="portrait-lightbox-stage">
+      <img id="portrait-lightbox-img" src="" alt="Arte ampliada do personagem Akira Tansui">
+      <p class="portrait-lightbox-caption">Akira Tansui — Clique fora da imagem ou pressione Esc para fechar</p>
     </div>
   </div>
 

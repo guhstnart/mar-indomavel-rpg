@@ -1,5 +1,5 @@
-const STORAGE_KEY = "mar_indomavel_ficha_akira";
-const AUTH_SESSION_KEY = "mar_indomavel_auth_akira";
+const STORAGE_KEY = "mar_indomavel_ficha_akira_v1";
+const AUTH_SESSION_KEY = "mar_indomavel_auth_akira_v1";
 const PLAYER_PASSWORDS = ["peixefrito"];
 const MASTER_PASSWORDS = ["chavemestra", "chave mestra"];
 
@@ -212,6 +212,7 @@ let state = loadState();
 let appInitialized = false;
 let pointerDrag = null;
 let pendingRemove = null;
+let pendingItemRemove = null;
 let pendingEdit = null;
 let rollHistory = [];
 
@@ -263,18 +264,44 @@ function lockSheet() {
   input.focus();
 }
 
+function checkPasswordRole(rawPassword) {
+  const raw = String(rawPassword || "");
+  const trimmed = raw.trim();
+  const compact = trimmed.replace(/\s+/g, "");
+  const lowerTrimmed = trimmed.toLowerCase();
+  const lowerCompact = compact.toLowerCase();
+
+  if (
+    raw === "PeixeFrito" ||
+    trimmed === "PeixeFrito" ||
+    lowerTrimmed === "peixefrito" ||
+    lowerCompact === "peixefrito"
+  ) {
+    return "player";
+  }
+
+  if (
+    raw === "ChaveMestra" ||
+    trimmed === "ChaveMestra" ||
+    trimmed === "Chave Mestra" ||
+    lowerTrimmed === "chavemestra" ||
+    lowerTrimmed === "chave mestra" ||
+    lowerCompact === "chavemestra"
+  ) {
+    return "master";
+  }
+
+  return null;
+}
+
 function attemptUnlock(rawPassword) {
-  const normalized = normalizeSecret(rawPassword);
   const errorEl = document.getElementById("lock-error");
   const input = document.getElementById("lock-password");
+  const role = checkPasswordRole(rawPassword);
 
-  if (!normalized) return;
-
-  if (PLAYER_PASSWORDS.includes(normalized)) {
-    unlockSheet("player");
-  } else if (MASTER_PASSWORDS.includes(normalized)) {
-    unlockSheet("master");
-  } else {
+  if (role) {
+    unlockSheet(role);
+  } else if (String(rawPassword || "").trim().length > 0) {
     errorEl.hidden = false;
     input.select();
   }
@@ -703,6 +730,7 @@ function openRemoveConfirm(zone, idx, permanentDelete = false) {
   const sk = arr[idx];
   if (!sk) return;
 
+  pendingItemRemove = null;
   pendingRemove = { zone, idx, permanentDelete };
   const textEl = document.getElementById("confirm-modal-text");
   if (permanentDelete) {
@@ -710,6 +738,18 @@ function openRemoveConfirm(zone, idx, permanentDelete = false) {
   } else {
     textEl.textContent = `Tem certeza de que deseja remover "${sk.name}" de Skills Habilitadas e devolvê-la para a Árvore de Skills?`;
   }
+  document.getElementById("confirm-modal").hidden = false;
+}
+
+function openItemRemoveConfirm(itemIdx) {
+  const item = state.inventory[itemIdx];
+  if (!item) return;
+
+  pendingRemove = null;
+  pendingItemRemove = { itemIdx };
+  const itemName = item.name && item.name.trim() ? item.name.trim() : "este item";
+  document.getElementById("confirm-modal-text").textContent =
+    `Tem certeza de que deseja excluir permanentemente o item "${itemName}"?`;
   document.getElementById("confirm-modal").hidden = false;
 }
 
@@ -731,11 +771,20 @@ function setupModals() {
   const confirmModal = document.getElementById("confirm-modal");
   document.getElementById("btn-cancel-remove").addEventListener("click", () => {
     pendingRemove = null;
+    pendingItemRemove = null;
     confirmModal.hidden = true;
   });
 
   document.getElementById("btn-confirm-remove").addEventListener("click", () => {
-    if (pendingRemove) {
+    if (pendingItemRemove) {
+      const { itemIdx } = pendingItemRemove;
+      if (state.inventory[itemIdx]) {
+        state.inventory.splice(itemIdx, 1);
+        saveState();
+        renderInventory();
+      }
+      pendingItemRemove = null;
+    } else if (pendingRemove) {
       const { zone, idx, permanentDelete } = pendingRemove;
       if (permanentDelete) {
         const arr = getZoneArray(zone);
@@ -933,61 +982,85 @@ function renderSkills() {
 
 function updateSlotCount() {
   const totalSlots = state.inventory.reduce((acc, item) => {
-    if (item.status === "Equipado") return acc;
+    if (item.status === "Equipado" || item.status === "Guardado no Navio") return acc;
     return acc + (Number(item.slots) || 0);
   }, 0);
   document.getElementById("slots-used").textContent = totalSlots;
+
+  const shipItems = state.inventory.filter((item) => item.status === "Guardado no Navio");
+  const shipSlots = shipItems.reduce((acc, item) => acc + (Number(item.slots) || 0), 0);
+  const shipCountEl = document.getElementById("ship-items-count");
+  const shipSlotsEl = document.getElementById("ship-slots-used");
+  if (shipCountEl) shipCountEl.textContent = shipItems.length;
+  if (shipSlotsEl) shipSlotsEl.textContent = shipSlots;
+}
+
+function buildInventoryRow(item, idx, rerenderOnStatusChange = false) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><input type="text" value="${escapeHtml(item.name)}" data-k="name"></td>
+    <td>
+      <select data-k="category">
+        <option value="Equipamento" ${item.category === "Equipamento" ? "selected" : ""}>Equipamento</option>
+        <option value="Consumível" ${item.category === "Consumível" ? "selected" : ""}>Consumível</option>
+        <option value="Arma" ${item.category === "Arma" ? "selected" : ""}>Arma</option>
+        <option value="Item Chave" ${item.category === "Item Chave" ? "selected" : ""}>Item Chave</option>
+        <option value="Outro" ${item.category === "Outro" ? "selected" : ""}>Outro</option>
+      </select>
+    </td>
+    <td>
+      <select data-k="status">
+        <option value="Equipado" ${item.status === "Equipado" ? "selected" : ""}>Equipado</option>
+        <option value="No Inventário" ${item.status === "No Inventário" ? "selected" : ""}>No Inventário</option>
+        <option value="Guardado no Navio" ${item.status === "Guardado no Navio" ? "selected" : ""}>Guardado no Navio</option>
+      </select>
+    </td>
+    <td><input type="number" value="${item.slots}" min="0" step="0.5" data-k="slots" style="width:65px"></td>
+    <td><input type="text" value="${escapeHtml(item.uses)}" data-k="uses" style="width:70px"></td>
+    <td><input type="text" value="${escapeHtml(item.value)}" data-k="value" style="width:75px"></td>
+    <td><input type="text" value="${escapeHtml(item.desc)}" data-k="desc"></td>
+    <td><button type="button" class="btn-mini dmg">Excluir</button></td>
+  `;
+
+  tr.querySelectorAll("input, select").forEach((inp) => {
+    const evtName = inp.tagName === "SELECT" ? "change" : "input";
+    inp.addEventListener(evtName, () => {
+      const k = inp.dataset.k;
+      state.inventory[idx][k] = k === "slots" ? Number(inp.value) || 0 : inp.value;
+      updateSlotCount();
+      saveState();
+      if (rerenderOnStatusChange && k === "status") {
+        renderInventory();
+      }
+    });
+  });
+
+  tr.querySelector("button").addEventListener("click", () => {
+    openItemRemoveConfirm(idx);
+  });
+
+  return tr;
 }
 
 function renderInventory() {
   const tbody = document.getElementById("inventory-tbody");
+  const shipTbody = document.getElementById("ship-inventory-tbody");
   tbody.innerHTML = "";
+  if (shipTbody) shipTbody.innerHTML = "";
 
+  let shipCount = 0;
   state.inventory.forEach((item, idx) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><input type="text" value="${escapeHtml(item.name)}" data-k="name"></td>
-      <td>
-        <select data-k="category">
-          <option value="Equipamento" ${item.category === "Equipamento" ? "selected" : ""}>Equipamento</option>
-          <option value="Consumível" ${item.category === "Consumível" ? "selected" : ""}>Consumível</option>
-          <option value="Arma" ${item.category === "Arma" ? "selected" : ""}>Arma</option>
-          <option value="Item Chave" ${item.category === "Item Chave" ? "selected" : ""}>Item Chave</option>
-          <option value="Outro" ${item.category === "Outro" ? "selected" : ""}>Outro</option>
-        </select>
-      </td>
-      <td>
-        <select data-k="status">
-          <option value="Equipado" ${item.status === "Equipado" ? "selected" : ""}>Equipado</option>
-          <option value="No Inventário" ${item.status === "No Inventário" ? "selected" : ""}>No Inventário</option>
-          <option value="Guardado no Navio" ${item.status === "Guardado no Navio" ? "selected" : ""}>Guardado no Navio</option>
-        </select>
-      </td>
-      <td><input type="number" value="${item.slots}" min="0" step="0.5" data-k="slots" style="width:65px"></td>
-      <td><input type="text" value="${escapeHtml(item.uses)}" data-k="uses" style="width:70px"></td>
-      <td><input type="text" value="${escapeHtml(item.value)}" data-k="value" style="width:75px"></td>
-      <td><input type="text" value="${escapeHtml(item.desc)}" data-k="desc"></td>
-      <td><button type="button" class="btn-mini dmg">Excluir</button></td>
-    `;
+    tbody.appendChild(buildInventoryRow(item, idx, true));
 
-    tr.querySelectorAll("input, select").forEach((inp) => {
-      const evtName = inp.tagName === "SELECT" ? "change" : "input";
-      inp.addEventListener(evtName, () => {
-        const k = inp.dataset.k;
-        state.inventory[idx][k] = k === "slots" ? Number(inp.value) || 0 : inp.value;
-        updateSlotCount();
-        saveState();
-      });
-    });
-
-    tr.querySelector("button").addEventListener("click", () => {
-      state.inventory.splice(idx, 1);
-      saveState();
-      renderInventory();
-    });
-
-    tbody.appendChild(tr);
+    if (item.status === "Guardado no Navio" && shipTbody) {
+      shipCount += 1;
+      shipTbody.appendChild(buildInventoryRow(item, idx, true));
+    }
   });
+
+  if (shipTbody && shipCount === 0) {
+    shipTbody.innerHTML = `<tr class="empty-ship-row"><td colspan="8">Nenhum item guardado no navio no momento. Mude o status de um item para "Guardado no Navio" para listá-lo aqui.</td></tr>`;
+  }
 
   updateSlotCount();
 }
@@ -1158,6 +1231,7 @@ function setupColorPalettes() {
 }
 
 function init() {
+  setupPortraitLightbox();
   renderSimpleFields();
   renderAttributes();
   renderStaticFeatures();
@@ -1169,3 +1243,53 @@ function init() {
 }
 
 setupLockScreen();
+
+function setupPortraitLightbox() {
+  const trigger = document.getElementById("portrait-zoom-trigger");
+  const portraitImg = document.getElementById("char-portrait");
+  const lightbox = document.getElementById("portrait-lightbox");
+  const lightboxImg = document.getElementById("portrait-lightbox-img");
+  const closeBtn = document.getElementById("btn-close-lightbox");
+
+  if (!trigger || !portraitImg || !lightbox || !lightboxImg) return;
+
+  const openLightbox = () => {
+    const src = portraitImg.currentSrc || portraitImg.getAttribute("src");
+    if (!src) return;
+    lightboxImg.src = src;
+    lightboxImg.alt = portraitImg.alt || "Arte ampliada de Akira Tansui";
+    lightbox.hidden = false;
+  };
+
+  const closeLightbox = () => {
+    lightbox.hidden = true;
+    lightboxImg.src = "";
+  };
+
+  trigger.addEventListener("click", openLightbox);
+  trigger.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openLightbox();
+    }
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+  }
+
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !lightbox.hidden) {
+      closeLightbox();
+    }
+  });
+}
