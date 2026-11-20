@@ -44,3 +44,20 @@ h2::after{transform:scaleX(-1)}
 .alpha{--a:#e04a45;--b:#6a0b0b;--ponta:transparent}
 .soul{--a:#9560e0;--b:#2c1257;--ponta:transparent}
 footer{margin-top:3rem;font:1.5rem "Pirata One",serif;letter-spacing:.08em;opacity:.85;text-shadow:0 2px 6px rgba(3,20,40,.8)}
+
+/* Leme: roda atrás, nome no centro */
+.grade{grid-template-columns:repeat(auto-fit,minmax(19rem,1fr))}
+.leme{min-height:21rem}
+.roda{position:absolute;inset:0;margin:auto;width:20rem;height:20rem;transition:transform .9s ease}
+.leme .banner{max-width:15.5rem}
+.leme .banner b{font-size:1.3rem;padding:.7rem 1.4rem .6rem}
+
+/* Controle de som flutuante */
+.som-ctrl{position:fixed;right:1rem;bottom:1rem;z-index:40;display:flex;align-items:center;gap:.7rem;padding:.4rem .9rem .4rem .45rem;background:rgba(5,33,60,.85);border:2px solid #d9aa4f;border-radius:999px;box-shadow:0 4px 14px rgba(3,15,30,.5);backdrop-filter:blur(4px)}
+.som-ctrl button{display:grid;place-items:center;width:2.5rem;height:2.5rem;padding:0;border:0;border-radius:50%;background:#d9aa4f;color:#2a1608;cursor:pointer}
+.som-ctrl button:hover{filter:brightness(1.1)}
+.som-ctrl button:focus-visible,.som-ctrl input:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.som-ctrl svg{width:1.5rem;height:1.5rem}
+.som-ctrl [aria-pressed="true"] .i-off,.som-ctrl [aria-pressed="false"] .i-on{display:none}
+.som-ctrl input{width:7rem;accent-color:#d9aa4f;cursor:pointer}
+@media(max-width:600px){.som-ctrl input{width:5rem}.roda{width:17rem;height:17rem}.leme{min-height:18rem}}
