@@ -161,6 +161,7 @@ Após dias à deriva, você encontrou terra firme. Para sobreviver, tornou-se um
 
 let state = loadState();
 let appInitialized = false;
+let draggedSkill = null;
 
 function unlockSheet(role) {
   sessionStorage.setItem(AUTH_SESSION_KEY, role);
@@ -178,6 +179,7 @@ function unlockSheet(role) {
     setupTabs();
     setupQuickAdjustButtons();
     setupDiceRoller();
+    setupSkillDropZones();
     setupActions();
     init();
     appInitialized = true;
@@ -379,6 +381,128 @@ function renderStaticFeatures() {
     .join("");
 }
 
+function moveSkill(fromZone, fromIndex, toZone, targetIndex = null) {
+  const sourceArr = fromZone === "enabled" ? state.enabledSkills : state.learnableSkills;
+  const destArr = toZone === "enabled" ? state.enabledSkills : state.learnableSkills;
+
+  if (!sourceArr[fromIndex]) return;
+
+  if (fromZone === toZone) {
+    if (targetIndex === null || targetIndex === fromIndex) return;
+    const [item] = sourceArr.splice(fromIndex, 1);
+    const insertAt = targetIndex > fromIndex ? targetIndex - 1 : targetIndex;
+    sourceArr.splice(insertAt, 0, item);
+  } else {
+    const [item] = sourceArr.splice(fromIndex, 1);
+    if (typeof targetIndex === "number" && targetIndex >= 0 && targetIndex <= destArr.length) {
+      destArr.splice(targetIndex, 0, item);
+    } else {
+      destArr.push(item);
+    }
+  }
+
+  saveState();
+  renderSkills();
+}
+
+function createSkillCard(sk, zone, idx) {
+  const card = document.createElement("div");
+  card.className = `skill-card ${zone}`;
+  card.draggable = true;
+  card.dataset.zone = zone;
+  card.dataset.index = idx;
+
+  const actionBtnHtml =
+    zone === "enabled"
+      ? `<button type="button" class="btn-mini dmg">Remover</button>`
+      : `<button type="button" class="btn-mini heal">Habilitar Skill</button>`;
+
+  card.innerHTML = `
+    <div>
+      <div class="skill-top">
+        <span class="skill-title"><span class="drag-grip" title="Arraste para mover">⋮⋮</span>${sk.name}</span>
+        <span class="skill-tag">${sk.type}</span>
+      </div>
+      <div class="skill-cost">${sk.cost}</div>
+      <p class="skill-desc">${sk.desc}</p>
+    </div>
+    <div class="skill-actions">
+      ${actionBtnHtml}
+    </div>
+  `;
+
+  card.addEventListener("dragstart", (e) => {
+    draggedSkill = { fromZone: zone, index: idx };
+    card.classList.add("dragging");
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", `${zone}:${idx}`);
+    }
+  });
+
+  card.addEventListener("dragend", () => {
+    card.classList.remove("dragging");
+    draggedSkill = null;
+    document.querySelectorAll(".drop-zone-card.drag-over").forEach((el) => {
+      el.classList.remove("drag-over");
+    });
+  });
+
+  card.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = "move";
+    }
+  });
+
+  card.addEventListener("drop", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!draggedSkill) return;
+    moveSkill(draggedSkill.fromZone, draggedSkill.index, zone, idx);
+    draggedSkill = null;
+  });
+
+  const btn = card.querySelector(".skill-actions button");
+  btn.addEventListener("click", () => {
+    if (zone === "enabled") {
+      moveSkill("enabled", idx, "learnable");
+    } else {
+      moveSkill("learnable", idx, "enabled");
+    }
+  });
+
+  return card;
+}
+
+function setupSkillDropZones() {
+  document.querySelectorAll(".drop-zone-card").forEach((zoneCard) => {
+    const targetZone = zoneCard.dataset.zone;
+
+    zoneCard.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = "move";
+      }
+      zoneCard.classList.add("drag-over");
+    });
+
+    zoneCard.addEventListener("dragleave", (e) => {
+      if (!zoneCard.contains(e.relatedTarget)) {
+        zoneCard.classList.remove("drag-over");
+      }
+    });
+
+    zoneCard.addEventListener("drop", (e) => {
+      e.preventDefault();
+      zoneCard.classList.remove("drag-over");
+      if (!draggedSkill) return;
+      moveSkill(draggedSkill.fromZone, draggedSkill.index, targetZone);
+      draggedSkill = null;
+    });
+  });
+}
+
 function renderSkills() {
   const enabledContainer = document.getElementById("enabled-skills-list");
   const learnableContainer = document.getElementById("learnable-skills-list");
@@ -386,58 +510,20 @@ function renderSkills() {
 
   enabledContainer.innerHTML = "";
   state.enabledSkills.forEach((sk, idx) => {
-    const card = document.createElement("div");
-    card.className = "skill-card enabled";
-    card.innerHTML = `
-      <div>
-        <div class="skill-top">
-          <span class="skill-title">${sk.name}</span>
-          <span class="skill-tag">${sk.type}</span>
-        </div>
-        <div class="skill-cost">${sk.cost}</div>
-        <p class="skill-desc">${sk.desc}</p>
-      </div>
-      <div class="skill-actions">
-        <button type="button" class="btn-mini dmg">Remover</button>
-      </div>
-    `;
-    card.querySelector("button").addEventListener("click", () => {
-      state.enabledSkills.splice(idx, 1);
-      saveState();
-      renderSkills();
-    });
-    enabledContainer.appendChild(card);
+    enabledContainer.appendChild(createSkillCard(sk, "enabled", idx));
   });
 
   learnableContainer.innerHTML = "";
   state.learnableSkills.forEach((sk, idx) => {
-    const card = document.createElement("div");
-    card.className = "skill-card learnable";
-    card.innerHTML = `
-      <div>
-        <div class="skill-top">
-          <span class="skill-title">${sk.name}</span>
-          <span class="skill-tag">${sk.type}</span>
-        </div>
-        <div class="skill-cost">${sk.cost}</div>
-        <p class="skill-desc">${sk.desc}</p>
-      </div>
-      <div class="skill-actions">
-        <button type="button" class="btn-mini heal">Habilitar Skill</button>
-      </div>
-    `;
-    card.querySelector("button").addEventListener("click", () => {
-      const [learned] = state.learnableSkills.splice(idx, 1);
-      state.enabledSkills.push(learned);
-      saveState();
-      renderSkills();
-    });
-    learnableContainer.appendChild(card);
+    learnableContainer.appendChild(createSkillCard(sk, "learnable", idx));
   });
 }
 
 function updateSlotCount() {
-  const totalSlots = state.inventory.reduce((acc, item) => acc + (Number(item.slots) || 0), 0);
+  const totalSlots = state.inventory.reduce((acc, item) => {
+    if (item.status === "Equipado") return acc;
+    return acc + (Number(item.slots) || 0);
+  }, 0);
   document.getElementById("slots-used").textContent = totalSlots;
 }
 
@@ -473,7 +559,8 @@ function renderInventory() {
     `;
 
     tr.querySelectorAll("input, select").forEach((inp) => {
-      inp.addEventListener("input", () => {
+      const evtName = inp.tagName === "SELECT" ? "change" : "input";
+      inp.addEventListener(evtName, () => {
         const k = inp.dataset.k;
         state.inventory[idx][k] = k === "slots" ? Number(inp.value) || 0 : inp.value;
         updateSlotCount();

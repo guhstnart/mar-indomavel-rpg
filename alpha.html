@@ -8,12 +8,11 @@
   <link rel="stylesheet" href="alpha-ficha.css">
 </head>
 <body>
-  <!-- TELA DE BLOQUEIO POR SENHA -->
   <div id="lock-screen" class="lock-overlay">
     <div class="lock-box">
       <img src="logo.png" alt="Logo Mar Indomável RPG" class="lock-logo" onerror="this.style.display='none'">
       <h2>Acesso Restrito</h2>
-      <p class="lock-subtitle">Ficha de <strong>Alpha</strong><br>Digite a senha do jogador ou a senha de Mestre para continuar.</p>
+      <p class="lock-subtitle">Ficha de <strong>Alpha (Raito Raijin)</strong><br>Digite a senha do jogador ou a senha de Mestre para continuar.</p>
       <form id="lock-form" class="lock-form">
         <input type="password" id="lock-password" placeholder="Digite a senha..." autocomplete="off" required>
         <button type="submit" class="btn btn-primary lock-btn">Desbloquear Ficha</button>
@@ -22,7 +21,6 @@
     </div>
   </div>
 
-  <!-- CONTEÚDO DA FICHA (OCULTO ATÉ DESBLOQUEAR) -->
   <div id="sheet-app" hidden>
     <header class="top-header">
       <div class="header-left">
@@ -43,9 +41,7 @@
     </header>
 
     <main class="container">
-      <!-- PAINEL SUPERIOR: PERFIL + VITALS + ATRIBUTOS -->
       <section class="hero-grid">
-        <!-- CARD DE PERFIL & ARTE -->
         <div class="card profile-card">
           <div class="portrait-box">
             <img src="alpha.jpg" alt="Arte do personagem Alpha (Raito Raijin)" id="char-portrait">
@@ -90,14 +86,11 @@
           </div>
         </div>
 
-        <!-- COLUNA DIREITA: RECURSOS, COMBATE E ATRIBUTOS -->
         <div class="right-column">
-          <!-- RECURSOS VITAIS (HP, ST, CA, PP, BERRIES, BOUNTY) -->
           <div class="card vitals-card">
             <h2 class="section-title">Status &amp; Recursos</h2>
 
             <div class="vitals-grid">
-              <!-- HP -->
               <div class="vital-box hp-box">
                 <div class="vital-header">
                   <span class="vital-label">HP (Vida)</span>
@@ -117,7 +110,6 @@
                 </div>
               </div>
 
-              <!-- ESTAMINA -->
               <div class="vital-box st-box">
                 <div class="vital-header">
                   <span class="vital-label">ST (Estamina)</span>
@@ -138,7 +130,6 @@
               </div>
             </div>
 
-            <!-- SUB-STATUS: CA, AA, PP, BERRIES, BOUNTY -->
             <div class="substats-grid">
               <div class="stat-pill">
                 <label for="char-ca">CA</label>
@@ -162,25 +153,20 @@
               </div>
             </div>
 
-            <!-- STATUS TEMPORÁRIOS -->
             <div class="temp-status-box">
               <label for="temp-status">Status Temporários &amp; Condições</label>
               <input type="text" id="temp-status" data-field="tempStatus" placeholder="Ex: Envenenado, Sulong Ativo, Encharcado...">
             </div>
           </div>
 
-          <!-- ATRIBUTOS & ROLADOR -->
           <div class="card attributes-card">
             <div class="card-header-flex">
               <h2 class="section-title">Atributos &amp; Bônus de Rolagem</h2>
               <span class="hint-text">Altere o valor base para recalcular o bônus ou edite o bônus manualmente</span>
             </div>
 
-            <div class="attr-grid" id="attr-grid">
-              <!-- Gerado via JS -->
-            </div>
+            <div class="attr-grid" id="attr-grid"></div>
 
-            <!-- ROLADOR DE DADOS RÁPIDO -->
             <div class="dice-bar">
               <div class="dice-buttons">
                 <button type="button" class="btn-dice" data-die="4">1d4</button>
@@ -197,14 +183,12 @@
         </div>
       </section>
 
-      <!-- ABAS DE NAVEGAÇÃO -->
       <nav class="tabs-nav" role="tablist">
         <button type="button" class="tab-btn active" data-tab="tab-skills">Skills &amp; Passivas</button>
         <button type="button" class="tab-btn" data-tab="tab-inventory">Equipamentos &amp; Inventário</button>
         <button type="button" class="tab-btn" data-tab="tab-lore">História, Psique &amp; Notas</button>
       </nav>
 
-      <!-- ABA 1: SKILLS, PASSIVAS, RAÇA & PROFISSÃO -->
       <section id="tab-skills" class="tab-panel active">
         <div class="two-col-grid">
           <div class="card">
@@ -218,24 +202,26 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card drop-zone-card" id="dropzone-enabled" data-zone="enabled">
           <div class="card-header-flex">
             <h2 class="section-title">Skills Habilitadas (<span id="enabled-count">3</span>/<input type="number" id="max-skills" data-field="maxSkills" class="inline-num">)</h2>
-            <button type="button" class="btn btn-primary" id="btn-add-skill">+ Nova Skill</button>
+            <div class="header-right-group">
+              <span class="hint-text">Arraste para cá ou use o botão</span>
+              <button type="button" class="btn btn-primary" id="btn-add-skill">+ Nova Skill</button>
+            </div>
           </div>
-          <div id="enabled-skills-list" class="skills-grid"></div>
+          <div id="enabled-skills-list" class="skills-grid drop-list" data-zone="enabled"></div>
         </div>
 
-        <div class="card">
+        <div class="card drop-zone-card" id="dropzone-learnable" data-zone="learnable">
           <div class="card-header-flex">
             <h2 class="section-title">Árvore de Skills (Aprendíveis)</h2>
-            <span class="hint-text">Clique em "Habilitar" para mover uma skill aprendida para as habilitadas</span>
+            <span class="hint-text">Arraste para cá ou clique em "Remover" / "Habilitar Skill" para mover entre os lados</span>
           </div>
-          <div id="learnable-skills-list" class="skills-grid"></div>
+          <div id="learnable-skills-list" class="skills-grid drop-list" data-zone="learnable"></div>
         </div>
       </section>
 
-      <!-- ABA 2: INVENTÁRIO -->
       <section id="tab-inventory" class="tab-panel">
         <div class="card">
           <div class="card-header-flex">
@@ -244,6 +230,7 @@
               <p class="slot-counter">
                 Slots Ocupados: <strong id="slots-used">1</strong> /
                 <input type="number" id="slots-max" data-field="slotsMax" class="inline-num"> Slots Máximos
+                <span class="hint-inline">(Itens com status "Equipado" não contam nos slots)</span>
               </p>
             </div>
             <button type="button" class="btn btn-primary" id="btn-add-item">+ Adicionar Item</button>
@@ -269,7 +256,6 @@
         </div>
       </section>
 
-      <!-- ABA 3: HISTÓRIA, PSIQUE & ANOTAÇÕES -->
       <section id="tab-lore" class="tab-panel">
         <div class="two-col-grid">
           <div class="card">
