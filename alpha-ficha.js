@@ -456,7 +456,9 @@ function renderMoonPhase() {
   });
 
   document.querySelectorAll(".moon-effect-card").forEach((card) => {
-    card.classList.toggle("highlighted", card.dataset.group === info.group);
+    const isMatch = card.dataset.group === info.group;
+    card.hidden = !isMatch;
+    card.classList.toggle("highlighted", isMatch);
   });
 }
 
@@ -522,6 +524,7 @@ function clearZoneHighlights() {
 }
 
 function cleanupPointerDrag() {
+  document.body.classList.remove("is-dragging-skill");
   if (!pointerDrag) return;
   if (pointerDrag.ghost && pointerDrag.ghost.parentNode) {
     pointerDrag.ghost.parentNode.removeChild(pointerDrag.ghost);
@@ -540,6 +543,8 @@ function setupGlobalPointerDrag() {
     const dx = e.clientX - pointerDrag.startX;
     const dy = e.clientY - pointerDrag.startY;
     if (!pointerDrag.active && Math.hypot(dx, dy) > 6) {
+      window.getSelection()?.removeAllRanges();
+      document.body.classList.add("is-dragging-skill");
       pointerDrag.active = true;
       pointerDrag.sourceEl.classList.add("dragging-source");
 
@@ -553,6 +558,7 @@ function setupGlobalPointerDrag() {
 
     if (!pointerDrag.active || !pointerDrag.ghost) return;
 
+    window.getSelection()?.removeAllRanges();
     pointerDrag.ghost.style.left = `${e.clientX - pointerDrag.offsetX}px`;
     pointerDrag.ghost.style.top = `${e.clientY - pointerDrag.offsetY}px`;
 
@@ -571,6 +577,7 @@ function setupGlobalPointerDrag() {
     if (!pointerDrag) return;
 
     if (pointerDrag.active) {
+      window.getSelection()?.removeAllRanges();
       if (pointerDrag.ghost) pointerDrag.ghost.style.display = "none";
       const underEl = document.elementFromPoint(e.clientX, e.clientY);
       if (pointerDrag.ghost) pointerDrag.ghost.style.display = "";
@@ -681,12 +688,6 @@ function buildActionButtonsForZone(zone, idx) {
   const wrap = document.createElement("div");
   wrap.className = "skill-actions";
 
-  const btnEdit = document.createElement("button");
-  btnEdit.type = "button";
-  btnEdit.className = "btn-mini edit";
-  btnEdit.textContent = "Editar";
-  btnEdit.addEventListener("click", () => openEditSkillModal(zone, idx));
-
   if (zone === "enabled") {
     const btnMem = document.createElement("button");
     btnMem.type = "button";
@@ -700,7 +701,7 @@ function buildActionButtonsForZone(zone, idx) {
     btnRem.textContent = "Remover";
     btnRem.addEventListener("click", () => openRemoveConfirm("enabled", idx, false));
 
-    wrap.append(btnEdit, btnMem, btnRem);
+    wrap.append(btnMem, btnRem);
   } else if (zone === "memory") {
     const btnHab = document.createElement("button");
     btnHab.type = "button";
@@ -714,7 +715,7 @@ function buildActionButtonsForZone(zone, idx) {
     btnRem.textContent = "Devolver p/ Árvore";
     btnRem.addEventListener("click", () => moveSkill("memory", idx, "learnable"));
 
-    wrap.append(btnEdit, btnHab, btnRem);
+    wrap.append(btnHab, btnRem);
   } else {
     const btnHab = document.createElement("button");
     btnHab.type = "button";
@@ -728,10 +729,24 @@ function buildActionButtonsForZone(zone, idx) {
     btnMem.textContent = "Guardar na Memória";
     btnMem.addEventListener("click", () => moveSkill("learnable", idx, "memory"));
 
-    wrap.append(btnEdit, btnHab, btnMem);
+    wrap.append(btnHab, btnMem);
   }
 
   return wrap;
+}
+
+function createPencilButton(zone, idx) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn-edit-pencil";
+  btn.title = "Editar habilidade";
+  btn.setAttribute("aria-label", "Editar habilidade");
+  btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>`;
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openEditSkillModal(zone, idx);
+  });
+  return btn;
 }
 
 function createSkillCard(sk, zone, idx) {
@@ -747,12 +762,17 @@ function createSkillCard(sk, zone, idx) {
     <div>
       <div class="skill-top">
         <span class="skill-title"><span class="drag-grip" title="Segure e arraste para mover">⋮⋮</span>${formatColorText(sk.name)}</span>
-        ${tagHtml}
+        <div class="skill-type-group">${tagHtml}</div>
       </div>
       ${costHtml}
       <p class="skill-desc">${formatColorText(sk.desc)}</p>
     </div>
   `;
+
+  const typeGroup = card.querySelector(".skill-type-group");
+  if (typeGroup) {
+    typeGroup.appendChild(createPencilButton(zone, idx));
+  }
 
   card.appendChild(buildActionButtonsForZone(zone, idx));
 
