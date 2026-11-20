@@ -9,55 +9,42 @@
 <link rel="stylesheet" href="lobby.css">
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="leme" viewBox="-100 -100 200 200"><g fill="none" stroke="currentColor" stroke-linecap="round"><circle r="58" stroke-width="10"/><path stroke-width="8" d="M0-84V84M-84 0H84M-59-59L59 59M-59 59L59-59"/><path stroke-width="18" d="M0-90v.01M0 90v.01M-90 0h.01M90 0h.01M-64-64v.01M64-64v.01M-64 64v.01M64 64v.01"/></g><circle r="17" fill="currentColor"/></symbol></svg>
 <div class="raios" aria-hidden="true"></div>
 <div class="ondas" aria-hidden="true"><i></i><i></i></div>
+<div class="mar" aria-hidden="true"></div>
 <main>
   <header>
-    <img class="logo" src="logo.png" alt="Logo One Piece – Mar Indomável">
+    <div class="placa"><img class="logo" src="logo.png" alt="Logo One Piece – Mar Indomável"></div>
     <p class="lema">Escolha seu rumo, pirata.</p>
   </header>
 
   <section aria-labelledby="t-mundo">
     <h2 id="t-mundo">Conheça o mundo</h2>
-    <a class="card wiki" href="wiki.html">
-      <span class="faixa"></span>
-      <div class="corpo">
-        <h3>Livro de Regras</h3>
-        <p>Atributos, combate, status, evolução, profissões, economia e navegação. Tudo o que a tripulação precisa saber.</p>
-        <span class="btn">Abrir o wiki →</span>
-      </div>
+    <a class="wiki-box wiki" href="wiki.html" data-som>
+      <span class="banner"><b>Livro de Regras<small>Abrir o wiki</small></b></span>
+      <p>Atributos, combate, status, evolução, profissões, economia e navegação. Tudo o que a tripulação precisa saber.</p>
     </a>
   </section>
 
   <section aria-labelledby="t-tripulacao">
     <h2 id="t-tripulacao">A Tripulação</h2>
     <div class="grade">
-      <a class="card akira" href="akira.html">
-        <span class="faixa"></span>
-        <div class="corpo">
-          <h3>Akira Tansui</h3>
-          <p>Ficha do jogador</p>
-          <span class="btn">Abrir ficha →</span>
-        </div>
+      <a class="leme akira" href="akira.html" data-som>
+        <svg class="roda" aria-hidden="true"><use href="#leme"/></svg>
+        <span class="banner"><b>Akira Tansui<small>Abrir ficha</small></b></span>
       </a>
-      <a class="card alpha" href="alpha.html">
-        <span class="faixa"></span>
-        <div class="corpo">
-          <h3>Alpha</h3>
-          <p>Ficha do jogador</p>
-          <span class="btn">Abrir ficha →</span>
-        </div>
+      <a class="leme alpha" href="alpha.html" data-som>
+        <svg class="roda" aria-hidden="true"><use href="#leme"/></svg>
+        <span class="banner"><b>Alpha<small>Abrir ficha</small></b></span>
       </a>
-      <a class="card soul" href="soul-henri.html">
-        <span class="faixa"></span>
-        <div class="corpo">
-          <h3>Soul Henri</h3>
-          <p>Ficha do jogador</p>
-          <span class="btn">Abrir ficha →</span>
-        </div>
+      <a class="leme soul" href="soul-henri.html" data-som>
+        <svg class="roda" aria-hidden="true"><use href="#leme"/></svg>
+        <span class="banner"><b>Soul Henri<small>Abrir ficha</small></b></span>
       </a>
     </div>
   </section>
 </main>
+<script src="lobby.js"></script>
 </body>
 </html>
