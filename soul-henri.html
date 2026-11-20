@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha de Personagem - Soul Henri | Mar Indomável RPG</title>
+  <link rel="icon" type="image/png" href="SimboloRpg2.png">
+  <link rel="stylesheet" href="soul-henri-ficha.css">
+</head>
+<body>
+  <div id="lock-screen" class="lock-overlay">
+    <div class="lock-box">
+      <img src="logo.png" alt="Logo Mar Indomável RPG" class="lock-logo" onerror="this.style.display='none'">
+      <h2>Acesso Restrito</h2>
+      <p class="lock-subtitle">Ficha de <strong>Soul Henri</strong><br>Digite a senha do jogador ou a senha de Mestre para continuar.</p>
+      <form id="lock-form" class="lock-form">
+        <input type="password" id="lock-password" placeholder="Digite a senha..." autocomplete="off" required>
+        <button type="submit" class="btn btn-primary lock-btn">Desbloquear Ficha</button>
+      </form>
+      <p id="lock-error" class="lock-error" hidden>Senha incorreta. Tente novamente.</p>
+    </div>
+  </div>
+
+  <div id="sheet-app" hidden>
+    <header class="top-header">
+      <div class="header-left">
+        <img src="logo.png" alt="Logo Mar Indomável RPG" class="rpg-logo" onerror="this.style.display='none'">
+        <div>
+          <h1>One Piece: Mar Indomável</h1>
+          <p class="subtitle">Ficha Interativa de Personagem <span id="role-badge" class="role-badge"></span></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span id="save-status" class="save-badge">Salvo automaticamente</span>
+        <a href="https://guhstnart.github.io/mar-indomavel-rpg/#atributos" target="_blank" rel="noopener noreferrer" class="btn btn-wiki" title="Abrir Wiki de Mar Indomável RPG">Wiki</a>
+        <button type="button" id="btn-export" class="btn btn-secondary" title="Baixar backup em JSON">Exportar JSON</button>
+        <label for="import-file" class="btn btn-secondary" title="Carregar backup JSON">Importar JSON</label>
+        <input type="file" id="import-file" accept=".json" hidden>
+        <button type="button" id="btn-lock" class="btn btn-secondary" title="Bloquear ficha novamente">Bloquear</button>
+        <button type="button" id="btn-reset" class="btn btn-danger" title="Voltar aos dados originais de Soul Henri">Resetar</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero-grid">
+        <div class="card profile-card">
+          <div class="portrait-box" id="portrait-zoom-trigger" title="Clique para ampliar a ilustração" role="button" tabindex="0" aria-label="Ampliar ilustração do personagem Soul Henri">
+            <img src="SoulHenri.jpg" alt="Arte do personagem Soul Henri e Fen" id="char-portrait">
+            <span class="portrait-zoom-hint">🔍 Ampliar arte</span>
+          </div>
+          <div class="basic-fields">
+            <div class="field-group full">
+              <label for="char-name">Nome</label>
+              <input type="text" id="char-name" data-field="name">
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="char-race">Raça</label>
+                <input type="text" id="char-race" data-field="race">
+              </div>
+              <div class="field-group small">
+                <label for="char-fv">FV</label>
+                <input type="number" id="char-fv" data-field="fv">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="char-age">Idade</label>
+                <input type="text" id="char-age" data-field="age">
+              </div>
+              <div class="field-group">
+                <label for="char-speed">Deslocamento</label>
+                <input type="text" id="char-speed" data-field="speed">
+              </div>
+            </div>
+            <div class="field-group full">
+              <label for="char-style">Estilo de Luta</label>
+              <input type="text" id="char-style" data-field="style">
+            </div>
+            <div class="field-group full">
+              <label for="char-job">Profissão</label>
+              <input type="text" id="char-job" data-field="job">
+            </div>
+            <div class="field-group full">
+              <label for="char-akuma">Akuma no Mi</label>
+              <input type="text" id="char-akuma" data-field="akuma">
+            </div>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="card vitals-card">
+            <h2 class="section-title">Status &amp; Recursos</h2>
+
+            <div class="vitals-grid">
+              <div class="vital-box hp-box">
+                <div class="vital-header">
+                  <span class="vital-label">HP (Vida)</span>
+                  <div class="vital-fraction">
+                    <input type="number" id="hp-atual" data-field="hpAtual" aria-label="HP Atual">
+                    <span class="slash">/</span>
+                    <input type="number" id="hp-max" data-field="hpMax" aria-label="HP Máximo">
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill hp-fill" id="hp-bar"></div>
+                </div>
+                <div class="quick-adjust">
+                  <input type="number" id="hp-delta" placeholder="Valor" min="0">
+                  <button type="button" class="btn-mini dmg" data-target="hp" data-op="sub">- Dano</button>
+                  <button type="button" class="btn-mini heal" data-target="hp" data-op="add">+ Curar</button>
+                </div>
+              </div>
+
+              <div class="vital-box st-box">
+                <div class="vital-header">
+                  <span class="vital-label">ST (Estamina)</span>
+                  <div class="vital-fraction">
+                    <input type="number" id="st-atual" data-field="stAtual" aria-label="Estamina Atual">
+                    <span class="slash">/</span>
+                    <input type="number" id="st-max" data-field="stMax" aria-label="Estamina Máxima">
+                  </div>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill st-fill" id="st-bar"></div>
+                </div>
+                <div class="quick-adjust">
+                  <input type="number" id="st-delta" placeholder="Valor" min="0">
+                  <button type="button" class="btn-mini dmg" data-target="st" data-op="sub">- Gastar</button>
+                  <button type="button" class="btn-mini heal" data-target="st" data-op="add">+ Recuperar</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="substats-grid">
+              <div class="stat-pill">
+                <label for="char-ca">CA</label>
+                <input type="number" id="char-ca" data-field="ca">
+              </div>
+              <div class="stat-pill">
+                <label for="char-pp">PP Atuais</label>
+                <input type="number" id="char-pp" data-field="pp">
+              </div>
+              <div class="stat-pill wide">
+                <label for="char-aa">Ataque Básico (AA)</label>
+                <input type="text" id="char-aa" data-field="aa">
+              </div>
+              <div class="stat-pill">
+                <label for="char-berries">Berries (B$)</label>
+                <input type="number" id="char-berries" data-field="berries">
+              </div>
+              <div class="stat-pill">
+                <label for="char-bounty">Recompensa (B$)</label>
+                <input type="number" id="char-bounty" data-field="bounty">
+              </div>
+            </div>
+
+            <div class="temp-status-box">
+              <label for="temp-status">Status Temporários &amp; Condições</label>
+              <input type="text" id="temp-status" data-field="tempStatus" placeholder="Ex: Envenenado, Zona de Perigo, Fadiga...">
+            </div>
+          </div>
+
+          <div class="card attributes-card">
+            <div class="card-header-flex">
+              <h2 class="section-title">Atributos &amp; Bônus de Rolagem</h2>
+              <span class="hint-text">Altere o valor base para recalcular o bônus ou edite o bônus manualmente</span>
+            </div>
+
+            <div class="attr-grid" id="attr-grid"></div>
+
+            <div class="dice-bar">
+              <div class="dice-top-row">
+                <div class="dice-buttons">
+                  <button type="button" class="btn-dice" data-die="4">1d4</button>
+                  <button type="button" class="btn-dice" data-die="6">1d6</button>
+                  <button type="button" class="btn-dice" data-die="8">1d8</button>
+                  <button type="button" class="btn-dice" data-die="10">1d10</button>
+                  <button type="button" class="btn-dice" data-die="12">1d12</button>
+                  <button type="button" class="btn-dice" data-die="20">1d20</button>
+                  <button type="button" class="btn-dice special" id="btn-presas-fen" title="1d4 + floor(Bônus de DES / 2)">Presas de Fen (1d4+DES/2)</button>
+                </div>
+                <div class="dice-result" id="dice-result">Clique em um atributo ou dado para rolar</div>
+              </div>
+              <div class="dice-history-wrap" id="dice-history-wrap" hidden>
+                <span class="dice-history-label">Últimas 5:</span>
+                <div class="dice-history-list" id="dice-history-list"></div>
+                <button type="button" class="btn-clear-history" id="btn-clear-history" title="Limpar histórico de rolagens">Limpar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="tabs-nav" role="tablist">
+        <button type="button" class="tab-btn active" data-tab="tab-skills">Skills &amp; Passivas</button>
+        <button type="button" class="tab-btn" data-tab="tab-inventory">Equipamentos &amp; Inventário</button>
+        <button type="button" class="tab-btn" data-tab="tab-lore">História, Psique &amp; Notas</button>
+      </nav>
+
+      <section id="tab-skills" class="tab-panel active">
+        <div class="two-col-grid">
+          <div class="card">
+            <h2 class="section-title">Passivas de Raça: Humano</h2>
+            <div id="race-passives-list" class="feature-list"></div>
+
+            <div class="fen-companion-box" id="fen-companion-box">
+              <div class="fen-header">
+                <div>
+                  <span class="fen-badge">Companheiro Espiritual</span>
+                  <h3>🐺 Status Rápidos de Fen</h3>
+                </div>
+                <span class="fen-tag">Sincronia de Combate</span>
+              </div>
+
+              <div class="fen-stats-grid">
+                <div class="fen-stat-item">
+                  <label for="fen-hp">PV / HP de Fen</label>
+                  <input type="text" id="fen-hp" data-field="fenHp" placeholder="30/30">
+                </div>
+                <div class="fen-stat-item">
+                  <label for="fen-ca">CA de Fen</label>
+                  <input type="text" id="fen-ca" data-field="fenCa" placeholder="15">
+                </div>
+                <div class="fen-stat-item">
+                  <label for="fen-speed">Deslocamento Base</label>
+                  <input type="text" id="fen-speed" data-field="fenSpeed" placeholder="12 metros">
+                </div>
+                <div class="fen-stat-item">
+                  <label for="fen-aa">AA (Presas Ferozes)</label>
+                  <input type="text" id="fen-aa" data-field="fenAa" placeholder="1D4 +2 (DES)">
+                </div>
+              </div>
+
+              <div class="fen-status-row">
+                <label for="fen-temp-status">Status Temporários de Fen</label>
+                <input type="text" id="fen-temp-status" data-field="fenTempStatus" placeholder="Ex: Envenenado, Invocado, Assustado...">
+              </div>
+
+              <div class="fen-rules-note">
+                <strong>Vínculo Espiritual &amp; Regras:</strong> Conjuração: Ação Padrão (3 ES) • PV: 50% dos PV máx. de Soul • Defesa/Esquiva: iguais às de Soul • Deslocamento: Soul + 3m • Presas Ferozes: 1x/turno na Ação Bônus (0 PE), <code>1d4 + floor(DES ÷ 2)</code> • Quebra de vínculo (0 PV): Soul perde 6 ES (ou 1d4 na ES) e não reinvoca no mesmo combate.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="section-title">Profissão: O Pescador</h2>
+            <div id="job-features-list" class="feature-list"></div>
+          </div>
+        </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="section-title">Profissão: O Vigia (Guarda do Navio)</h2>
+            <div id="job-features-list" class="feature-list"></div>
+          </div>
+        </div>
+
+        <!-- 1. SKILLS HABILITADAS -->
+        <div class="card drop-zone-card" id="dropzone-enabled" data-zone="enabled">
+          <div class="card-header-flex">
+            <h2 class="section-title">Skills Habilitadas (<span id="enabled-count">3</span>/<input type="number" id="max-skills" data-field="maxSkills" class="inline-num">)</h2>
+            <div class="header-right-group">
+              <span class="hint-text">Segure e arraste o card para mover • Clique no lápis para editar</span>
+              <button type="button" class="btn btn-primary" id="btn-add-skill">+ Nova Skill</button>
+            </div>
+          </div>
+          <div id="enabled-skills-list" class="skills-grid drop-list" data-zone="enabled"></div>
+        </div>
+
+        <!-- 2. BIBLIOTECA DE MEMÓRIA (SEM LIMITE) -->
+        <div class="card drop-zone-card memory-zone-card" id="dropzone-memory" data-zone="memory">
+          <div class="card-header-flex">
+            <div>
+              <h2 class="section-title">Biblioteca de Memória (<span id="memory-count">0</span> guardadas • Sem limite)</h2>
+            </div>
+            <span class="hint-text">Solte aqui habilidades extras aprendidas para habilitar depois</span>
+          </div>
+          <div id="memory-skills-list" class="skills-grid drop-list" data-zone="memory"></div>
+        </div>
+
+        <!-- 3. ÁRVORE DE SKILLS (APRENDÍVEIS) -->
+        <div class="card drop-zone-card" id="dropzone-learnable" data-zone="learnable">
+          <div class="card-header-flex">
+            <h2 class="section-title">Árvore de Skills (Aprendíveis)</h2>
+            <span class="hint-text">Arraste ou use os botões para mover entre Habilitadas, Biblioteca de Memória e Aprendíveis</span>
+          </div>
+          <div id="learnable-skills-list" class="skills-grid drop-list" data-zone="learnable"></div>
+        </div>
+      </section>
+
+      <section id="tab-inventory" class="tab-panel">
+        <div class="card item-drop-zone" id="inv-dropzone-personal" data-item-zone="personal">
+          <div class="card-header-flex">
+            <div>
+              <h2 class="section-title">Equipamentos e Itens</h2>
+              <p class="slot-counter">
+                Slots Ocupados: <strong id="slots-used">1</strong> /
+                <input type="number" id="slots-max" data-field="slotsMax" class="inline-num"> Slots Máximos
+                <span class="hint-inline">(Itens com status "Equipado" ou "Guardado no Navio" não contam nos slots pessoais)</span>
+              </p>
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-add-item">+ Adicionar Item</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="inv-table">
+              <thead>
+                <tr>
+                  <th>Nome do Item</th>
+                  <th>Categoria</th>
+                  <th>Status</th>
+                  <th>Peso (Slots)</th>
+                  <th>Usos</th>
+                  <th>Valor (B$)</th>
+                  <th>Descrição / Efeitos</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card ship-storage-card item-drop-zone" id="inv-dropzone-ship" data-item-zone="ship">
+          <div class="card-header-flex">
+            <div>
+              <h2 class="section-title">⚓ Itens Guardados no Navio (<span id="ship-items-count">0</span>)</h2>
+              <p class="hint-text">Itens com status "Guardado no Navio" aparecem aqui automaticamente • Total no porão: <strong id="ship-slots-used">0</strong> slots</p>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="inv-table ship-inv-table">
+              <thead>
+                <tr>
+                  <th>Nome do Item</th>
+                  <th>Categoria</th>
+                  <th>Status</th>
+                  <th>Peso (Slots)</th>
+                  <th>Usos</th>
+                  <th>Valor (B$)</th>
+                  <th>Descrição / Efeitos</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="ship-inventory-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-lore" class="tab-panel">
+        <div class="two-col-grid">
+          <div class="card">
+            <h2 class="section-title">Aparência Física</h2>
+            <textarea id="char-appearance" data-field="appearance" rows="4"></textarea>
+
+            <h2 class="section-title" style="margin-top: 1.25rem;">História / Passado</h2>
+            <textarea id="char-backstory" data-field="backstory" rows="14"></textarea>
+          </div>
+
+          <div class="card">
+            <h2 class="section-title">A Psique do Soul</h2>
+            <div class="psyche-group">
+              <label for="psyche-goals">Objetivos / Sonhos (A Âncora)</label>
+              <textarea id="psyche-goals" data-field="psycheGoals" rows="3"></textarea>
+            </div>
+            <div class="psyche-group">
+              <label for="psyche-fears">Medos / Defeitos (O Calcanhar de Aquiles)</label>
+              <textarea id="psyche-fears" data-field="psycheFears" rows="3"></textarea>
+            </div>
+            <div class="psyche-group">
+              <label for="psyche-traits">Qualidades</label>
+              <textarea id="psyche-traits" data-field="psycheTraits" rows="3"></textarea>
+            </div>
+            <div class="psyche-group">
+              <label for="psyche-ideals">Ideal / Princípios (O Código Moral)</label>
+              <textarea id="psyche-ideals" data-field="psycheIdeals" rows="3"></textarea>
+            </div>
+
+            <div class="card-header-flex" style="margin-top: 1.25rem;">
+              <h2 class="section-title">Anotações de Sessão</h2>
+              <div class="color-palette-mini" data-target-textarea="char-notes" title="Aplicar cor no texto selecionado">
+                <span class="palette-label">Cor:</span>
+                <button type="button" class="color-swatch" data-color="#f87171" style="background:#f87171" title="Vermelho"></button>
+                <button type="button" class="color-swatch" data-color="#facc15" style="background:#facc15" title="Amarelo / Dourado"></button>
+                <button type="button" class="color-swatch" data-color="#4ade80" style="background:#4ade80" title="Verde"></button>
+                <button type="button" class="color-swatch" data-color="#38bdf8" style="background:#38bdf8" title="Azul Elétrico"></button>
+                <button type="button" class="color-swatch" data-color="#c084fc" style="background:#c084fc" title="Roxo"></button>
+                <button type="button" class="color-swatch" data-color="#fb923c" style="background:#fb923c" title="Laranja"></button>
+                <button type="button" class="color-swatch" data-color="#f472b6" style="background:#f472b6" title="Rosa"></button>
+                <button type="button" class="color-swatch reset-swatch" data-color="" title="Remover cor">✕</button>
+              </div>
+            </div>
+            <div id="char-notes-preview" class="rich-notes-preview"></div>
+            <textarea id="char-notes" data-field="notes" rows="6" placeholder="Selecione uma palavra e clique numa cor, ou escreva [cor=#38bdf8]assim[/cor]..."></textarea>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL DE CONFIRMAÇÃO DE REMOÇÃO -->
+  <div id="confirm-modal" class="modal-backdrop" hidden>
+    <div class="modal-box confirm-box">
+      <h3>Confirmar Remoção</h3>
+      <p id="confirm-modal-text">Tem certeza de que deseja remover esta habilidade?</p>
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-remove" class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btn-confirm-remove" class="btn btn-danger">Sim, Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE EDIÇÃO LIVRE DE SKILL -->
+  <div id="edit-skill-modal" class="modal-backdrop" hidden>
+    <div class="modal-box edit-skill-box">
+      <h3>Editar Habilidade</h3>
+      <form id="edit-skill-form" class="edit-skill-form">
+        <div class="field-group">
+          <label for="edit-skill-name">Nome da Habilidade</label>
+          <input type="text" id="edit-skill-name" required>
+        </div>
+        <div class="field-group">
+          <label for="edit-skill-type">Tipo / Execução (escreva livremente: Passiva, Sempre ativa, Ação Padrão, Habilidade Ativa...)</label>
+          <input type="text" id="edit-skill-type" placeholder="Ex: Passiva, Sempre ativa, Ação Padrão...">
+        </div>
+        <div class="field-group">
+          <label for="edit-skill-cost">Custo / Estamina / Condição (escreva livremente)</label>
+          <input type="text" id="edit-skill-cost" placeholder="Ex: Sempre ativa, 4 de Estamina, Ação Bônus | 2 ST...">
+        </div>
+        <div class="field-group">
+          <div class="label-with-tools">
+            <label for="edit-skill-desc">Descrição &amp; Efeitos</label>
+            <div class="color-palette-mini" id="skill-desc-palette" title="Aplicar cor ao texto selecionado ou inserir tag de cor">
+              <span class="palette-label">Cor:</span>
+              <button type="button" class="color-swatch" data-color="#f87171" style="background:#f87171" title="Vermelho"></button>
+              <button type="button" class="color-swatch" data-color="#facc15" style="background:#facc15" title="Amarelo / Dourado"></button>
+              <button type="button" class="color-swatch" data-color="#4ade80" style="background:#4ade80" title="Verde"></button>
+              <button type="button" class="color-swatch" data-color="#38bdf8" style="background:#38bdf8" title="Azul Elétrico"></button>
+              <button type="button" class="color-swatch" data-color="#c084fc" style="background:#c084fc" title="Roxo"></button>
+              <button type="button" class="color-swatch" data-color="#fb923c" style="background:#fb923c" title="Laranja"></button>
+              <button type="button" class="color-swatch" data-color="#f472b6" style="background:#f472b6" title="Rosa"></button>
+              <button type="button" class="color-swatch reset-swatch" data-color="" title="Remover cor">✕</button>
+            </div>
+          </div>
+          <textarea id="edit-skill-desc" rows="4" placeholder="Selecione um trecho do texto e clique numa cor, ou use [cor=#38bdf8]palavra[/cor]"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-edit-skill" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <div id="portrait-lightbox" class="portrait-lightbox" hidden role="dialog" aria-modal="true" aria-label="Visualização ampliada da arte de Soul Henri">
+    <button type="button" id="btn-close-lightbox" class="lightbox-close-btn" aria-label="Fechar visualização ampliada" title="Fechar (Esc)">✕</button>
+    <div class="portrait-lightbox-stage">
+      <img id="portrait-lightbox-img" src="" alt="Arte ampliada do personagem Soul Henri e Fen">
+      <p class="portrait-lightbox-caption">Soul Henri &amp; Fen — Clique fora da imagem ou pressione Esc para fechar</p>
+    </div>
+  </div>
+
+  <script src="soul-henri-ficha.js"></script>
+</body>
+</html>
