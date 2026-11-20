@@ -217,16 +217,35 @@
 
               <div class="moon-active-banner" id="moon-active-banner"></div>
 
-              <div class="moon-cycle-strip">
-                🌑 Noite 1 (Nova) / 🌓 Noite 2 (Crescente) / 🌓 Noite 3 (Crescente) / 🌔 Noite 4 (Gibosa) / 🌕 Noite 5 (SULONG) / 🌖 Noite 6 (Gibosa) / 🌗 Noite 7 (Minguante) / 🌗 Noite 8 (Minguante)
+              <div class="moon-cycle-grid" id="moon-cycle-grid">
+                <button type="button" class="moon-night-chip" data-phase="noite-1"><span>🌑 Noite 1</span><small>Nova</small></button>
+                <button type="button" class="moon-night-chip" data-phase="noite-2"><span>🌓 Noite 2</span><small>Crescente</small></button>
+                <button type="button" class="moon-night-chip" data-phase="noite-3"><span>🌓 Noite 3</span><small>Crescente</small></button>
+                <button type="button" class="moon-night-chip" data-phase="noite-4"><span>🌔 Noite 4</span><small>Gibosa</small></button>
+                <button type="button" class="moon-night-chip sulong-chip" data-phase="noite-5"><span>🌕 Noite 5</span><small>SULONG</small></button>
+                <button type="button" class="moon-night-chip" data-phase="noite-6"><span>🌖 Noite 6</span><small>Gibosa</small></button>
+                <button type="button" class="moon-night-chip" data-phase="noite-7"><span>🌗 Noite 7</span><small>Minguante</small></button>
+                <button type="button" class="moon-night-chip" data-phase="noite-8"><span>🌗 Noite 8</span><small>Minguante</small></button>
               </div>
 
-              <ul class="moon-effects-ref">
-                <li><strong>1. 🌑 Lua Nova:</strong> +2 Furtividade | Estática cai para +1</li>
-                <li><strong>2. 🌓 / 🌗 Lua Crescente e Minguante:</strong> Neutra (Sem bônus/penalidades extras)</li>
-                <li><strong>3. 🌔 / 🌖 Gibosa:</strong> Estática sobe para +3 | -2 em testes de Carisma</li>
-                <li><strong>4. 🌕 Cheia - SULONG:</strong> +1D4 Dano Elétrico e Destreza | Rolagem de Fúria/Sanidade no início do turno (1D8)</li>
-              </ul>
+              <div class="moon-effects-cards">
+                <div class="moon-effect-card" data-group="nova">
+                  <div class="moon-effect-title">🌑 Lua Nova</div>
+                  <div class="moon-effect-desc">+2 Furtividade | Estática cai para +1</div>
+                </div>
+                <div class="moon-effect-card" data-group="neutra">
+                  <div class="moon-effect-title">🌓 / 🌗 Lua Crescente e Minguante</div>
+                  <div class="moon-effect-desc">Neutra (Sem bônus/penalidades extras)</div>
+                </div>
+                <div class="moon-effect-card" data-group="gibosa">
+                  <div class="moon-effect-title">🌔 / 🌖 Gibosa</div>
+                  <div class="moon-effect-desc">Estática sobe para +3 | -2 em testes de Carisma</div>
+                </div>
+                <div class="moon-effect-card sulong-card" data-group="sulong">
+                  <div class="moon-effect-title">🌕 Cheia - SULONG</div>
+                  <div class="moon-effect-desc">+1D4 Dano Elétrico e Destreza | Rolagem de Fúria/Sanidade no início do turno (1D8)</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -332,8 +351,22 @@
               <textarea id="psyche-ideals" data-field="psycheIdeals" rows="3"></textarea>
             </div>
 
-            <h2 class="section-title" style="margin-top: 1.25rem;">Anotações de Sessão</h2>
-            <textarea id="char-notes" data-field="notes" rows="6" placeholder="Anote pistas, NPCs, memórias desbloqueadas durante a aventura..."></textarea>
+            <div class="card-header-flex" style="margin-top: 1.25rem;">
+              <h2 class="section-title">Anotações de Sessão</h2>
+              <div class="color-palette-mini" data-target-textarea="char-notes" title="Aplicar cor no texto selecionado">
+                <span class="palette-label">Cor:</span>
+                <button type="button" class="color-swatch" data-color="#f87171" style="background:#f87171" title="Vermelho"></button>
+                <button type="button" class="color-swatch" data-color="#facc15" style="background:#facc15" title="Amarelo / Dourado"></button>
+                <button type="button" class="color-swatch" data-color="#4ade80" style="background:#4ade80" title="Verde"></button>
+                <button type="button" class="color-swatch" data-color="#38bdf8" style="background:#38bdf8" title="Azul Elétrico"></button>
+                <button type="button" class="color-swatch" data-color="#c084fc" style="background:#c084fc" title="Roxo"></button>
+                <button type="button" class="color-swatch" data-color="#fb923c" style="background:#fb923c" title="Laranja"></button>
+                <button type="button" class="color-swatch" data-color="#f472b6" style="background:#f472b6" title="Rosa"></button>
+                <button type="button" class="color-swatch reset-swatch" data-color="" title="Remover cor">✕</button>
+              </div>
+            </div>
+            <div id="char-notes-preview" class="rich-notes-preview"></div>
+            <textarea id="char-notes" data-field="notes" rows="6" placeholder="Selecione uma palavra e clique numa cor, ou escreva [cor=#38bdf8]assim[/cor]..."></textarea>
           </div>
         </div>
       </section>
@@ -370,8 +403,21 @@
           <input type="text" id="edit-skill-cost" placeholder="Ex: Sempre ativa, 4 de Estamina, Ação Bônus | 2 ST...">
         </div>
         <div class="field-group">
-          <label for="edit-skill-desc">Descrição &amp; Efeitos</label>
-          <textarea id="edit-skill-desc" rows="4" placeholder="Descreva o funcionamento e efeitos da habilidade..."></textarea>
+          <div class="label-with-tools">
+            <label for="edit-skill-desc">Descrição &amp; Efeitos</label>
+            <div class="color-palette-mini" id="skill-desc-palette" title="Aplicar cor ao texto selecionado ou inserir tag de cor">
+              <span class="palette-label">Cor:</span>
+              <button type="button" class="color-swatch" data-color="#f87171" style="background:#f87171" title="Vermelho"></button>
+              <button type="button" class="color-swatch" data-color="#facc15" style="background:#facc15" title="Amarelo / Dourado"></button>
+              <button type="button" class="color-swatch" data-color="#4ade80" style="background:#4ade80" title="Verde"></button>
+              <button type="button" class="color-swatch" data-color="#38bdf8" style="background:#38bdf8" title="Azul Elétrico"></button>
+              <button type="button" class="color-swatch" data-color="#c084fc" style="background:#c084fc" title="Roxo"></button>
+              <button type="button" class="color-swatch" data-color="#fb923c" style="background:#fb923c" title="Laranja"></button>
+              <button type="button" class="color-swatch" data-color="#f472b6" style="background:#f472b6" title="Rosa"></button>
+              <button type="button" class="color-swatch reset-swatch" data-color="" title="Remover cor">✕</button>
+            </div>
+          </div>
+          <textarea id="edit-skill-desc" rows="4" placeholder="Selecione um trecho do texto e clique numa cor, ou use [cor=#38bdf8]palavra[/cor]"></textarea>
         </div>
         <div class="modal-actions">
           <button type="button" id="btn-cancel-edit-skill" class="btn btn-secondary">Cancelar</button>

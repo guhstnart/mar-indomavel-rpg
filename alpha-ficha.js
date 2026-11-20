@@ -7,41 +7,49 @@ const MOON_PHASES = {
   "noite-1": {
     label: "🌑 Noite 1 — Lua Nova",
     summary: "+2 Furtividade | Estática cai para +1",
+    group: "nova",
     isSulong: false
   },
   "noite-2": {
     label: "🌓 Noite 2 — Lua Crescente",
     summary: "Neutra (Sem bônus/penalidades extras)",
+    group: "neutra",
     isSulong: false
   },
   "noite-3": {
     label: "🌓 Noite 3 — Lua Crescente",
     summary: "Neutra (Sem bônus/penalidades extras)",
+    group: "neutra",
     isSulong: false
   },
   "noite-4": {
     label: "🌔 Noite 4 — Gibosa",
     summary: "Estática sobe para +3 | -2 em testes de Carisma",
+    group: "gibosa",
     isSulong: false
   },
   "noite-5": {
     label: "🌕 Noite 5 — Cheia (SULONG)",
     summary: "+1D4 Dano Elétrico e Destreza | Rolagem de Fúria/Sanidade no início do turno (1D8)",
+    group: "sulong",
     isSulong: true
   },
   "noite-6": {
     label: "🌖 Noite 6 — Gibosa",
     summary: "Estática sobe para +3 | -2 em testes de Carisma",
+    group: "gibosa",
     isSulong: false
   },
   "noite-7": {
     label: "🌗 Noite 7 — Lua Minguante",
     summary: "Neutra (Sem bônus/penalidades extras)",
+    group: "neutra",
     isSulong: false
   },
   "noite-8": {
     label: "🌗 Noite 8 — Lua Minguante",
     summary: "Neutra (Sem bônus/penalidades extras)",
+    group: "neutra",
     isSulong: false
   }
 };
@@ -236,6 +244,7 @@ function unlockSheet(role) {
     setupMoonPhase();
     setupGlobalPointerDrag();
     setupModals();
+    setupColorPalettes();
     setupActions();
     init();
     appInitialized = true;
@@ -441,6 +450,14 @@ function renderMoonPhase() {
   select.value = phaseKey;
   banner.classList.toggle("sulong-active", Boolean(info.isSulong));
   banner.innerHTML = `<strong>Buffs Atuais — ${info.label}:</strong> ${info.summary}`;
+
+  document.querySelectorAll(".moon-night-chip").forEach((chip) => {
+    chip.classList.toggle("active", chip.dataset.phase === phaseKey);
+  });
+
+  document.querySelectorAll(".moon-effect-card").forEach((card) => {
+    card.classList.toggle("highlighted", card.dataset.group === info.group);
+  });
 }
 
 function setupMoonPhase() {
@@ -449,6 +466,16 @@ function setupMoonPhase() {
     state.moonPhase = select.value;
     renderMoonPhase();
     saveState();
+  });
+
+  document.querySelectorAll(".moon-night-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const phase = chip.dataset.phase;
+      if (!MOON_PHASES[phase]) return;
+      state.moonPhase = phase;
+      renderMoonPhase();
+      saveState();
+    });
   });
 }
 
@@ -713,17 +740,17 @@ function createSkillCard(sk, zone, idx) {
   card.dataset.zone = zone;
   card.dataset.index = idx;
 
-  const tagHtml = sk.type ? `<span class="skill-tag">${sk.type}</span>` : "";
-  const costHtml = sk.cost ? `<div class="skill-cost">${sk.cost}</div>` : "";
+  const tagHtml = sk.type ? `<span class="skill-tag">${formatColorText(sk.type)}</span>` : "";
+  const costHtml = sk.cost ? `<div class="skill-cost">${formatColorText(sk.cost)}</div>` : "";
 
   card.innerHTML = `
     <div>
       <div class="skill-top">
-        <span class="skill-title"><span class="drag-grip" title="Segure e arraste para mover">⋮⋮</span>${sk.name}</span>
+        <span class="skill-title"><span class="drag-grip" title="Segure e arraste para mover">⋮⋮</span>${formatColorText(sk.name)}</span>
         ${tagHtml}
       </div>
       ${costHtml}
-      <p class="skill-desc">${sk.desc}</p>
+      <p class="skill-desc">${formatColorText(sk.desc)}</p>
     </div>
   `;
 
@@ -931,6 +958,88 @@ function setupActions() {
   });
 }
 
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function formatColorText(rawText) {
+  if (!rawText) return "";
+  let safe = escapeHtml(rawText);
+  safe = safe.replace(
+    /\[cor=([a-zA-Z0-9#(),.%\s-]+)\]([\s\S]*?)\[\/cor\]/gi,
+    (_, colorVal, inner) => {
+      const cleanColor = colorVal.trim();
+      return `<span style="color:${cleanColor};font-weight:600;">${inner}</span>`;
+    }
+  );
+  return safe;
+}
+
+function applyColorToTextarea(textarea, colorHex) {
+  if (!textarea) return;
+  const start = textarea.selectionStart ?? 0;
+  const end = textarea.selectionEnd ?? 0;
+  const val = textarea.value;
+  const selected = val.slice(start, end);
+
+  if (!colorHex) {
+    if (selected) {
+      const cleaned = selected
+        .replace(/\[cor=[^\]]+\]/gi, "")
+        .replace(/\[\/cor\]/gi, "");
+      textarea.value = val.slice(0, start) + cleaned + val.slice(end);
+    } else {
+      textarea.value = val
+        .replace(/\[cor=[^\]]+\]/gi, "")
+        .replace(/\[\/cor\]/gi, "");
+    }
+  } else {
+    const targetText = selected || "palavra";
+    const wrapped = `[cor=${colorHex}]${targetText}[/cor]`;
+    textarea.value = val.slice(0, start) + wrapped + val.slice(end);
+  }
+
+  textarea.dispatchEvent(new Event("input", { bubbles: true }));
+  textarea.focus();
+}
+
+function setupColorPalettes() {
+  document.querySelectorAll(".color-palette-mini[data-target-textarea]").forEach((palette) => {
+    const targetId = palette.dataset.targetTextarea;
+    const textarea = document.getElementById(targetId);
+    palette.querySelectorAll(".color-swatch").forEach((btn) => {
+      btn.addEventListener("click", () => applyColorToTextarea(textarea, btn.dataset.color || ""));
+    });
+  });
+
+  const skillPalette = document.getElementById("skill-desc-palette");
+  const skillDescInput = document.getElementById("edit-skill-desc");
+  if (skillPalette && skillDescInput) {
+    skillPalette.querySelectorAll(".color-swatch").forEach((btn) => {
+      btn.addEventListener("click", () => applyColorToTextarea(skillDescInput, btn.dataset.color || ""));
+    });
+  }
+
+  const notesInput = document.getElementById("char-notes");
+  const notesPreview = document.getElementById("char-notes-preview");
+  const updateNotesPreview = () => {
+    if (!notesInput || !notesPreview) return;
+    if (!notesInput.value.trim()) {
+      notesPreview.innerHTML = `<span style="color:#9ca3af;">Prévia das anotações (exibe cores aplicadas)...</span>`;
+    } else {
+      notesPreview.innerHTML = formatColorText(notesInput.value);
+    }
+  };
+  if (notesInput && notesPreview) {
+    notesInput.addEventListener("input", updateNotesPreview);
+    updateNotesPreview();
+  }
+}
+
 function init() {
   renderSimpleFields();
   renderAttributes();
@@ -938,6 +1047,8 @@ function init() {
   renderMoonPhase();
   renderSkills();
   renderInventory();
+  const notesEl = document.getElementById("char-notes");
+  if (notesEl) notesEl.dispatchEvent(new Event("input"));
 }
 
 setupLockScreen();
