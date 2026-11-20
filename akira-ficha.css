@@ -776,13 +776,19 @@ select:focus {
 }
 
 .fishman-active-banner {
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.32), rgba(7, 28, 56, 0.9));
-  border: 1px solid rgba(56, 189, 248, 0.48);
+  background-color: rgba(14, 165, 233, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.45);
   border-radius: 8px;
   padding: 0.7rem 0.85rem;
   margin-bottom: 0.85rem;
   font-size: 0.88rem;
   color: #e0f2fe;
+}
+
+.fishman-active-banner.subaquatico-active {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.36), rgba(7, 28, 56, 0.92));
+  border-color: #38bdf8;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.25);
 }
 
 .fishman-active-banner.heat-active {
@@ -827,9 +833,16 @@ select:focus {
 }
 
 .fishman-env-chip.active {
-  background: linear-gradient(135deg, rgba(2, 132, 199, 0.48), rgba(8, 33, 66, 0.95));
+  background-color: rgba(2, 132, 199, 0.28);
   border-color: var(--electric);
   color: #fff;
+}
+
+.fishman-env-chip[data-env="subaquatico"].active {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.52), rgba(8, 33, 66, 0.96));
+  border-color: var(--electric);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
 }
 
 .ship-storage-card {
@@ -1351,4 +1364,80 @@ body.is-dragging-skill * {
   background: var(--crimson);
   border-color: var(--gold);
   transform: scale(1.06);
+}
+
+.inv-row-draggable {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  touch-action: none;
+  transition: background-color 0.12s ease, opacity 0.12s ease;
+}
+
+.inv-row-draggable:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.inv-row-draggable:active {
+  cursor: grabbing;
+}
+
+.inv-row-draggable.dragging-source {
+  opacity: 0.35;
+}
+
+body.is-dragging-item,
+body.is-dragging-item * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  cursor: grabbing !important;
+}
+
+.item-drop-zone.drag-over {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(229, 184, 75, 0.35), 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.ship-storage-card.item-drop-zone.drag-over {
+  border-color: var(--electric);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45), 0 8px 24px rgba(2, 132, 199, 0.35);
+}
+
+.item-drag-grip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-weight: 800;
+  font-size: 0.88rem;
+  margin-right: 0.35rem;
+  cursor: grab;
+  user-select: none;
+}
+
+.floating-item-ghost {
+  position: fixed;
+  z-index: 9100;
+  pointer-events: none;
+  background: #1c1c22;
+  border: 1.5px solid var(--gold);
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  color: var(--text-main);
+  font-size: 0.86rem;
+  font-weight: 600;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.75);
+  opacity: 0.95;
+  transform: scale(1.02);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 360px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

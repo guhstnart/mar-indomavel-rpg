@@ -244,6 +244,7 @@ function unlockSheet(role) {
     setupDiceRoller();
     setupFishmanEnv();
     setupGlobalPointerDrag();
+    setupGlobalItemPointerDrag();
     setupModals();
     setupColorPalettes();
     setupActions();
@@ -555,6 +556,7 @@ function renderFishmanEnv() {
 
   select.value = envKey;
   banner.classList.toggle("heat-active", Boolean(info.isHeat));
+  banner.classList.toggle("subaquatico-active", envKey === "subaquatico");
   banner.innerHTML = `<strong>Condição Ativa — ${info.label}:</strong> ${info.summary}`;
 
   document.querySelectorAll(".fishman-env-chip").forEach((chip) => {
@@ -995,10 +997,13 @@ function updateSlotCount() {
   if (shipSlotsEl) shipSlotsEl.textContent = shipSlots;
 }
 
-function buildInventoryRow(item, idx, rerenderOnStatusChange = false) {
+function buildInventoryRow(item, idx, rerenderOnStatusChange = false, zoneName = "personal") {
   const tr = document.createElement("tr");
+  tr.className = "inv-row-draggable";
+  tr.dataset.itemIdx = idx;
+  tr.dataset.itemZone = zoneName;
   tr.innerHTML = `
-    <td><input type="text" value="${escapeHtml(item.name)}" data-k="name"></td>
+    <td><span class="item-drag-grip" title="Arraste para mover entre Inventário e Navio">⋮⋮</span><input type="text" value="${escapeHtml(item.name)}" data-k="name" style="width:calc(100% - 24px);display:inline-block;"></td>
     <td>
       <select data-k="category">
         <option value="Equipamento" ${item.category === "Equipamento" ? "selected" : ""}>Equipamento</option>
@@ -1050,13 +1055,15 @@ function renderInventory() {
 
   let shipCount = 0;
   state.inventory.forEach((item, idx) => {
-    tbody.appendChild(buildInventoryRow(item, idx, true));
+    tbody.appendChild(buildInventoryRow(item, idx, true, "personal"));
 
     if (item.status === "Guardado no Navio" && shipTbody) {
       shipCount += 1;
-      shipTbody.appendChild(buildInventoryRow(item, idx, true));
+      shipTbody.appendChild(buildInventoryRow(item, idx, true, "ship"));
     }
   });
+
+  attachItemRowDragHandlers();
 
   if (shipTbody && shipCount === 0) {
     shipTbody.innerHTML = `<tr class="empty-ship-row"><td colspan="8">Nenhum item guardado no navio no momento. Mude o status de um item para "Guardado no Navio" para listá-lo aqui.</td></tr>`;
@@ -1292,4 +1299,150 @@ function setupPortraitLightbox() {
       closeLightbox();
     }
   });
+}
+
+let pointerItemDrag = null;
+
+function clearItemZoneHighlights() {
+  document.querySelectorAll(".item-drop-zone.drag-over").forEach((el) => {
+    el.classList.remove("drag-over");
+  });
+}
+
+function cleanupItemPointerDrag() {
+  document.body.classList.remove("is-dragging-item");
+  clearBrowserTextSelection();
+  if (!pointerItemDrag) return;
+  if (pointerItemDrag.ghost && pointerItemDrag.ghost.parentNode) {
+    pointerItemDrag.ghost.parentNode.removeChild(pointerItemDrag.ghost);
+  }
+  if (pointerItemDrag.sourceRow) {
+    pointerItemDrag.sourceRow.classList.remove("dragging-source");
+  }
+  clearItemZoneHighlights();
+  pointerItemDrag = null;
+}
+
+function moveInventoryItemToZone(itemIdx, targetZone) {
+  const item = state.inventory[itemIdx];
+  if (!item) return;
+
+  if (targetZone === "ship") {
+    if (item.status !== "Guardado no Navio") {
+      item.status = "Guardado no Navio";
+      saveState();
+      renderInventory();
+    }
+  } else if (targetZone === "personal") {
+    if (item.status === "Guardado no Navio") {
+      item.status = "No Inventário";
+      saveState();
+      renderInventory();
+    }
+  }
+}
+
+function attachItemRowDragHandlers() {
+  document.querySelectorAll(".inv-row-draggable").forEach((tr) => {
+    tr.addEventListener("dragstart", (e) => e.preventDefault());
+
+    tr.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("button, input, select")) return;
+      if (e.button !== 0 && e.pointerType === "mouse") return;
+
+      e.preventDefault();
+      clearBrowserTextSelection();
+
+      const itemIdx = Number(tr.dataset.itemIdx);
+      const fromZone = tr.dataset.itemZone;
+      const item = state.inventory[itemIdx];
+      if (!item) return;
+
+      pointerItemDrag = {
+        itemIdx,
+        fromZone,
+        itemName: item.name && item.name.trim() ? item.name.trim() : "Item sem nome",
+        sourceRow: tr,
+        startX: e.clientX,
+        startY: e.clientY,
+        active: false,
+        ghost: null
+      };
+    });
+  });
+}
+
+function setupGlobalItemPointerDrag() {
+  document.addEventListener("selectstart", (e) => {
+    if (pointerItemDrag || e.target.closest(".inv-row-draggable")) {
+      e.preventDefault();
+    }
+  });
+
+  document.addEventListener("pointermove", (e) => {
+    if (!pointerItemDrag) return;
+
+    e.preventDefault();
+    clearBrowserTextSelection();
+
+    const dx = e.clientX - pointerItemDrag.startX;
+    const dy = e.clientY - pointerItemDrag.startY;
+    if (!pointerItemDrag.active && Math.hypot(dx, dy) > 5) {
+      document.body.classList.add("is-dragging-item");
+      pointerItemDrag.active = true;
+      pointerItemDrag.sourceRow.classList.add("dragging-source");
+
+      const ghost = document.createElement("div");
+      ghost.className = "floating-item-ghost";
+      ghost.innerHTML = `<span class="item-drag-grip">⋮⋮</span><span>${escapeHtml(pointerItemDrag.itemName)}</span>`;
+      document.body.appendChild(ghost);
+      pointerItemDrag.ghost = ghost;
+    }
+
+    if (!pointerItemDrag.active || !pointerItemDrag.ghost) return;
+
+    pointerItemDrag.ghost.style.left = `${e.clientX + 12}px`;
+    pointerItemDrag.ghost.style.top = `${e.clientY + 12}px`;
+
+    pointerItemDrag.ghost.style.display = "none";
+    const underEl = document.elementFromPoint(e.clientX, e.clientY);
+    pointerItemDrag.ghost.style.display = "";
+
+    const zoneEl = underEl ? underEl.closest(".item-drop-zone") : null;
+    clearItemZoneHighlights();
+    if (zoneEl) {
+      zoneEl.classList.add("drag-over");
+    }
+  });
+
+  const finishItemDrag = (e) => {
+    if (!pointerItemDrag) return;
+
+    if (pointerItemDrag.active) {
+      clearBrowserTextSelection();
+      if (pointerItemDrag.ghost) pointerItemDrag.ghost.style.display = "none";
+      const underEl = document.elementFromPoint(e.clientX, e.clientY);
+      if (pointerItemDrag.ghost) pointerItemDrag.ghost.style.display = "";
+
+      const targetZoneEl = underEl ? underEl.closest(".item-drop-zone") : null;
+      const itemIdx = pointerItemDrag.itemIdx;
+      const fromZone = pointerItemDrag.fromZone;
+
+      cleanupItemPointerDrag();
+
+      if (targetZoneEl && targetZoneEl.dataset.itemZone) {
+        const toZone = targetZoneEl.dataset.itemZone;
+        if (toZone !== fromZone) {
+          moveInventoryItemToZone(itemIdx, toZone);
+        }
+      }
+      return;
+    }
+
+    cleanupItemPointerDrag();
+  };
+
+  document.addEventListener("pointerup", finishItemDrag);
+  document.addEventListener("pointercancel", cleanupItemPointerDrag);
+  window.addEventListener("blur", cleanupItemPointerDrag);
 }
