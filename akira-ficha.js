@@ -1,7 +1,20 @@
 const STORAGE_KEY = "mar_indomavel_ficha_akira_v1";
 const AUTH_SESSION_KEY = "mar_indomavel_auth_akira_v1";
-const PLAYER_PASSWORD = "PeixeFrito";
-const MASTER_PASSWORD = "ChaveMestra";
+const PLAYER_PASSWORDS = ["peixefrito"];
+const MASTER_PASSWORDS = ["chavemestra", "chave mestra"];
+
+function normalizeSecret(val) {
+  return String(val || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function cloneDefaultData() {
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
 
 const FISHMAN_ENVS = {
   normal: {
@@ -58,18 +71,15 @@ const DEFAULT_DATA = {
     },
     {
       name: "Habitat Marítimo",
-      desc: "Respiração subaquática natural.
-+1D4 em testes de Força e Destreza dentro da água."
+      desc: "Respiração subaquática natural.\n+1D4 em testes de Força e Destreza dentro da água."
     },
     {
       name: "Vulnerabilidade ao Calor",
-      desc: "Dano de Fogo: +2 de dano recebido.
-Calor Extremo: -4 em testes de Destreza (DES) e perda do bônus de Pele Escamosa ao estar em ambientes com calor extremo."
+      desc: "Dano de Fogo: +2 de dano recebido.\nCalor Extremo: -4 em testes de Destreza (DES) e perda do bônus de Pele Escamosa ao estar em ambientes com calor extremo."
     },
     {
       name: "Habilidade Ativa: Couraça de Escamas",
-      desc: "Custo: Reação (ao ser alvo de um ataque).
-Efeito: Por um breve momento, você endurece suas escamas ou a umidade ao redor do seu corpo. Você reduz todo o dano recebido deste ataque pela metade. Se o ataque for de natureza física (soco, chute, corte), o atacante recebe 1D4 de dano de recuo (devido à dureza da sua pele). Recarga: Uma vez por descanso curto."
+      desc: "Custo: Reação (ao ser alvo de um ataque).\nEfeito: Por um breve momento, você endurece suas escamas ou a umidade ao redor do seu corpo. Você reduz todo o dano recebido deste ataque pela metade. Se o ataque for de natureza física (soco, chute, corte), o atacante recebe 1D4 de dano de recuo (devido à dureza da sua pele). Recarga: Uma vez por descanso curto."
     }
   ],
   jobFeatures: [
@@ -93,7 +103,7 @@ Efeito: Por um breve momento, você endurece suas escamas ou a umidade ao redor 
       name: "2. Corte em Cruz / Nitoryu (Atq Físico)",
       type: "Habilidade",
       cost: "Ação Padrão | 2 de Estamina",
-      desc: "Um ataque fundamental e brutal de duas espadas simultâneas em formato de "X". Akira rola o ataque apenas uma vez. Se acertar, soma o dano base das duas espadas juntas (Ex: 1d6 + 1d6 + FOR/DES) em um único golpe devastador."
+      desc: "Um ataque fundamental e brutal de duas espadas simultâneas em formato de \"X\". Akira rola o ataque apenas uma vez. Se acertar, soma o dano base das duas espadas juntas (Ex: 1d6 + 1d6 + FOR/DES) em um único golpe devastador."
     },
     {
       name: "3. Fluxo Invertido (Reação/Contra-Ataque)",
@@ -213,7 +223,10 @@ function getZoneArray(zone) {
 }
 
 function unlockSheet(role) {
-  sessionStorage.setItem(AUTH_SESSION_KEY, role);
+  try {
+    sessionStorage.setItem(AUTH_SESSION_KEY, role);
+  } catch (_) {}
+
   document.getElementById("lock-screen").hidden = true;
   document.getElementById("sheet-app").hidden = false;
   document.getElementById("lock-error").hidden = true;
@@ -239,36 +252,57 @@ function unlockSheet(role) {
 }
 
 function lockSheet() {
-  sessionStorage.removeItem(AUTH_SESSION_KEY);
+  try {
+    sessionStorage.removeItem(AUTH_SESSION_KEY);
+  } catch (_) {}
+
   document.getElementById("sheet-app").hidden = true;
   document.getElementById("lock-screen").hidden = false;
-  document.getElementById("lock-password").value = "";
-  document.getElementById("lock-password").focus();
+  const input = document.getElementById("lock-password");
+  input.value = "";
+  input.focus();
+}
+
+function attemptUnlock(rawPassword) {
+  const normalized = normalizeSecret(rawPassword);
+  const errorEl = document.getElementById("lock-error");
+  const input = document.getElementById("lock-password");
+
+  if (!normalized) return;
+
+  if (PLAYER_PASSWORDS.includes(normalized)) {
+    unlockSheet("player");
+  } else if (MASTER_PASSWORDS.includes(normalized)) {
+    unlockSheet("master");
+  } else {
+    errorEl.hidden = false;
+    input.select();
+  }
 }
 
 function setupLockScreen() {
-  const savedRole = sessionStorage.getItem(AUTH_SESSION_KEY);
-  if (savedRole === "player" || savedRole === "master") {
-    unlockSheet(savedRole);
-    return;
-  }
+  try {
+    const savedRole = sessionStorage.getItem(AUTH_SESSION_KEY);
+    if (savedRole === "player" || savedRole === "master") {
+      unlockSheet(savedRole);
+      return;
+    }
+  } catch (_) {}
 
   const form = document.getElementById("lock-form");
   const input = document.getElementById("lock-password");
-  const errorEl = document.getElementById("lock-error");
+  const unlockBtn = document.getElementById("btn-unlock");
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const typed = input.value.trim();
-    if (typed === PLAYER_PASSWORD) {
-      unlockSheet("player");
-    } else if (typed === MASTER_PASSWORD) {
-      unlockSheet("master");
-    } else {
-      errorEl.hidden = false;
-      input.select();
-    }
+    attemptUnlock(input.value);
   });
+
+  if (unlockBtn) {
+    unlockBtn.addEventListener("click", () => {
+      attemptUnlock(input.value);
+    });
+  }
 }
 
 function loadState() {
@@ -277,7 +311,7 @@ function loadState() {
     if (saved) {
       const parsed = JSON.parse(saved);
       return {
-        ...structuredClone(DEFAULT_DATA),
+        ...cloneDefaultData(),
         ...parsed,
         fishmanEnv: parsed.fishmanEnv || DEFAULT_DATA.fishmanEnv,
         memorySkills: Array.isArray(parsed.memorySkills) ? parsed.memorySkills : []
@@ -286,11 +320,13 @@ function loadState() {
   } catch (e) {
     console.error("Erro ao carregar ficha:", e);
   }
-  return structuredClone(DEFAULT_DATA);
+  return cloneDefaultData();
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (_) {}
   const badge = document.getElementById("save-status");
   if (badge) {
     badge.textContent = "Salvo agora ✓";
@@ -1013,7 +1049,7 @@ function setupActions() {
       try {
         const imported = JSON.parse(reader.result);
         state = {
-          ...structuredClone(DEFAULT_DATA),
+          ...cloneDefaultData(),
           ...imported,
           fishmanEnv: imported.fishmanEnv || DEFAULT_DATA.fishmanEnv,
           memorySkills: Array.isArray(imported.memorySkills) ? imported.memorySkills : []
@@ -1030,8 +1066,10 @@ function setupActions() {
 
   document.getElementById("btn-reset").addEventListener("click", () => {
     if (confirm("Deseja restaurar todos os valores originais da ficha de Akira Tansui?")) {
-      localStorage.removeItem(STORAGE_KEY);
-      state = structuredClone(DEFAULT_DATA);
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (_) {}
+      state = cloneDefaultData();
       init();
     }
   });
