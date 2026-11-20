@@ -1441,3 +1441,16 @@ body.is-dragging-item * {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.rpg-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.rpg-logo-link:hover {
+  transform: scale(1.04);
+  opacity: 0.92;
+}
