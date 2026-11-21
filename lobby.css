@@ -61,4 +61,8 @@ footer{margin-top:3rem;font:1.5rem "Pirata One",serif;letter-spacing:.08em;opaci
 .som-ctrl [aria-pressed="true"] .i-off,.som-ctrl [aria-pressed="false"] .i-on{display:none}
 .som-ctrl input{width:7rem;accent-color:#d9aa4f;cursor:pointer}
 @media(max-width:600px){.som-ctrl input{width:5rem}.roda{width:17rem;height:17rem}.leme{min-height:18rem}}
-footer small{display:block;margin-top:.1rem;font-size:.65em;letter-spacing:.12em;opacity:.8}
+
+/* Entrada do mar: o lobby emerge do azul do oceano */
+body::after{content:"";position:fixed;inset:0;z-index:99;background:#0b4a78;pointer-events:none;animation:emergir 1s ease-out forwards}
+@keyframes emergir{to{opacity:0;visibility:hidden}}
+@media(prefers-reduced-motion:reduce){body::after{animation:none;display:none}}
