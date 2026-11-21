@@ -40,7 +40,7 @@ const DEFAULT_DATA = {
   racePassives: [
     {
       name: "Vontade de Sobrevivência",
-      desc: "Sempre que sua Vida (HP) cair abaixo de 25% do máximo (Zona de Perigo), você ignora as penalidades de ferimentos graves ou cansaço. Além disso, você ganha +2 em qualquer teste de ataque enquanto estiver nesta faixa de vida (o famoso \"segundo fôlego\"). Atualmente [Zona de Perigo] em [Hp 15/60]."
+      desc: "Sempre que sua Vida (HP) cair abaixo de 25% do máximo (Zona de Perigo), você ignora as penalidades de ferimentos graves ou cansaço. Além disso, você ganha +2 em qualquer Dano de Ataque Meele enquanto estiver nesta faixa de vida (o famoso \"segundo fôlego\"). Atualmente [Zona de Perigo] em [Hp 15/60]."
     },
     {
       name: "Descanso feito Pedra",
