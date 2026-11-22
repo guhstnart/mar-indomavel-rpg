@@ -567,16 +567,112 @@ function setupDiceRoller() {
   }
 }
 
+function renderSpiritualBondFeature(feature) {
+  return `
+    <article class="feature-item feature-item-spiritual">
+      <div class="spiritual-card-header">
+        <div class="spiritual-card-title-group">
+          <span class="spiritual-eyebrow">Companheiro espiritual</span>
+          <h3>${escapeHtml(feature.name || "Vínculo Espiritual: Fen")}</h3>
+        </div>
+        <span class="spiritual-type-badge">PASSIVA</span>
+      </div>
+
+      <p class="spiritual-intro">
+        A conexão entre Soul Henri e Fen vai além do adestramento. Eles compartilham o mesmo instinto de caça.
+      </p>
+
+      <div class="spiritual-core-grid">
+        <div class="spiritual-core-stat">
+          <span class="spiritual-label">Conjuração</span>
+          <strong>Ação Padrão</strong>
+        </div>
+        <div class="spiritual-core-stat">
+          <span class="spiritual-label">Custo</span>
+          <strong>3 Pontos de Estamina (ES)</strong>
+        </div>
+        <div class="spiritual-core-stat spiritual-core-stat-wide">
+          <span class="spiritual-label">Duração</span>
+          <strong>Até o fim da cena; pode ser desinvocado livremente ou termina ao chegar a 0 PV.</strong>
+        </div>
+      </div>
+
+      <div class="spiritual-details-grid">
+        <section class="spiritual-detail-panel">
+          <h4><span class="spiritual-detail-icon">✦</span> Estatísticas de Fen</h4>
+          <div class="spiritual-stat-list">
+            <div class="spiritual-stat-row">
+              <span>PV</span>
+              <strong>50% dos PV máximos atuais de Soul</strong>
+            </div>
+            <div class="spiritual-stat-row">
+              <span>Defesa / Esquiva</span>
+              <strong>Compartilha os valores de Soul</strong>
+            </div>
+            <div class="spiritual-stat-row">
+              <span>Deslocamento</span>
+              <strong>Deslocamento base de Soul + 3 m</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="spiritual-detail-panel">
+          <h4><span class="spiritual-detail-icon">⇄</span> Sincronia de Combate</h4>
+          <p>Fen e Soul podem realizar movimentos e interações simultaneamente, sem custo de PE.</p>
+        </section>
+
+        <section class="spiritual-detail-panel">
+          <h4><span class="spiritual-detail-icon">⚔</span> Ataque Básico: Presas Ferozes</h4>
+          <div class="spiritual-attack-grid">
+            <div>
+              <span class="spiritual-label">Frequência</span>
+              <strong>1 vez por turno</strong>
+            </div>
+            <div>
+              <span class="spiritual-label">Ação</span>
+              <strong>Ação Bônus de Soul</strong>
+            </div>
+            <div>
+              <span class="spiritual-label">Custo</span>
+              <strong>0 PE</strong>
+            </div>
+            <div class="spiritual-damage-formula">
+              <span class="spiritual-label">Dano</span>
+              <code>1d4 + floor(DES ÷ 2)</code>
+              <small>DES +4 ou +5 = +2</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="spiritual-detail-panel spiritual-detail-panel-alert">
+          <h4><span class="spiritual-detail-icon">⚠</span> Quebra de Vínculo</h4>
+          <span class="spiritual-trigger">Quando Fen chega a 0 PV</span>
+          <p>Soul perde 6 PE (ou 1d4 na Estamina) e não pode reinvocá-lo no mesmo combate.</p>
+        </section>
+      </div>
+    </article>
+  `;
+}
+
 function renderStaticFeatures() {
+  const renderFeature = (feature) => {
+    if (String(feature.name || "").toLowerCase().includes("vínculo espiritual")) {
+      return renderSpiritualBondFeature(feature);
+    }
+
+    return `
+      <div class="feature-item">
+        <h3>${escapeHtml(feature.name || "")}</h3>
+        <p>${escapeHtml(feature.desc || "")}</p>
+      </div>
+    `;
+  };
+
   const raceList = document.getElementById("race-passives-list");
-  raceList.innerHTML = state.racePassives
-    .map((f) => `<div class="feature-item"><h3>${f.name}</h3><p>${f.desc}</p></div>`)
-    .join("");
+  raceList.innerHTML = state.racePassives.map(renderFeature).join("");
 
   const jobList = document.getElementById("job-features-list");
-  jobList.innerHTML = state.jobFeatures
-    .map((f) => `<div class="feature-item"><h3>${f.name}</h3><p>${f.desc}</p></div>`)
-    .join("");
+  jobList.innerHTML = state.jobFeatures.map(renderFeature).join("");
 }
 
 function moveSkill(fromZone, fromIndex, toZone, targetIndex = null) {

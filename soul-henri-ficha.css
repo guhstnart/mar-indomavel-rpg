@@ -731,6 +731,228 @@ select:focus {
   color: #d1d5db;
 }
 
+/* VÍNCULO ESPIRITUAL — CARD DIVIDIDO POR INFORMAÇÃO */
+.feature-item-spiritual {
+  padding: 1rem;
+  border: 1px solid rgba(168, 85, 247, 0.42);
+  border-left: 3px solid var(--memory);
+  background: linear-gradient(160deg, #1b1926 0%, #17171d 58%, #15151a 100%);
+}
+
+.spiritual-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.spiritual-card-title-group {
+  min-width: 0;
+}
+
+.spiritual-eyebrow,
+.spiritual-label {
+  display: block;
+  color: #a99bbd;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.65px;
+  text-transform: uppercase;
+}
+
+.feature-item-spiritual .spiritual-card-header h3 {
+  margin: 0.12rem 0 0;
+  color: #f0d58b;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.spiritual-type-badge {
+  flex: 0 0 auto;
+  padding: 0.22rem 0.55rem;
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.14);
+  color: #e9d5ff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.55px;
+}
+
+.feature-item-spiritual .spiritual-intro {
+  margin: 0 0 0.85rem;
+  color: #c8c5d0;
+  font-size: 0.81rem;
+  line-height: 1.5;
+}
+
+.spiritual-core-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.spiritual-core-stat {
+  min-width: 0;
+  padding: 0.58rem 0.65rem;
+  border: 1px solid rgba(229, 184, 75, 0.2);
+  border-radius: 7px;
+  background: rgba(229, 184, 75, 0.055);
+}
+
+.spiritual-core-stat-wide {
+  grid-column: 1 / -1;
+}
+
+.spiritual-core-stat strong,
+.spiritual-attack-grid strong {
+  display: block;
+  margin-top: 0.18rem;
+  color: #f3f4f6;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.spiritual-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.spiritual-detail-panel {
+  min-width: 0;
+  padding: 0.68rem 0.72rem;
+  border: 1px solid #34313d;
+  border-radius: 8px;
+  background: rgba(13, 13, 18, 0.58);
+}
+
+.spiritual-detail-panel h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  margin-bottom: 0.5rem;
+  color: #d8c5fb;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.spiritual-detail-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  border-radius: 5px;
+  background: rgba(168, 85, 247, 0.15);
+  color: #d8b4fe;
+  font-size: 0.8rem;
+}
+
+.feature-item-spiritual .spiritual-detail-panel p {
+  margin: 0;
+  color: #d1d5db;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.spiritual-stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.48rem;
+}
+
+.spiritual-stat-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.55rem;
+  padding-bottom: 0.42rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.065);
+}
+
+.spiritual-stat-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.spiritual-stat-row span {
+  flex: 0 0 auto;
+  color: #9ca3af;
+  font-size: 0.72rem;
+}
+
+.spiritual-stat-row strong {
+  color: #f3f4f6;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-align: right;
+  line-height: 1.4;
+}
+
+.spiritual-attack-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 0.7rem;
+}
+
+.spiritual-attack-grid > div {
+  min-width: 0;
+}
+
+.spiritual-damage-formula {
+  grid-column: 1 / -1;
+  padding: 0.48rem 0.55rem;
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  border-radius: 6px;
+  background: rgba(56, 189, 248, 0.07);
+}
+
+.spiritual-damage-formula code {
+  display: block;
+  margin-top: 0.2rem;
+  color: #7dd3fc;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.spiritual-damage-formula small {
+  display: block;
+  margin-top: 0.1rem;
+  color: #a5b4c2;
+  font-size: 0.68rem;
+}
+
+.spiritual-detail-panel-alert {
+  border-color: rgba(248, 113, 113, 0.32);
+  background: rgba(127, 29, 29, 0.12);
+}
+
+.spiritual-detail-panel-alert h4 {
+  color: #fca5a5;
+}
+
+.spiritual-detail-panel-alert .spiritual-detail-icon {
+  background: rgba(248, 113, 113, 0.13);
+  color: #fca5a5;
+}
+
+.spiritual-trigger {
+  display: inline-block;
+  margin: 0 0 0.4rem;
+  padding: 0.17rem 0.45rem;
+  border: 1px solid rgba(248, 113, 113, 0.28);
+  border-radius: 5px;
+  background: rgba(248, 113, 113, 0.09);
+  color: #fecaca;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
 .moon-phases-box {
   margin-top: 1rem;
   background: linear-gradient(180deg, #171822 0%, #141419 100%);
@@ -1556,24 +1778,38 @@ body.is-dragging-item * {
   margin-bottom: 0.7rem;
 }
 
-.fen-rules-note {
-  background: rgba(15, 16, 24, 0.75);
-  border-left: 3px solid var(--electric);
-  border-radius: 6px;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.8rem;
-  color: #d1d5db;
-  line-height: 1.45;
-}
-
-.fen-rules-note code {
-  color: #fef08a;
-  font-family: Consolas, monospace;
+@media (max-width: 700px) {
+  .spiritual-details-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 560px) {
   .fen-stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .spiritual-core-grid,
+  .spiritual-attack-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .spiritual-core-stat-wide,
+  .spiritual-damage-formula {
+    grid-column: auto;
+  }
+
+  .spiritual-card-header {
+    align-items: flex-start;
+  }
+
+  .spiritual-stat-row {
+    flex-direction: column;
+    gap: 0.12rem;
+  }
+
+  .spiritual-stat-row strong {
+    text-align: left;
   }
 }
 
