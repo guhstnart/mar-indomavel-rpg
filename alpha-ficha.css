@@ -606,6 +606,16 @@ select:focus {
   color: var(--electric);
 }
 
+.btn-dice.special:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-dice.special:disabled:hover {
+  border-color: var(--electric);
+  color: var(--electric);
+}
+
 .dice-result {
   font-size: 0.9rem;
   font-weight: 600;

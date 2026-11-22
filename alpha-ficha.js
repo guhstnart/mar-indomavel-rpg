@@ -350,6 +350,7 @@ function renderSimpleFields() {
     });
   });
   updateBars();
+  refreshBasicAttackButton();
 }
 
 function renderAttributes() {
@@ -463,6 +464,82 @@ function setupQuickAdjustButtons() {
   });
 }
 
+function parseBasicAttack(value) {
+  const raw = String(value || "").trim();
+  const diceMatch = raw.match(/(\d+)?\s*[dD]\s*(\d+)/);
+  if (!diceMatch) return null;
+
+  const diceCount = diceMatch[1] ? Number(diceMatch[1]) : 1;
+  const diceSides = Number(diceMatch[2]);
+  if (!Number.isInteger(diceCount) || diceCount < 1 || diceCount > 100) return null;
+  if (!Number.isInteger(diceSides) || diceSides < 2 || diceSides > 1000) return null;
+
+  const afterDice = raw.slice(diceMatch.index + diceMatch[0].length);
+  const attributeMatch = afterDice.match(/(FOR|DES|CON|INT|SAB|CAR)\b/i);
+  const attribute = attributeMatch ? attributeMatch[1].toUpperCase() : "";
+
+  let modifier = 0;
+  const numericModifierMatch = afterDice.match(/([+-])\s*(\d+)/);
+  if (numericModifierMatch) {
+    modifier = Number(numericModifierMatch[2]) * (numericModifierMatch[1] === "-" ? -1 : 1);
+  } else {
+    const attributeModifierMatch = afterDice.match(/([+-])\s*(FOR|DES|CON|INT|SAB|CAR)\b/i);
+    if (attributeModifierMatch) {
+      const modifierAttribute = attributeModifierMatch[2].toUpperCase();
+      const attributeBonus = Number(state.attributes[modifierAttribute]?.bonus) || 0;
+      modifier = attributeBonus * (attributeModifierMatch[1] === "-" ? -1 : 1);
+    }
+  }
+
+  const attackName = raw.slice(0, diceMatch.index).replace(/[\s:–—-]+$/, "").trim() || "Ataque Básico";
+  return { attackName, diceCount, diceSides, modifier, attribute };
+}
+
+function refreshBasicAttackButton() {
+  const input = document.getElementById("char-aa");
+  const button = document.getElementById("btn-ataque-basico");
+  if (!input || !button) return;
+
+  const attack = parseBasicAttack(input.value);
+  button.disabled = !attack;
+  if (!attack) {
+    button.title = "Formato esperado: Nome do ataque: 1D6+3FOR";
+    return;
+  }
+
+  const modifierText = attack.modifier === 0 ? "" : ` ${formatMod(attack.modifier)}${attack.attribute ? ` ${attack.attribute}` : ""}`;
+  button.title = `Rolar ${attack.attackName}: ${attack.diceCount}d${attack.diceSides}${modifierText}`;
+}
+
+function rollBasicAttack() {
+  const input = document.getElementById("char-aa");
+  const attack = parseBasicAttack(input?.value);
+  if (!attack) {
+    refreshBasicAttackButton();
+    return;
+  }
+
+  const rolls = [];
+  for (let i = 0; i < attack.diceCount; i += 1) {
+    rolls.push(Math.floor(Math.random() * attack.diceSides) + 1);
+  }
+
+  const diceTotal = rolls.reduce((sum, roll) => sum + roll, 0);
+  const total = diceTotal + attack.modifier;
+  const diceLabel = `${attack.diceCount}d${attack.diceSides}`;
+  const diceDetail = attack.diceCount === 1
+    ? `${diceLabel} (${rolls[0]})`
+    : `${diceLabel} (${rolls.join(" + ")} = ${diceTotal})`;
+  const modifierDetail = attack.modifier === 0
+    ? ""
+    : ` ${formatMod(attack.modifier)}${attack.attribute ? ` ${attack.attribute}` : ""}`;
+
+  showDiceResult(
+    `Ataque Básico (AA) — ${attack.attackName}: ${diceDetail}${modifierDetail} = ${total}`,
+    `${attack.attackName}: ${total} (${diceLabel}${modifierDetail})`
+  );
+}
+
 function setupDiceRoller() {
   document.querySelectorAll(".btn-dice[data-die]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -472,16 +549,13 @@ function setupDiceRoller() {
     });
   });
 
-  document.getElementById("btn-sentido-felino").addEventListener("click", () => {
-    const d20 = Math.floor(Math.random() * 20) + 1;
-    const d4 = Math.floor(Math.random() * 4) + 1;
-    const sabMod = Number(state.attributes.SAB?.bonus) || 0;
-    const total = d20 + d4 + sabMod;
-    showDiceResult(
-      `Sentido Felino (Percepção): 1d20 (${d20}) + 1d4 (${d4}) ${formatMod(sabMod)} = ${total}`,
-      `Sentido Felino: ${total} (${d20}+${d4}${formatMod(sabMod)})`
-    );
-  });
+  const basicAttackInput = document.getElementById("char-aa");
+  const basicAttackButton = document.getElementById("btn-ataque-basico");
+  if (basicAttackInput && basicAttackButton) {
+    basicAttackInput.addEventListener("input", refreshBasicAttackButton);
+    basicAttackButton.addEventListener("click", rollBasicAttack);
+    refreshBasicAttackButton();
+  }
 
   const btnClearHistory = document.getElementById("btn-clear-history");
   if (btnClearHistory) {
