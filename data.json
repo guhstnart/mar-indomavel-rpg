@@ -1,0 +1,27 @@
+{
+  "tiers": ["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5"],
+  "mares": ["East Blue", "West Blue", "North Blue", "South Blue", "Grand Line", "Novo Mundo"],
+  "categorias": ["Consumível", "Loot (Berries)", "Utilitário", "Equipamento", "Arma", "Narrativo", "Especial"],
+  "contextos": {
+    "Saque comum": { "Tier 1": 100, "Tier 2": 20, "Tier 3": 5, "Tier 4": 0, "Tier 5": 0 },
+    "Baú de chefe": { "Tier 1": 0, "Tier 2": 5, "Tier 3": 50, "Tier 4": 20, "Tier 5": 0.1 },
+    "Tesouro escondido": { "Tier 1": 10, "Tier 2": 40, "Tier 3": 35, "Tier 4": 12, "Tier 5": 1 },
+    "Recompensa de missão": { "Tier 1": 30, "Tier 2": 40, "Tier 3": 20, "Tier 4": 5, "Tier 5": 0.5 }
+  },
+  "origemCfg": {
+    "Saque comum": { "qtd": 1 },
+    "Baú de chefe": { "qtd": 3 },
+    "Tesouro escondido": { "qtd": 2 },
+    "Recompensa de missão": { "qtd": 1 }
+  },
+  "itens": [
+    { "nome": "🍖 Carne com Osso Suculenta", "valor": "25", "desc": "Recupera 10 de Estamina", "tier": "Tier 1", "mar": "Todos", "cat": "Consumível", "unico": false },
+    { "nome": "💰 Bolsa de Moedas", "valor": "30-50", "desc": "Contém 30 a 50 Berries", "tier": "Tier 1", "mar": "East Blue", "cat": "Loot (Berries)", "unico": false },
+    { "nome": "🧪 Antídoto de Ervas do West Blue", "valor": "60", "desc": "Gasta Ação Bônus. Cura o status Envenenado", "tier": "Tier 1", "mar": "West Blue", "cat": "Consumível", "unico": false },
+    { "nome": "🐚 Dial de Luz", "valor": "350", "desc": "Causa Cegueira por 1 turno", "tier": "Tier 2", "mar": "Todos", "cat": "Utilitário", "unico": false },
+    { "nome": "⛓️ Algemas de Aço Reforçado", "valor": "500", "desc": "Gasta Ação Padrão. Prende alvos Imobilizados/Caídos. Teste de Força difícil para se libertar", "tier": "Tier 2", "mar": "Todos", "cat": "Equipamento", "unico": false },
+    { "nome": "🧭 Log Pose Clássico", "valor": "2500", "desc": "Necessário para navegar pelo Grand Line. Grava o magnetismo em algumas horas a dias", "tier": "Tier 3", "mar": "Grand Line", "cat": "Utilitário", "unico": false },
+    { "nome": "🪓 Lingote de Aço Negro de Wano", "valor": "15000", "desc": "Upgrade Permanente em armas", "tier": "Tier 4", "mar": "Novo Mundo", "cat": "Especial", "unico": false },
+    { "nome": "🌳 Lasca da Árvore Lendária Adam", "valor": "100000", "desc": "Upgrade permanente no navio ou vale 100.000 Berries", "tier": "Tier 5", "mar": "Todos", "cat": "Especial", "unico": true }
+  ]
+}

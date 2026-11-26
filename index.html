@@ -1,61 +1,145 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mar Indomável RPG – Lobby</title>
-<link rel="icon" type="image/png" href="SimboloRpg2.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Pirata+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="lobby.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Espólios · One Piece: Mar Indomável</title>
+  <link rel="icon" type="image/png" href="Simbolo Rpg2.png">
+  <link rel="apple-touch-icon" href="Simbolo Rpg2.png">
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Pirata+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<linearGradient id="madeira" gradientUnits="userSpaceOnUse" x1="-90" y1="-90" x2="90" y2="90"><stop offset="0" stop-color="#c58a4a"/><stop offset=".5" stop-color="#8e5a2b"/><stop offset="1" stop-color="#5a3416"/></linearGradient>
-<filter id="veios" filterUnits="userSpaceOnUse" x="-100" y="-100" width="200" height="200"><feTurbulence type="fractalNoise" baseFrequency=".03 .5" numOctaves="3" seed="7" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 .22 0 0 0 0 .11 0 0 0 0 .04 0 0 0 -1.4 .95" result="v"/><feComposite in="v" in2="SourceAlpha" operator="in" result="g"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="g"/></feMerge></filter>
-</defs><symbol id="leme" viewBox="-100 -100 200 200"><g filter="url(#veios)" fill="none" stroke="url(#madeira)" stroke-linecap="round"><circle r="58" stroke-width="11"/><path stroke-width="9" d="M0-84V84M-84 0H84M-59-59L59 59M-59 59L59-59"/><circle r="18" fill="url(#madeira)" stroke="none"/></g><path fill="none" stroke="#d9aa4f" stroke-width="15" stroke-linecap="round" d="M0-90v.01M0 90v.01M-90 0h.01M90 0h.01M-64-64v.01M64-64v.01M-64 64v.01M64 64v.01"/><circle r="12" fill="none" stroke="#d9aa4f" stroke-width="3"/><circle r="5" fill="#d9aa4f"/></symbol></svg>
-<div class="raios" aria-hidden="true"></div>
-<div class="ondas" aria-hidden="true"><i></i><i></i></div>
-<div class="mar" aria-hidden="true"></div>
-<div class="som-ctrl" role="group" aria-label="Som ambiente">
-  <button id="som-btn" type="button" aria-pressed="false" aria-label="Ligar som ambiente" title="Som ambiente: mar e gaivotas">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3z" fill="currentColor"/><path class="i-on" d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="i-off" d="M16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-  </button>
-  <input id="som-vol" type="range" min="0" max="100" value="60" aria-label="Volume">
-</div>
-<main>
+  <div class="lua" aria-hidden="true"></div>
+  <div class="ondas" aria-hidden="true"><i></i><i></i></div>
+
+  <div class="topo-bar">
+    <a class="lobby-link" href="https://guhstnart.github.io/mar-indomavel-rpg/index.html" aria-label="Voltar ao Lobby">
+      <img src="Logo-One Piece-Mar-Indomável2.png" alt="One Piece: Mar Indomável">
+      <span class="lobby-tip">← Voltar ao Lobby</span>
+    </a>
+
+    <div class="topo-controles">
+      <span id="badge-dirty" class="badge-dirty" hidden title="Você fez edições locais que ainda não foram baixadas no data.json">
+        ● Alterações não publicadas
+        <button type="button" class="mini ok" data-ex="1">Baixar JSON</button>
+      </span>
+      <button type="button" id="btn-som" class="mini" title="Ativar/Desativar efeitos sonoros">🔊 Som: ON</button>
+      <button type="button" id="btn-mar" class="mini" title="Som ambiente de ondas do mar">🌊 Mar: OFF</button>
+    </div>
+  </div>
+
+  <div id="toast-raro" class="toast-raro" hidden></div>
+
   <header>
-    <img class="logo" src="logo.png" alt="Logo One Piece – Mar Indomável">
-    <p class="lema">Escolha seu rumo, pirata.</p>
+    <h1>Espólios</h1>
+    <p>Saques, tesouros e recompensas · One Piece: Mar Indomável</p>
   </header>
 
-  <section aria-labelledby="t-mundo">
-    <h2 id="t-mundo">Conheça o mundo</h2>
-    <a class="wiki-box wiki" href="wiki.html" data-som>
-      <span class="banner"><b>Livro de Regras<small>Abrir o wiki</small></b></span>
-      <p>Atributos, combate, status, evolução, profissões, economia e navegação. Tudo o que a tripulação precisa saber.</p>
-    </a>
-  </section>
+  <nav class="abas">
+    <button data-aba="rolar" class="on">Randomizar</button>
+    <button data-aba="unicos">Únicos Obtidos <span id="cnt-unicos" class="pill">0</span></button>
+    <button data-aba="hist">Histórico</button>
+    <button data-aba="mestre">🔒 Mestre</button>
+  </nav>
 
-  <section aria-labelledby="t-tripulacao">
-    <h2 id="t-tripulacao">A Tripulação</h2>
-    <div class="grade">
-      <a class="leme akira" href="akira.html" data-som>
-        <svg class="roda" aria-hidden="true"><use href="#leme"/></svg>
-        <span class="banner"><b>Akira Tansui<small>Abrir ficha</small></b></span>
-      </a>
-      <a class="leme alpha" href="alpha.html" data-som>
-        <svg class="roda" aria-hidden="true"><use href="#leme"/></svg>
-        <span class="banner"><b>Alpha<small>Abrir ficha</small></b></span>
-      </a>
-      <a class="leme soul" href="soul-henri.html" data-som>
-        <svg class="roda" aria-hidden="true"><use href="#leme"/></svg>
-        <span class="banner"><b>Soul Henri<small>Abrir ficha</small></b></span>
-      </a>
-    </div>
-  </section>
-  <footer>Mar Indomável RPG<small>By Guhst</small></footer>
-</main>
-<script src="lobby.js"></script>
+  <main class="painel">
+    <!-- ABA RANDOMIZAR -->
+    <section id="rolar">
+      <div class="gh">
+        <h2>Presets rápidos</h2>
+        <button type="button" class="mini" id="btn-salvar-preset">+ Salvar filtro atual</button>
+      </div>
+      <div class="chips" id="presets"></div>
+
+      <h2>Origem do espólio</h2>
+      <div class="chips" id="ctx"></div>
+
+      <h2>O que pode aparecer</h2>
+      <div id="filtros"></div>
+
+      <div class="barra">
+        <label>Quantidade <input id="qtd" type="number" min="1" max="20" value="1"></label>
+        <label><input id="semrep" type="checkbox" checked> Sem repetir no saque</label>
+        <span id="n"></span>
+      </div>
+
+      <button id="rolar-btn" class="rolar">⚓ Rolar espólio</button>
+      <div id="res-resumo" class="resumo" hidden></div>
+      <div id="res"></div>
+    </section>
+
+    <!-- ABA ITENS ÚNICOS -->
+    <section id="unicos" hidden>
+      <div class="barra">
+        <h2>Itens Únicos já sorteados na campanha</h2>
+        <button type="button" class="mini" id="limpar-unicos">Restaurar todos ao pool</button>
+      </div>
+      <p class="ajuda">Itens marcados como <b>Único</b> saem de circulação assim que são sorteados, evitando duplicatas na história.</p>
+      <div id="unicos-l"></div>
+    </section>
+
+    <!-- ABA HISTÓRICO -->
+    <section id="hist" hidden>
+      <div class="barra">
+        <h2>Últimos sorteios</h2>
+        <button class="mini" id="limpar-hist">Limpar</button>
+      </div>
+      <div id="hist-l"></div>
+    </section>
+
+    <!-- ABA MESTRE -->
+    <section id="mestre" hidden>
+      <div class="chips" id="subabas">
+        <button data-sub="itens" class="chip on">Itens</button>
+        <button data-sub="listas" class="chip">Tiers · Mares · Categorias</button>
+        <button data-sub="ctx" class="chip">Origens & Chances</button>
+        <button data-sub="dados" class="chip">Publicar & Importar</button>
+      </div>
+      <div id="mestre-corpo"></div>
+    </section>
+  </main>
+
+  <!-- MODAL SENHA -->
+  <dialog id="senha">
+    <form id="sf">
+      <h2>Área do Mestre</h2>
+      <input id="sp" type="password" placeholder="Senha" autocomplete="off">
+      <p id="se" hidden>Senha incorreta.</p>
+      <div class="bt">
+        <button type="button" id="sc" class="mini">Cancelar</button>
+        <button class="mini ok">Entrar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- MODAL EDITAR/CRIAR ITEM -->
+  <dialog id="ed">
+    <form id="edf">
+      <h2 id="edt"></h2>
+      <label>Nome do Item<input name="nome" required placeholder="Ex.: 🗡️ Katana Enferrujada"></label>
+      <label>Valor em Berries (B$) — opcional (aceita fixo ou faixa, ex.: 500 ou 100-300)
+        <input name="valor" placeholder="Ex.: 250 ou 50-150">
+      </label>
+      <label>Descrição / Efeito (faixas como "30 a 50 Berries" rolam na hora)
+        <textarea name="desc" rows="3"></textarea>
+      </label>
+      <div class="grid-3">
+        <label>Tier<select name="tier"></select></label>
+        <label>Mar<select name="mar"></select></label>
+        <label>Categoria<select name="cat"></select></label>
+      </div>
+      <label class="check-inline">
+        <input type="checkbox" name="unico">
+        <span><b>Item Único</b> (sai da tabela após ser sorteado na campanha)</span>
+      </label>
+      <div class="bt">
+        <button type="button" id="edc" class="mini">Cancelar</button>
+        <button class="mini ok">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
 </body>
 </html>
