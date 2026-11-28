@@ -4,1682 +4,1820 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Banco de Habilidades — One Piece: Mar Indomável</title>
-  <link rel="icon" type="image/png" href="SimboloRpg2.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-deep: #070b17;
-      --bg-panel: rgba(13, 20, 38, 0.86);
-      --bg-card: rgba(17, 26, 48, 0.92);
-      --border-subtle: rgba(138, 169, 255, 0.16);
-      --text-main: #eef3ff;
-      --text-muted: #98a8cc;
-      --accent-gold: #f5c451;
-      --accent-blue: #4ea8ff;
-      --sidebar-width: 270px;
-      --header-height: 82px;
+      --bg-cosmos: #060b19;
+      --bg-panel: rgba(11, 20, 42, 0.78);
+      --border-subtle: rgba(148, 185, 255, 0.16);
+      --text-primary: #f1f5f9;
+      --text-muted: #94a3b8;
     }
 
     * {
       box-sizing: border-box;
+    }
+
+    body {
       margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      height: 100%;
-      background-color: var(--bg-deep);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-cosmos);
+      color: var(--text-primary);
+      min-height: 100vh;
       overflow-x: hidden;
+      background-image:
+        radial-gradient(ellipse at 18% 15%, rgba(30, 64, 175, 0.28) 0%, transparent 48%),
+        radial-gradient(ellipse at 82% 25%, rgba(88, 28, 135, 0.22) 0%, transparent 50%),
+        radial-gradient(ellipse at 55% 88%, rgba(14, 116, 144, 0.22) 0%, transparent 52%),
+        linear-gradient(180deg, #050914 0%, #09132b 50%, #060c1d 100%);
     }
 
-    /* Céu estrelado com movimento suave de olhar lateral */
-    #starfield-wrapper {
+    .font-title {
+      font-family: 'Cinzel', serif;
+    }
+
+    /* Canvas de fundo estrelado */
+    #starfield {
       position: fixed;
       inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse at 20% 25%, rgba(44, 72, 148, 0.28) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 70%, rgba(88, 42, 134, 0.22) 0%, transparent 60%),
-        linear-gradient(180deg, #050812 0%, #091024 55%, #060a16 100%);
-    }
-
-    #starfield {
-      width: 112%;
-      height: 112%;
-      margin-left: -6%;
-      margin-top: -6%;
-      display: block;
-      animation: gazePan 36s ease-in-out infinite alternate;
-    }
-
-    @keyframes gazePan {
-      0% { transform: translate3d(-2.5%, -1%, 0); }
-      50% { transform: translate3d(2.5%, 0.8%, 0); }
-      100% { transform: translate3d(-1.8%, 1.2%, 0); }
-    }
-
-    /* Cabeçalho fixo acima da sidebar */
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--header-height);
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      background: rgba(8, 13, 27, 0.94);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border-subtle);
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
-    }
-
-    .brand-area {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .logo-ring {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      padding: 4px;
-      border: 2px solid rgba(245, 196, 81, 0.65);
-      background: radial-gradient(circle, rgba(28, 45, 84, 0.9) 0%, rgba(10, 16, 33, 0.98) 100%);
-      box-shadow: 0 0 18px rgba(245, 196, 81, 0.25), inset 0 0 10px rgba(78, 168, 255, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-      flex-shrink: 0;
-    }
-
-    .logo-ring:hover {
-      transform: scale(1.06);
-      border-color: #ffe08a;
-      box-shadow: 0 0 24px rgba(245, 196, 81, 0.5);
-    }
-
-    .logo-ring img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      border-radius: 50%;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    .title-block .subtitle {
-      font-size: 0.72rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent-gold);
-      font-weight: 700;
+    /* Scrollbar estilizada */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(6, 11, 25, 0.8);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 149, 237, 0.32);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 149, 237, 0.55);
     }
 
-    .title-block h1 {
-      font-family: 'Cinzel', serif;
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      color: #ffffff;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .view-switcher {
-      display: flex;
-      background: rgba(16, 25, 48, 0.9);
+    /* Glassmorphism Data Bank */
+    .databank-panel {
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--border-subtle);
-      border-radius: 999px;
-      padding: 4px;
-      gap: 4px;
     }
 
-    .view-btn {
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .view-btn.active {
-      background: linear-gradient(135deg, #274a8c, #1a3263);
-      color: #ffffff;
-      box-shadow: 0 2px 10px rgba(78, 168, 255, 0.3);
-    }
-
-    .lobby-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(245, 196, 81, 0.35);
-      background: rgba(245, 196, 81, 0.08);
-      color: #ffe299;
-      text-decoration: none;
-      font-size: 0.82rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .lobby-link:hover {
-      background: rgba(245, 196, 81, 0.18);
-      border-color: var(--accent-gold);
-    }
-
-    .crown-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid rgba(245, 196, 81, 0.45);
-      background: rgba(22, 31, 56, 0.9);
-      color: var(--accent-gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    /* Botão lateral estilo Data Bank */
+    .nav-item {
       position: relative;
+      transition: all 0.22s ease;
+      border: 1px solid transparent;
     }
-
-    .crown-btn:hover, .crown-btn.unlocked {
-      background: rgba(245, 196, 81, 0.2);
-      box-shadow: 0 0 16px rgba(245, 196, 81, 0.45);
-      transform: translateY(-1px);
+    .nav-item:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.25);
+      color: #ffffff;
     }
-
-    .crown-btn.unlocked::after {
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.22) 0%, rgba(30, 58, 138, 0.12) 100%);
+      border-color: rgba(125, 211, 252, 0.48);
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.18);
+    }
+    .nav-item.active::before {
       content: '';
       position: absolute;
-      top: 2px;
-      right: 2px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #34d399;
-      box-shadow: 0 0 8px #34d399;
-    }
-
-    /* Layout Principal abaixo do cabeçalho */
-    .app-shell {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      padding-top: var(--header-height);
-      min-height: 100vh;
-    }
-
-    /* Sidebar independente com scroll próprio abaixo do topbar */
-    .sidebar {
-      position: fixed;
-      top: var(--header-height);
       left: 0;
-      bottom: 0;
-      width: var(--sidebar-width);
-      z-index: 30;
-      background: rgba(9, 14, 28, 0.88);
-      backdrop-filter: blur(12px);
-      border-right: 1px solid var(--border-subtle);
-      overflow-y: auto;
-      padding: 18px 14px 32px;
-    }
-
-    .sidebar::-webkit-scrollbar {
-      width: 5px;
-    }
-    .sidebar::-webkit-scrollbar-thumb {
-      background: rgba(138, 169, 255, 0.22);
-      border-radius: 99px;
-    }
-
-    .nav-group-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: #6b7fa8;
-      margin: 18px 10px 8px;
-    }
-
-    .nav-group-label:first-child {
-      margin-top: 4px;
-    }
-
-    .cat-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
-      margin-bottom: 4px;
-      border-radius: 12px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 0.88rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.18s ease;
-    }
-
-    .cat-btn:hover {
-      background: rgba(78, 168, 255, 0.08);
-      color: #ffffff;
-    }
-
-    .cat-btn.active {
-      background: linear-gradient(90deg, rgba(78, 168, 255, 0.2), rgba(78, 168, 255, 0.05));
-      border-color: rgba(78, 168, 255, 0.42);
-      color: #ffffff;
-      font-weight: 600;
-    }
-
-    .cat-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .cat-icon {
-      width: 22px;
-      height: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      color: var(--accent-blue);
-    }
-
-    .cat-btn.active .cat-icon {
-      color: var(--accent-gold);
-    }
-
-    .cat-count {
-      font-size: 0.74rem;
-      padding: 2px 8px;
+      top: 18%;
+      bottom: 18%;
+      width: 3px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.07);
-      color: var(--text-muted);
+      background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
     }
 
-    .cat-btn.active .cat-count {
-      background: rgba(245, 196, 81, 0.2);
-      color: #ffe299;
-    }
-
-    /* Área de Conteúdo */
-    .main-content {
-      margin-left: var(--sidebar-width);
-      flex: 1;
-      padding: 24px 28px 60px;
-      max-width: 100%;
-    }
-
-    /* Barra de Busca e Filtros */
-    .filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      background: var(--bg-panel);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 14px 16px;
-      margin-bottom: 22px;
-      align-items: center;
-    }
-
-    .search-box {
-      flex: 1 1 240px;
-      position: relative;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 10px 14px 10px 38px;
-      border-radius: 10px;
-      border: 1px solid rgba(138, 169, 255, 0.22);
-      background: rgba(8, 13, 27, 0.85);
-      color: #fff;
-      font-size: 0.88rem;
-      outline: none;
-    }
-
-    .search-box input:focus {
-      border-color: var(--accent-blue);
-    }
-
-    .search-box svg {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      width: 16px;
-      height: 16px;
-    }
-
-    .filter-select {
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(138, 169, 255, 0.22);
-      background: rgba(8, 13, 27, 0.85);
-      color: #fff;
-      font-size: 0.85rem;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .gm-toolbar {
-      display: none;
-      gap: 10px;
-      margin-bottom: 20px;
-      padding: 12px 16px;
-      border-radius: 14px;
-      background: rgba(245, 196, 81, 0.1);
-      border: 1px solid rgba(245, 196, 81, 0.4);
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
-    .gm-toolbar.visible {
-      display: flex;
-    }
-
-    .btn-primary {
-      padding: 9px 16px;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, #f5c451, #d99b26);
-      color: #121622;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: transform 0.15s ease;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      padding: 8px 13px;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .section-header {
-      margin-bottom: 18px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .section-header h2 {
-      font-family: 'Cinzel', serif;
-      font-size: 1.4rem;
-      color: #fff;
-    }
-
-    .section-header p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* Grid de Cards */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 18px;
-    }
-
-    /* Modo Compacto quando "Todas as Skills" está ativo */
-    .skills-grid.compact-mode {
-      grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
-      gap: 14px;
-    }
+    /* =========================================================
+       ESTILOS DAS 6 RARIDADES / NÍVEIS DE SKILL
+       ========================================================= */
 
     .skill-card {
       position: relative;
-      border-radius: 16px;
-      padding: 18px;
-      background: var(--bg-card);
-      border: 1.5px solid rgba(138, 169, 255, 0.2);
       overflow: hidden;
-      transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      background: linear-gradient(165deg, rgba(15, 25, 50, 0.92) 0%, rgba(9, 15, 32, 0.96) 100%);
     }
-
     .skill-card:hover {
       transform: translateY(-4px);
     }
 
-    /* Comportamento Compacto + Hover Revelador */
-    .skills-grid.compact-mode .skill-card {
-      padding: 13px 14px;
-    }
-
-    .skills-grid.compact-mode .skill-card .card-details {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      margin-top: 0;
-      transition: max-height 0.35s ease, opacity 0.28s ease, margin-top 0.28s ease;
-    }
-
-    .skills-grid.compact-mode .skill-card:hover .card-details,
-    .skills-grid.compact-mode .skill-card:focus-within .card-details {
-      max-height: 360px;
-      opacity: 1;
-      margin-top: 12px;
-    }
-
-    .skills-grid.compact-mode .skill-card .skill-title {
-      font-size: 1rem;
-    }
-
-    .compact-hint {
-      display: none;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .skills-grid.compact-mode .compact-hint {
-      display: block;
-    }
-
-    .skills-grid.compact-mode .skill-card:hover .compact-hint {
-      display: none;
-    }
-
-    /* ================= RARIDADES ================= */
-    /* 1. Iniciante - Verde simples */
+    /* 1. INICIANTE — Verde simples e limpo */
     .rarity-iniciante {
-      border-color: rgba(52, 211, 153, 0.45);
-      background: linear-gradient(180deg, rgba(16, 48, 38, 0.55) 0%, rgba(14, 22, 38, 0.95) 45%);
+      border: 1px solid rgba(34, 197, 94, 0.55);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 0 18px rgba(34, 197, 94, 0.08);
     }
-    .rarity-iniciante .rarity-badge {
-      background: rgba(16, 185, 129, 0.18);
-      color: #6ee7b7;
-      border: 1px solid rgba(52, 211, 153, 0.45);
+    .rarity-iniciante:hover {
+      border-color: #22c55e;
+      box-shadow: 0 10px 26px rgba(34, 197, 94, 0.22), inset 0 0 22px rgba(34, 197, 94, 0.14);
+    }
+    .rarity-iniciante .rarity-bar {
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+    }
+    .badge-iniciante {
+      background: rgba(34, 197, 94, 0.16);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.4);
     }
 
-    /* 2. Intermediário - Azul gradiente */
+    /* 2. INTERMEDIÁRIO — Azul com gradiente */
     .rarity-intermediario {
-      border-color: rgba(59, 130, 246, 0.55);
-      background: linear-gradient(165deg, rgba(29, 78, 216, 0.38) 0%, rgba(15, 28, 64, 0.92) 55%, rgba(12, 19, 36, 0.97) 100%);
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      background: linear-gradient(165deg, rgba(12, 34, 68, 0.94) 0%, rgba(8, 18, 40, 0.97) 100%);
+      box-shadow: 0 6px 22px rgba(2, 132, 199, 0.2), inset 0 0 24px rgba(56, 189, 248, 0.12);
     }
-    .rarity-intermediario .rarity-badge {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.35), rgba(56, 189, 248, 0.25));
-      color: #93c5fd;
-      border: 1px solid rgba(96, 165, 250, 0.55);
+    .rarity-intermediario:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 10px 28px rgba(56, 189, 248, 0.32), inset 0 0 28px rgba(56, 189, 248, 0.18);
     }
-
-    /* 3. Avançado - Dourado ouro (abaixo de Especializado) */
-    .rarity-avancado {
-      border-color: rgba(245, 158, 11, 0.65);
-      background: linear-gradient(160deg, rgba(180, 120, 16, 0.36) 0%, rgba(46, 33, 14, 0.9) 50%, rgba(16, 20, 34, 0.97) 100%);
-      box-shadow: 0 6px 22px rgba(245, 158, 11, 0.2);
+    .rarity-intermediario .rarity-bar {
+      background: linear-gradient(90deg, #0284c7, #38bdf8, #7dd3fc);
     }
-    .rarity-avancado .rarity-badge {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.35), rgba(251, 191, 36, 0.22));
-      color: #fcd34d;
-      border: 1px solid rgba(251, 191, 36, 0.65);
+    .badge-intermediario {
+      background: linear-gradient(90deg, rgba(2, 132, 199, 0.28), rgba(56, 189, 248, 0.22));
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.45);
     }
 
-    /* 4. Especializado - Branco brilhante com efeitos dourados (superior ao Avançado) */
+    /* 3. ESPECIALIZADO — Branco brilhante com efeitos e reflexos dourados */
+    @keyframes whiteGoldShimmer {
+      0% { transform: translateX(-140%) rotate(22deg); }
+      60%, 100% { transform: translateX(240%) rotate(22deg); }
+    }
     .rarity-especializado {
-      border-color: rgba(255, 248, 220, 0.85);
-      background: linear-gradient(155deg, rgba(255, 255, 255, 0.22) 0%, rgba(253, 230, 138, 0.16) 35%, rgba(22, 28, 48, 0.95) 85%);
-      box-shadow: 0 0 24px rgba(255, 250, 230, 0.22), inset 0 0 18px rgba(251, 191, 36, 0.18);
+      border: 1px solid rgba(254, 240, 138, 0.78);
+      background: linear-gradient(165deg, rgba(44, 42, 54, 0.92) 0%, rgba(22, 22, 34, 0.97) 55%, rgba(48, 39, 24, 0.95) 100%);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.16), 0 0 26px rgba(250, 204, 21, 0.2), inset 0 0 22px rgba(255, 255, 255, 0.14);
     }
-    .rarity-especializado::before {
+    .rarity-especializado::after {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -60%;
+      top: -40%;
+      left: -30%;
       width: 45%;
-      height: 200%;
-      background: linear-gradient(90deg, transparent, rgba(255, 248, 214, 0.22), transparent);
-      transform: rotate(25deg);
-      animation: goldSheen 5s ease-in-out infinite;
+      height: 180%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), rgba(253, 224, 71, 0.24), transparent);
+      animation: whiteGoldShimmer 4.5s infinite ease-in-out;
       pointer-events: none;
     }
-    @keyframes goldSheen {
-      0%, 100% { left: -60%; }
-      50% { left: 130%; }
+    .rarity-especializado:hover {
+      border-color: #ffffff;
+      box-shadow: 0 0 26px rgba(255, 255, 255, 0.3), 0 0 34px rgba(250, 204, 21, 0.32);
     }
-    .rarity-especializado .rarity-badge {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(251, 191, 36, 0.32));
-      color: #fffbeb;
-      border: 1px solid rgba(253, 224, 71, 0.85);
-      text-shadow: 0 0 8px rgba(253, 224, 71, 0.6);
+    .rarity-especializado .rarity-bar {
+      background: linear-gradient(90deg, #ffffff, #fef08a, #f59e0b, #ffffff);
+    }
+    .badge-especializado {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(253, 224, 71, 0.22));
+      color: #fef9c3;
+      border: 1px solid rgba(254, 240, 138, 0.65);
+      text-shadow: 0 0 8px rgba(253, 224, 71, 0.5);
     }
 
-    /* 5. Extremo - Vermelho ardente / em chamas */
-    .rarity-extremo {
-      border-color: rgba(249, 115, 22, 0.85);
-      background: linear-gradient(170deg, rgba(185, 28, 28, 0.48) 0%, rgba(124, 25, 18, 0.55) 45%, rgba(24, 12, 16, 0.97) 100%);
-      box-shadow: 0 0 26px rgba(239, 68, 68, 0.34), inset 0 -12px 24px rgba(249, 115, 22, 0.24);
-      animation: emberPulse 2.8s ease-in-out infinite alternate;
+    /* 4. AVANÇADO — Dourado intenso como ouro metálico */
+    .rarity-avancado {
+      border: 1.5px solid #fbbf24;
+      background: linear-gradient(160deg, rgba(66, 45, 10, 0.94) 0%, rgba(28, 20, 8, 0.97) 55%, rgba(56, 38, 8, 0.95) 100%);
+      box-shadow: 0 8px 26px rgba(234, 179, 8, 0.25), inset 0 0 24px rgba(251, 191, 36, 0.16);
     }
+    .rarity-avancado:hover {
+      border-color: #fde047;
+      box-shadow: 0 12px 34px rgba(234, 179, 8, 0.4), inset 0 0 30px rgba(251, 191, 36, 0.24);
+    }
+    .rarity-avancado .rarity-bar {
+      background: linear-gradient(90deg, #b45309, #eab308, #fde047, #d97706);
+    }
+    .badge-avancado {
+      background: linear-gradient(90deg, rgba(217, 119, 6, 0.35), rgba(250, 204, 21, 0.3));
+      color: #fde047;
+      border: 1px solid rgba(251, 191, 36, 0.7);
+    }
+
+    /* 5. EXTREMO — Vermelho ardente / calor pulsante em chamas */
     @keyframes emberPulse {
-      0% { box-shadow: 0 0 18px rgba(239, 68, 68, 0.28), inset 0 -8px 18px rgba(249, 115, 22, 0.18); }
-      100% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.5), inset 0 -14px 28px rgba(239, 68, 68, 0.35); }
+      0%, 100% {
+        box-shadow: 0 0 18px rgba(239, 68, 68, 0.38), 0 0 32px rgba(249, 115, 22, 0.24), inset 0 0 24px rgba(239, 68, 68, 0.22);
+        border-color: #ef4444;
+      }
+      50% {
+        box-shadow: 0 0 26px rgba(249, 115, 22, 0.62), 0 0 44px rgba(220, 38, 38, 0.38), inset 0 0 32px rgba(249, 115, 22, 0.32);
+        border-color: #fb923c;
+      }
     }
-    .rarity-extremo .rarity-badge {
-      background: linear-gradient(135deg, rgba(220, 38, 38, 0.45), rgba(249, 115, 22, 0.4));
-      color: #fed7aa;
-      border: 1px solid rgba(251, 146, 60, 0.85);
+    @keyframes heatRise {
+      0% { opacity: 0.22; transform: translateY(6px) scaleY(0.96); }
+      50% { opacity: 0.42; transform: translateY(-2px) scaleY(1.03); }
+      100% { opacity: 0.22; transform: translateY(6px) scaleY(0.96); }
+    }
+    .rarity-extremo {
+      border: 1.5px solid #ef4444;
+      background: linear-gradient(170deg, rgba(69, 14, 14, 0.95) 0%, rgba(30, 8, 10, 0.98) 60%, rgba(78, 22, 10, 0.96) 100%);
+      animation: emberPulse 2.6s infinite ease-in-out;
+    }
+    .rarity-extremo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 105%, rgba(249, 115, 22, 0.34), rgba(220, 38, 38, 0.14) 55%, transparent 78%);
+      animation: heatRise 2.2s infinite ease-in-out;
+      pointer-events: none;
+    }
+    .rarity-extremo .rarity-bar {
+      background: linear-gradient(90deg, #991b1b, #ef4444, #f97316, #fde047);
+    }
+    .badge-extremo {
+      background: linear-gradient(90deg, rgba(220, 38, 38, 0.38), rgba(249, 115, 22, 0.34));
+      color: #fdba74;
+      border: 1px solid rgba(249, 115, 22, 0.75);
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.65);
     }
 
-    /* 6. Calamidade - Roxo gradiente com raiozinhos animados internos */
+    /* 6. CALAMIDADE — Roxo profundo com gradiente e raiozinhos roxos claros */
+    @keyframes calamityAura {
+      0%, 100% {
+        box-shadow: 0 0 22px rgba(168, 85, 247, 0.42), 0 0 38px rgba(126, 34, 206, 0.28), inset 0 0 26px rgba(192, 132, 252, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(192, 132, 252, 0.65), 0 0 50px rgba(147, 51, 234, 0.38), inset 0 0 34px rgba(216, 180, 254, 0.28);
+      }
+    }
+    @keyframes lightningFlash {
+      0%, 100% { opacity: 0.18; }
+      12% { opacity: 0.75; }
+      16% { opacity: 0.2; }
+      22% { opacity: 0.85; }
+      28% { opacity: 0.15; }
+      68% { opacity: 0.22; }
+      72% { opacity: 0.72; }
+      76% { opacity: 0.18; }
+    }
     .rarity-calamidade {
-      border-color: rgba(192, 132, 252, 0.9);
-      background: linear-gradient(150deg, rgba(107, 33, 168, 0.58) 0%, rgba(59, 7, 100, 0.68) 50%, rgba(17, 10, 34, 0.98) 100%);
-      box-shadow: 0 0 30px rgba(168, 85, 247, 0.42), inset 0 0 22px rgba(216, 180, 254, 0.2);
+      border: 1.5px solid #c084fc;
+      background: linear-gradient(160deg, rgba(46, 14, 78, 0.96) 0%, rgba(20, 8, 42, 0.98) 55%, rgba(62, 18, 102, 0.96) 100%);
+      animation: calamityAura 3.2s infinite ease-in-out;
     }
-    .rarity-calamidade .rarity-badge {
-      background: linear-gradient(135deg, rgba(147, 51, 234, 0.55), rgba(216, 180, 254, 0.3));
-      color: #f3e8ff;
-      border: 1px solid rgba(216, 180, 254, 0.85);
-      text-shadow: 0 0 10px rgba(216, 180, 254, 0.8);
-    }
-
-    .lightning-canvas {
+    .calamity-bolts {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 1;
-      opacity: 0.78;
+      animation: lightningFlash 4s infinite linear;
+      opacity: 0.45;
+    }
+    .rarity-calamidade .rarity-bar {
+      background: linear-gradient(90deg, #6b21a8, #a855f7, #e879f9, #c084fc);
+    }
+    .badge-calamidade {
+      background: linear-gradient(90deg, rgba(126, 34, 206, 0.45), rgba(168, 85, 247, 0.35));
+      color: #e9d5ff;
+      border: 1px solid rgba(216, 180, 254, 0.78);
+      text-shadow: 0 0 10px rgba(192, 132, 252, 0.75);
     }
 
-    .card-inner {
+    /* Card bloqueado / futuro */
+    .skill-locked {
+      filter: saturate(0.68);
+    }
+    .skill-locked:hover {
+      filter: saturate(0.95);
+    }
+
+    /* Conectores da árvore de evolução */
+    .evo-connector {
       position: relative;
-      z-index: 2;
-    }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .class-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #cbd8f6;
-    }
-
-    .class-tag svg {
-      width: 16px;
-      height: 16px;
-      color: var(--accent-gold);
-    }
-
-    .rarity-badge {
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 3px 9px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-
-    .stars-row {
-      font-size: 0.78rem;
-      letter-spacing: 2px;
-      color: var(--accent-gold);
-      margin-bottom: 4px;
-    }
-
-    .skill-title {
-      font-family: 'Cinzel', serif;
-      font-size: 1.12rem;
-      font-weight: 700;
-      color: #ffffff;
-      line-height: 1.25;
-    }
-
-    .exclusive-pill {
-      display: inline-block;
-      margin-top: 6px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 6px;
-      background: rgba(245, 196, 81, 0.16);
-      border: 1px solid rgba(245, 196, 81, 0.45);
-      color: #fde68a;
-    }
-
-    .cost-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin: 10px 0;
-    }
-
-    .pill {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 9px;
-      border-radius: 8px;
-      background: rgba(8, 13, 27, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #e2e8f0;
-    }
-
-    .pill.cost {
-      border-color: rgba(78, 168, 255, 0.4);
-      color: #93c5fd;
-    }
-
-    .skill-desc {
-      font-size: 0.86rem;
-      line-height: 1.5;
-      color: #d2dcf2;
-      margin-bottom: 12px;
-    }
-
-    .req-box {
-      font-size: 0.78rem;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(6, 10, 22, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #b6c4e2;
-      margin-bottom: 10px;
-    }
-
-    .req-box strong {
-      color: var(--accent-gold);
-    }
-
-    .card-actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .copy-btn {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(78, 168, 255, 0.38);
-      background: rgba(78, 168, 255, 0.12);
-      color: #bae6fd;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.18s ease;
-    }
-
-    .copy-btn:hover {
-      background: rgba(78, 168, 255, 0.26);
-      color: #fff;
-    }
-
-    .gm-card-btns {
-      display: none;
-      gap: 6px;
-    }
-
-    body.gm-unlocked .gm-card-btns {
-      display: flex;
-    }
-
-    .icon-mini-btn {
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(255, 255, 255, 0.07);
-      color: #fff;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-
-    .icon-mini-btn.danger {
-      border-color: rgba(248, 113, 113, 0.45);
-      color: #fca5a5;
-    }
-
-    /* Árvore de Evolução */
-    .evolution-container {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .evo-tier {
-      background: rgba(11, 18, 35, 0.78);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 16px 18px;
-    }
-
-    .evo-tier-title {
-      font-family: 'Cinzel', serif;
-      font-size: 1.05rem;
-      color: var(--accent-gold);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Modais */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(3, 6, 15, 0.78);
-      backdrop-filter: blur(6px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 520px;
-      background: #0e162b;
-      border: 1px solid rgba(138, 169, 255, 0.3);
-      border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-box h3 {
-      font-family: 'Cinzel', serif;
-      margin-bottom: 14px;
-      color: #fff;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      margin-bottom: 12px;
-    }
-
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-
-    .form-group label {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      padding: 9px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(138, 169, 255, 0.25);
-      background: #080d1b;
-      color: #fff;
-      font-family: inherit;
-      font-size: 0.86rem;
-    }
-
-    .form-group textarea {
-      min-height: 85px;
-      resize: vertical;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 22px;
-      right: 22px;
-      z-index: 120;
-      padding: 11px 18px;
-      border-radius: 12px;
-      background: rgba(16, 185, 129, 0.94);
-      color: #052e16;
-      font-weight: 700;
-      font-size: 0.85rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
-      transform: translateY(120%);
-      opacity: 0;
-      transition: all 0.25s ease;
-    }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    @media (max-width: 860px) {
-      .sidebar {
-        position: static;
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--border-subtle);
-      }
-      .app-shell {
-        flex-direction: column;
-      }
-      .main-content {
-        margin-left: 0;
-        padding: 18px;
-      }
-      .topbar {
-        padding: 0 14px;
-      }
-      .title-block h1 {
-        font-size: 1rem;
-      }
     }
   </style>
 </head>
-<body>
-  <!-- Fundo Estrelado com Movimento Panorâmico Suave -->
-  <div id="starfield-wrapper">
-    <canvas id="starfield"></canvas>
-  </div>
+<body class="antialiased selection:bg-sky-500/30 selection:text-sky-100">
 
-  <!-- Cabeçalho Fixo -->
-  <header class="topbar">
-    <div class="brand-area">
-      <a href="index.html" class="logo-ring" title="Voltar ao Lobby Central">
-        <img src="logo.png" alt="One Piece: Mar Indomável" />
-      </a>
-      <div class="title-block">
-        <div class="subtitle">Catálogo de Técnicas</div>
-        <h1>Banco de Habilidades — One Piece: Mar Indomável</h1>
-      </div>
-    </div>
+  <!-- Céu Estrelado Animado -->
+  <canvas id="starfield"></canvas>
 
-    <div class="topbar-actions">
-      <div class="view-switcher">
-        <button class="view-btn active" data-view="category" onclick="setViewMode('category')">Por Categoria</button>
-        <button class="view-btn" data-view="evolution" onclick="setViewMode('evolution')">Por Evolução</button>
-      </div>
-      <a href="index.html" class="lobby-link">← Lobby</a>
-      <button class="crown-btn" id="crownBtn" title="Acesso do Mestre" onclick="openMasterModal()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>
-        </svg>
-      </button>
-    </div>
-  </header>
+  <!-- Container Principal -->
+  <div class="relative z-10 min-h-screen flex flex-col">
 
-  <div class="app-shell">
-    <!-- Barra Lateral -->
-    <aside class="sidebar" id="sidebarNav"></aside>
+    <!-- HEADER SUPERIOR (Estilo Data Bank) -->
+    <header class="databank-panel sticky top-0 z-30 border-b border-sky-300/15 px-4 sm:px-6 py-3">
+      <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+        
+        <!-- Esquerda: Emblema + Título -->
+        <div class="flex items-center gap-3">
+          <button id="mobileMenuBtn" type="button" class="lg:hidden p-2 rounded-lg border border-sky-400/25 bg-slate-900/70 text-sky-200 hover:bg-sky-500/20" aria-label="Abrir categorias">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
 
-    <!-- Conteúdo Principal -->
-    <main class="main-content">
-      <div class="gm-toolbar" id="gmToolbar">
-        <span style="font-size:0.85rem;color:#fde68a;font-weight:600;">👑 Modo Mestre Ativo — Edição liberada</span>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn-primary" onclick="openSkillModal()">+ Nova Skill</button>
-          <button class="btn-secondary" onclick="exportSkills()">Exportar JSON</button>
-          <button class="btn-secondary" onclick="document.getElementById('importFile').click()">Importar JSON</button>
-          <input type="file" id="importFile" accept=".json" style="display:none" onchange="importSkills(event)" />
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400/25 via-indigo-500/20 to-amber-400/20 border border-sky-300/40 flex items-center justify-center shadow-[0_0_15px_rgba(56,189,248,0.25)] shrink-0">
+            <!-- Bússola Estelar SVG -->
+            <svg class="w-6 h-6 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+              <circle cx="12" cy="12" r="9" class="text-sky-300/80"/>
+              <polygon points="12,4 14.2,9.8 20,12 14.2,14.2 12,20 9.8,14.2 4,12 9.8,9.8" fill="currentColor" fill-opacity="0.25"/>
+              <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
+            </svg>
+          </div>
+
+          <div>
+            <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-sky-300/80 font-semibold">
+              <span>Data Bank Náutico</span>
+              <span class="text-slate-500">•</span>
+              <span class="text-amber-300/90">Grimório de Técnicas</span>
+            </div>
+            <h1 class="font-title text-base sm:text-xl font-bold tracking-wide text-white leading-tight">
+              Banco de Habilidades — One Piece: Mar Indomável
+            </h1>
+          </div>
+        </div>
+
+        <!-- Direita: Contador Desbloqueadas + Modo Mestre (Coroa) + Voltar ao Lobby -->
+        <div class="flex items-center gap-2.5 sm:gap-4 ml-auto">
+          <!-- Contador estilo Indexed X/Y -->
+          <div class="px-3 py-1.5 rounded-xl bg-slate-900/75 border border-sky-400/25 flex items-center gap-2 text-xs sm:text-sm">
+            <span class="text-slate-400 hidden sm:inline">Desbloqueadas</span>
+            <span class="text-slate-400 sm:hidden">Skills</span>
+            <span id="unlockedCounter" class="font-bold text-amber-300 tracking-wide">0/0</span>
+          </div>
+
+          <!-- Botão Pequeno Redondo em Forma de Coroa (Modo Mestre) -->
+          <button
+            id="masterCrownBtn"
+            type="button"
+            title="Modo Mestre"
+            aria-label="Modo Mestre"
+            class="w-9 h-9 rounded-full flex items-center justify-center border transition-all duration-200 bg-slate-900/80 border-amber-400/35 text-amber-300/85 hover:text-amber-200 hover:border-amber-300 hover:shadow-[0_0_14px_rgba(251,191,36,0.4)] shrink-0"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 18h18v2H3v-2zm0-11l4.5 4.5L12 5l4.5 6.5L21 7l-1.5 9h-15L3 7z"/>
+            </svg>
+          </button>
+
+          <!-- Botão Voltar ao Lobby -->
+          <a
+            href="index.html"
+            title="Voltar ao Lobby Central"
+            class="px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-sky-500/20 border border-sky-300/25 hover:border-sky-300/55 text-slate-200 hover:text-white text-xs sm:text-sm font-medium flex items-center gap-1.5 transition"
+          >
+            <svg class="w-4 h-4 text-sky-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/>
+            </svg>
+            <span class="hidden sm:inline">Lobby</span>
+          </a>
         </div>
       </div>
+    </header>
 
-      <div class="filter-bar">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+    <!-- BARRA DO MODO MESTRE (Aparece somente quando autenticado com ChaveMestra) -->
+    <div id="masterToolbar" class="hidden bg-gradient-to-r from-amber-950/85 via-slate-900/95 to-amber-950/85 border-b border-amber-400/40 px-4 sm:px-6 py-2.5">
+      <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2 text-xs sm:text-sm text-amber-200 font-medium">
+          <span class="inline-flex w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <span>Modo Mestre Ativo — Você pode criar, editar, excluir e alternar desbloqueios.</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="addSkillBtn" type="button" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition">
+            <span>+ Nova Skill</span>
+          </button>
+          <button id="exportJsonBtn" type="button" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-amber-300/30 text-amber-100 text-xs font-medium transition">
+            Exportar JSON
+          </button>
+          <label class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-amber-300/30 text-amber-100 text-xs font-medium cursor-pointer transition">
+            Importar JSON
+            <input id="importJsonInput" type="file" accept=".json" class="hidden" />
+          </label>
+          <button id="resetDefaultBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-rose-950/70 hover:bg-rose-900 border border-rose-400/30 text-rose-200 text-xs transition" title="Restaurar skills de exemplo">
+            Resetar Padrão
+          </button>
+          <button id="logoutMasterBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-600 text-slate-300 text-xs transition">
+            Sair do Modo Mestre
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORPO PRINCIPAL: SIDEBAR + ÁREA DE CONTEÚDO -->
+    <div class="max-w-[1600px] w-full mx-auto flex-1 flex relative">
+
+      <!-- Overlay Mobile da Sidebar -->
+      <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-950/75 z-30 hidden lg:hidden"></div>
+
+      <!-- SIDEBAR ESQUERDA (Estilo Data Bank com ícones SVG) -->
+      <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-72 lg:w-64 xl:w-72 databank-panel lg:bg-slate-950/45 border-r border-sky-300/15 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-out">
+        <div class="p-4 border-b border-sky-300/10 flex items-center justify-between lg:hidden">
+          <span class="font-title text-sm font-bold text-sky-200">Categorias & Linhagens</span>
+          <button id="closeSidebarBtn" type="button" class="p-1.5 rounded-lg text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <div id="categoryNav" class="p-3 space-y-1 overflow-y-auto flex-1">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+
+        <div class="p-3.5 border-t border-sky-300/10 text-[11px] text-slate-400 leading-relaxed">
+          <p class="text-sky-300/90 font-semibold mb-0.5">Dica de Planejamento</p>
+          Clique em qualquer skill para ver requisitos detalhados, custos e cadeia de evolução.
+        </div>
+      </aside>
+
+      <!-- ÁREA PRINCIPAL -->
+      <main class="flex-1 min-w-0 p-4 sm:p-6 space-y-5">
+
+        <!-- CONTROLES SUPERIORES: ALTERNADOR DE VISUALIZAÇÃO + BUSCA + FILTROS -->
+        <section class="databank-panel rounded-2xl p-4 space-y-4">
+          <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+
+            <!-- Seletor / Alternador de Visualização -->
+            <div class="inline-flex p-1 rounded-xl bg-slate-950/85 border border-sky-400/25 self-start">
+              <button
+                id="viewCategoryBtn"
+                type="button"
+                class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition bg-sky-500/25 text-white border border-sky-400/45 shadow-[0_0_12px_rgba(56,189,248,0.2)]"
+              >
+                <svg class="w-4 h-4 text-sky-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                  <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                  <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                  <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                </svg>
+                <span>Modo por Categoria</span>
+              </button>
+
+              <button
+                id="viewEvolutionBtn"
+                type="button"
+                class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-300 hover:text-white border border-transparent"
+              >
+                <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="6" cy="6" r="2.5"/>
+                  <circle cx="18" cy="6" r="2.5"/>
+                  <circle cx="12" cy="18" r="2.5"/>
+                  <path stroke-linecap="round" d="M8 7.5l3 8M16 7.5l-3 8"/>
+                </svg>
+                <span>Modo por Evolução / Requisitos</span>
+              </button>
+            </div>
+
+            <!-- Barra de Pesquisa em Tempo Real -->
+            <div class="relative flex-1 max-w-xl">
+              <svg class="w-4 h-4 text-sky-300/75 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7"/>
+                <path stroke-linecap="round" d="M20 20l-3.5-3.5"/>
+              </svg>
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Buscar skill por nome, efeito, requisito, custo ou jogador..."
+                class="w-full pl-10 pr-9 py-2 rounded-xl bg-slate-950/80 border border-sky-400/25 focus:border-sky-400 focus:outline-none text-sm text-slate-100 placeholder-slate-400"
+              />
+              <button id="clearSearchBtn" type="button" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">✕</button>
+            </div>
+          </div>
+
+          <!-- Filtros Combináveis -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 border-t border-sky-300/10">
+            <!-- Filtro de Raridade / Nível -->
+            <div>
+              <label for="rarityFilter" class="block text-[11px] uppercase tracking-wider text-slate-400 mb-1">Nível / Raridade</label>
+              <select id="rarityFilter" class="w-full px-3 py-2 rounded-xl bg-slate-950/85 border border-sky-400/20 text-xs sm:text-sm text-slate-100 focus:border-sky-400 focus:outline-none">
+                <option value="all">Todas as Raridades</option>
+                <option value="iniciante">Iniciante (Verde)</option>
+                <option value="intermediario">Intermediário (Azul)</option>
+                <option value="especializado">Especializado (Branco & Ouro)</option>
+                <option value="avancado">Avançado (Ouro Metálico)</option>
+                <option value="extremo">Extremo (Vermelho Ardente)</option>
+                <option value="calamidade">Calamidade (Roxo Tempestade)</option>
+              </select>
+            </div>
+
+            <!-- Filtro de Status -->
+            <div>
+              <label for="statusFilter" class="block text-[11px] uppercase tracking-wider text-slate-400 mb-1">Status de Aprendizado</label>
+              <select id="statusFilter" class="w-full px-3 py-2 rounded-xl bg-slate-950/85 border border-sky-400/20 text-xs sm:text-sm text-slate-100 focus:border-sky-400 focus:outline-none">
+                <option value="all">Todas (Desbloqueadas e Futuras)</option>
+                <option value="unlocked">Desbloqueadas / Disponíveis</option>
+                <option value="locked">Futuras / Bloqueadas</option>
+              </select>
+            </div>
+
+            <!-- Filtro de Exclusividade / Origem -->
+            <div>
+              <label for="ownerFilter" class="block text-[11px] uppercase tracking-wider text-slate-400 mb-1">Origem / Exclusividade</label>
+              <select id="ownerFilter" class="w-full px-3 py-2 rounded-xl bg-slate-950/85 border border-sky-400/20 text-xs sm:text-sm text-slate-100 focus:border-sky-400 focus:outline-none">
+                <option value="all">Todas as Origens</option>
+                <option value="geral">Gerais / Aprendíveis por Todos</option>
+                <option value="Akira Tansui">Exclusiva: Akira Tansui</option>
+                <option value="Soul Henri">Exclusiva: Soul Henri</option>
+                <option value="Alpha">Exclusiva: Alpha</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Cabeçalho da Seção Ativa -->
+        <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+          <div>
+            <h2 id="activeSectionTitle" class="font-title text-lg sm:text-xl font-bold text-white">Todas as Habilidades</h2>
+            <p id="activeSectionSubtitle" class="text-xs sm:text-sm text-slate-400">Exibindo catálogo completo do Mar Indomável</p>
+          </div>
+          <span id="visibleCountBadge" class="text-xs px-3 py-1 rounded-full bg-slate-900/80 border border-sky-400/20 text-sky-200">
+            0 habilidades encontradas
+          </span>
+        </div>
+
+        <!-- ÁREA DE EXIBIÇÃO PRINCIPAL (Grid por Categoria ou Árvore de Evolução) -->
+        <div id="skillsContainer" class="pb-12">
+          <!-- Renderizado dinamicamente -->
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL DE DETALHES DA SKILL
+       ========================================================= -->
+  <div id="detailModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+    <div id="detailModalBox" class="w-full max-w-2xl rounded-2xl databank-panel border border-sky-300/30 shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease-out]">
+      <!-- Preenchido via JS -->
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL DE SENHA DO MODO MESTRE
+       ========================================================= -->
+  <div id="passwordModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+    <div class="w-full max-w-sm rounded-2xl databank-panel border border-amber-400/40 p-6 shadow-2xl">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-amber-400/15 border border-amber-400/45 flex items-center justify-center text-amber-300">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 18h18v2H3v-2zm0-11l4.5 4.5L12 5l4.5 6.5L21 7l-1.5 9h-15L3 7z"/>
           </svg>
-          <input type="text" id="searchInput" placeholder="Buscar skill por nome, custo, efeito ou requisito..." oninput="render()" />
         </div>
-
-        <select class="filter-select" id="rarityFilter" onchange="render()">
-          <option value="all">Todas as Raridades</option>
-          <option value="iniciante">★ Iniciante</option>
-          <option value="intermediario">★★ Intermediário</option>
-          <option value="avancado">★★★ Avançado</option>
-          <option value="especializado">★★★★ Especializado</option>
-          <option value="extremo">★★★★★ Extremo</option>
-          <option value="calamidade">★★★★★★ Calamidade</option>
-        </select>
-
-        <select class="filter-select" id="raceFilter" onchange="render()">
-          <option value="all">Todas as Raças</option>
-          <option value="Humano">Humano</option>
-          <option value="Mink">Mink</option>
-          <option value="Homens-Peixe">Homens-Peixe</option>
-          <option value="Gigante">Gigante</option>
-          <option value="Skypiano">Skypiano</option>
-          <option value="Lunarianos">Lunarianos</option>
-        </select>
-
-        <select class="filter-select" id="playerFilter" onchange="render()">
-          <option value="all">Todos os Jogadores / Gerais</option>
-          <option value="geral">Apenas Gerais</option>
-          <option value="Akira Tansui">Exclusiva: Akira Tansui</option>
-          <option value="Soul Henri">Exclusiva: Soul Henri</option>
-          <option value="Alpha">Exclusiva: Alpha</option>
-        </select>
-      </div>
-
-      <div class="section-header">
         <div>
-          <h2 id="sectionTitle">Todas as Skills</h2>
-          <p id="sectionSubtitle">Passe o mouse sobre uma carta compacta para revelar custo, efeitos e requisitos.</p>
+          <h3 class="font-title text-base font-bold text-amber-200">Acesso do Mestre</h3>
+          <p class="text-xs text-slate-400">Insira a chave para editar o Banco de Skills</p>
         </div>
-        <span id="resultCount" style="font-size:0.84rem;color:var(--text-muted);"></span>
       </div>
 
-      <div id="skillsContainer"></div>
-    </main>
-  </div>
-
-  <!-- Modal Senha Mestre -->
-  <div class="modal-backdrop" id="masterModal">
-    <div class="modal-box" style="max-width:380px;">
-      <h3>👑 Acesso do Mestre</h3>
-      <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:14px;">
-        Digite a senha para liberar a criação, edição e exclusão de habilidades.
-      </p>
-      <div class="form-group">
-        <label>Senha</label>
-        <input type="password" id="masterPasswordInput" placeholder="••••••••••••" onkeydown="if(event.key==='Enter') verifyMaster()" />
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" onclick="closeModal('masterModal')">Cancelar</button>
-        <button class="btn-primary" onclick="verifyMaster()">Entrar</button>
-      </div>
+      <form id="passwordForm" class="space-y-4">
+        <div>
+          <input
+            id="masterPasswordInput"
+            type="password"
+            placeholder="Digite a senha..."
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/90 border border-amber-400/30 focus:border-amber-300 focus:outline-none text-sm text-white"
+            required
+          />
+          <p id="passwordError" class="hidden text-xs text-rose-400 mt-1.5">Senha incorreta. Tente novamente.</p>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button id="cancelPasswordBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm text-slate-300">Cancelar</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs sm:text-sm">Desbloquear</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- Modal Criar/Editar Skill -->
-  <div class="modal-backdrop" id="skillModal">
-    <div class="modal-box">
-      <h3 id="skillModalTitle">Nova Habilidade</h3>
-      <input type="hidden" id="editSkillId" />
-      <div class="form-grid">
-        <div class="form-group full">
-          <label>Nome da Skill</label>
-          <input type="text" id="skillName" placeholder="Ex: Corte do Vento Salgado" />
-        </div>
-        <div class="form-group">
-          <label>Classe / Categoria</label>
-          <select id="skillCategory">
-            <option value="Lutador">Lutador</option>
-            <option value="Espadachim">Espadachim</option>
-            <option value="Curandeiro">Curandeiro</option>
-            <option value="Assassino">Assassino</option>
-            <option value="Invocador">Invocador</option>
-            <option value="Atirador">Atirador</option>
-            <option value="Brutamonte">Brutamonte</option>
-            <option value="Akuma no Mi">Akuma no Mi</option>
-            <option value="Espiritualista">Espiritualista</option>
-            <option value="Raça">Habilidade Racial</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Nível / Raridade</label>
-          <select id="skillRarity">
-            <option value="iniciante">Iniciante (★)</option>
-            <option value="intermediario">Intermediário (★★)</option>
-            <option value="avancado">Avançado (★★★)</option>
-            <option value="especializado">Especializado (★★★★)</option>
-            <option value="extremo">Extremo (★★★★★)</option>
-            <option value="calamidade">Calamidade (★★★★★★)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Custo (Estamina, Vida, etc.)</label>
-          <input type="text" id="skillCost" placeholder="Ex: 3 Estamina" />
-        </div>
-        <div class="form-group">
-          <label>Tipo de Ação</label>
-          <input type="text" id="skillAction" placeholder="Ex: Ação Normal / Reação" />
-        </div>
-        <div class="form-group">
-          <label>Raça (Opcional)</label>
-          <select id="skillRace">
-            <option value="">Nenhuma / Qualquer</option>
-            <option value="Humano">Humano</option>
-            <option value="Mink">Mink</option>
-            <option value="Homens-Peixe">Homens-Peixe</option>
-            <option value="Gigante">Gigante</option>
-            <option value="Skypiano">Skypiano</option>
-            <option value="Lunarianos">Lunarianos</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Exclusiva de Player (Opcional)</label>
-          <select id="skillExclusive">
-            <option value="">Geral (Todos)</option>
-            <option value="Akira Tansui">Akira Tansui</option>
-            <option value="Soul Henri">Soul Henri</option>
-            <option value="Alpha">Alpha</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label>Requisitos para Aprender</label>
-          <input type="text" id="skillReq" placeholder="Ex: 6 PP + Treinar com Mestre Espadachim" />
-        </div>
-        <div class="form-group full">
-          <label>Skill Anterior Necessária (Opcional)</label>
-          <input type="text" id="skillPrereq" placeholder="Ex: Corte do Vento Salgado" />
-        </div>
-        <div class="form-group full">
-          <label>Descrição e Efeito</label>
-          <textarea id="skillDesc" placeholder="Descreva o funcionamento da habilidade em combate ou exploração..."></textarea>
-        </div>
+  <!-- =========================================================
+       MODAL DE CRIAR / EDITAR SKILL (MODO MESTRE)
+       ========================================================= -->
+  <div id="editorModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm overflow-y-auto">
+    <div class="w-full max-w-2xl rounded-2xl databank-panel border border-amber-400/40 p-5 sm:p-6 shadow-2xl my-8">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-sky-300/15">
+        <h3 id="editorModalTitle" class="font-title text-lg font-bold text-amber-200">Nova Habilidade</h3>
+        <button id="closeEditorBtn" type="button" class="text-slate-400 hover:text-white text-lg">✕</button>
       </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" onclick="closeModal('skillModal')">Cancelar</button>
-        <button class="btn-primary" onclick="saveSkill()">Salvar Skill</button>
-      </div>
+
+      <form id="skillEditorForm" class="space-y-4">
+        <input type="hidden" id="editSkillId" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Nome da Skill *</label>
+            <input id="fieldName" type="text" required placeholder="Ex.: Corte do Vento Salgado" class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Categoria / Classe / Raça *</label>
+            <select id="fieldCategory" class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none">
+              <option value="Lutador">Lutador</option>
+              <option value="Espadachim">Espadachim</option>
+              <option value="Curandeiro">Curandeiro</option>
+              <option value="Assassino">Assassino</option>
+              <option value="Invocador">Invocador</option>
+              <option value="Atirador">Atirador</option>
+              <option value="Brutamonte">Brutamonte</option>
+              <option value="Akuma no Mi">Akuma no Mi</option>
+              <option value="Espiritualista">Espiritualista</option>
+              <option value="Raças">Raças</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Nível / Raridade *</label>
+            <select id="fieldRarity" class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none">
+              <option value="iniciante">Iniciante</option>
+              <option value="intermediario">Intermediário</option>
+              <option value="especializado">Especializado</option>
+              <option value="avancado">Avançado</option>
+              <option value="extremo">Extremo</option>
+              <option value="calamidade">Calamidade</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Custo Customizado *</label>
+            <input id="fieldCost" type="text" required placeholder="Ex.: 2 Estamina / 5 HP / Passiva" class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Tipo de Ação</label>
+            <input id="fieldActionType" type="text" placeholder="Ex.: Ação Normal, Reação, Passiva" class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Exclusiva de Jogador (Opcional)</label>
+            <select id="fieldExclusive" class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none">
+              <option value="">Nenhuma (Disponível Geral)</option>
+              <option value="Akira Tansui">Akira Tansui</option>
+              <option value="Soul Henri">Soul Henri</option>
+              <option value="Alpha">Alpha</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Skill Anterior (Pré-requisito de Evolução)</label>
+            <select id="fieldPrerequisiteSkill" class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none">
+              <option value="">Nenhuma (Skill Base / Inicial)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">Requisitos Escritos de Desbloqueio *</label>
+          <input id="fieldUnlockReq" type="text" required placeholder="Ex.: Aprender por Mestre Espadachim / Ter FOR +3" class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">Descrição e Efeitos Mecânicos *</label>
+          <textarea id="fieldDescription" rows="4" required placeholder="Descreva o efeito da habilidade, alcance, dano ou bônus..." class="w-full px-3 py-2 rounded-xl bg-slate-950/90 border border-sky-400/25 text-sm text-white focus:border-amber-300 focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-sky-300/15">
+          <label class="inline-flex items-center gap-2 text-sm text-slate-200 cursor-pointer">
+            <input id="fieldUnlocked" type="checkbox" class="w-4 h-4 rounded accent-amber-400" />
+            <span>Skill já desbloqueada / aprendida</span>
+          </label>
+
+          <div class="flex gap-2">
+            <button id="cancelEditorBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs sm:text-sm text-slate-300">Cancelar</button>
+            <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs sm:text-sm">Salvar Skill</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 
-  <div class="toast" id="toast">Skill copiada para colar na ficha!</div>
+  <!-- =========================================================
+       TOAST DE FEEDBACK DISCRETO
+       ========================================================= -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-xl databank-panel border border-sky-300/40 text-xs sm:text-sm text-white shadow-xl"></div>
 
   <script>
-    const ICONS = {
-      all: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
-      Lutador: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11V6a2 2 0 0 1 4 0v4"/><path d="M13 10V5a2 2 0 0 1 4 0v6"/><path d="M17 10V7a2 2 0 0 1 4 0v7a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6v-3a2 2 0 0 1 4 0v2"/></svg>`,
-      Espadachim: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/></svg>`,
-      Curandeiro: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 2h2v7h7v2h-7v7h-2v-7H4V9h7V2z"/></svg>`,
-      Assassino: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v14"/><path d="M9 13h6"/><path d="M10 16h4v4l-2 2-2-2v-4z"/><path d="M12 2l3 6H9l3-6z"/></svg>`,
-      Invocador: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5l4 4 4-3 4 3 4-4v9c0 4-3.5 7-8 8-4.5-1-8-4-8-8V5z"/><circle cx="9.5" cy="12" r="1"/><circle cx="14.5" cy="12" r="1"/></svg>`,
-      Atirador: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h15l3 3v3h-5l-2 5h-3l1-5H7l-2 3H3V8z"/></svg>`,
-      Brutamonte: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l3 5-3 13H6L3 8l3-5z"/><path d="M9 3v5l3 2 3-2V3"/></svg>`,
-      'Akuma no Mi': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6c-4.5 0-8 3.2-8 7.5S7.5 21 12 21s8-3.2 8-7.5S16.5 6 12 6z"/><path d="M12 6c0-2.5 1.8-4 4-4"/><path d="M9 13c0-1.7 1.3-3 3-3s3 1.3 3 3-1.3 3-3 3"/></svg>`,
-      Espiritualista: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a7 7 0 0 0-7 7v9l2.5-2 2.5 2 2-2 2 2 2.5-2 2.5 2v-9a7 7 0 0 0-7-7z"/><circle cx="10" cy="10" r="1"/><circle cx="14" cy="10" r="1"/></svg>`,
-      Raça: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>`,
-      Exclusiva: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+    // =========================================================
+    // 1. DEFINIÇÕES DE CATEGORIAS, ÍCONES SVG E RARIDADES
+    // =========================================================
+    const CATEGORIES = [
+      {
+        id: 'Todas',
+        label: 'Todas as Skills',
+        group: 'geral',
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+              </svg>`
+      },
+      {
+        id: 'Lutador',
+        label: 'Lutador',
+        group: 'classes',
+        // Punho
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a2 2 0 014 0v3m0-3a2 2 0 014 0v3m0-2a2 2 0 014 0v5a6 6 0 01-6 6h-2a6 6 0 01-6-6v-2a2 2 0 012-2h3"/>
+                <path stroke-linecap="round" d="M8 14h6"/>
+              </svg>`
+      },
+      {
+        id: 'Espadachim',
+        label: 'Espadachim',
+        group: 'classes',
+        // Katana
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 20l4.5-4.5M7 13l4 4M9.5 14.5L20 4l-1.5-1.5L8 13"/>
+                <path stroke-linecap="round" d="M3 21l2-2"/>
+              </svg>`
+      },
+      {
+        id: 'Curandeiro',
+        label: 'Curandeiro',
+        group: 'classes',
+        // Símbolo de cura
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6V4z"/>
+              </svg>`
+      },
+      {
+        id: 'Assassino',
+        label: 'Assassino',
+        group: 'classes',
+        // Adaga
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l3 7-3 5-3-5 3-7z"/>
+                <path stroke-linecap="round" d="M8 15h8M12 15v6"/>
+              </svg>`
+      },
+      {
+        id: 'Invocador',
+        label: 'Invocador',
+        group: 'classes',
+        // Lobo estilizado
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 4l3 5h8l3-5 1 8-4 5-4 3-4-3-4-5 1-8z"/>
+                <circle cx="9.5" cy="12" r="0.8" fill="currentColor"/>
+                <circle cx="14.5" cy="12" r="0.8" fill="currentColor"/>
+              </svg>`
+      },
+      {
+        id: 'Atirador',
+        label: 'Atirador',
+        group: 'classes',
+        // Pistola
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8h16v4h-8l-2 7H5l1.5-7H3V8z"/>
+                <path stroke-linecap="round" d="M19 9h2M11 12v2.5"/>
+              </svg>`
+      },
+      {
+        id: 'Brutamonte',
+        label: 'Brutamonte',
+        group: 'classes',
+        // Peitoral / Armadura
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 4l5 2 5-2 3 4-2 5v6l-6 2-6-2v-6L4 8l3-4z"/>
+                <path stroke-linecap="round" d="M12 6v14"/>
+              </svg>`
+      },
+      {
+        id: 'Akuma no Mi',
+        label: 'Akuma no Mi',
+        group: 'classes',
+        // Fruta Akuma no Mi com espirais
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" d="M12 6c0-2 1.5-3 3.5-3"/>
+                <circle cx="12" cy="13.5" r="7"/>
+                <path stroke-linecap="round" d="M9.5 13.5a2.5 2.5 0 105 0 1.5 1.5 0 10-3 0"/>
+              </svg>`
+      },
+      {
+        id: 'Espiritualista',
+        label: 'Espiritualista',
+        group: 'classes',
+        // Fantasma
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 19v-7a6 6 0 1112 0v7l-2.5-2-2 2-1.5-2-1.5 2-2-2L6 19z"/>
+                <circle cx="10" cy="11" r="1" fill="currentColor"/>
+                <circle cx="14" cy="11" r="1" fill="currentColor"/>
+              </svg>`
+      },
+      {
+        id: 'Raças',
+        label: 'Raças & Linhagens',
+        group: 'racas',
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7l7-4z"/>
+                <circle cx="12" cy="11" r="2.5"/>
+              </svg>`
+      },
+      {
+        id: 'Exclusivas',
+        label: 'Exclusivas de Players',
+        group: 'players',
+        icon: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polygon points="12,3 14.8,8.8 21,9.6 16.5,14 17.6,20.2 12,17.2 6.4,20.2 7.5,14 3,9.6 9.2,8.8"/>
+              </svg>`
+      }
+    ];
+
+    const RARITIES = {
+      iniciante: { label: 'Iniciante', stars: 1, order: 1 },
+      intermediario: { label: 'Intermediário', stars: 2, order: 2 },
+      especializado: { label: 'Especializado', stars: 3, order: 3 },
+      avancado: { label: 'Avançado', stars: 4, order: 4 },
+      extremo: { label: 'Extremo', stars: 5, order: 5 },
+      calamidade: { label: 'Calamidade', stars: 6, order: 6 }
     };
 
-    const RARITY_INFO = {
-      iniciante: { label: 'Iniciante', stars: '★', order: 1 },
-      intermediario: { label: 'Intermediário', stars: '★★', order: 2 },
-      avancado: { label: 'Avançado', stars: '★★★', order: 3 },
-      especializado: { label: 'Especializado', stars: '★★★★', order: 4 },
-      extremo: { label: 'Extremo', stars: '★★★★★', order: 5 },
-      calamidade: { label: 'Calamidade', stars: '★★★★★★', order: 6 }
-    };
-
+    // =========================================================
+    // 2. SKILLS PRÉ-CADASTRADAS (1 POR RARIDADE PARA TESTE)
+    // =========================================================
     const DEFAULT_SKILLS = [
       {
-        id: 'sk-1',
+        id: 'skill-1',
         name: 'Corte do Vento Salgado',
         category: 'Espadachim',
         rarity: 'iniciante',
         cost: '2 Estamina',
-        action: 'Ação Normal',
-        race: '',
+        actionType: 'Ação Normal',
         exclusive: '',
-        req: '4 PP ou Treino Básico com Espada',
-        prereq: '',
-        desc: 'Desfere um corte horizontal veloz que projeta uma lâmina de ar comprimido a até 4,5 m, causando dano cortante da arma + modificador de DES ou FOR.'
+        prerequisiteSkillId: '',
+        unlockReq: 'Treino básico de esgrima ou Nível 1',
+        unlocked: true,
+        description: 'Desfere um corte horizontal veloz que projeta uma lâmina de ar comprimido a até 4,5 m. Causa dano cortante da arma + modificador de DES ou FOR.'
       },
       {
-        id: 'sk-2',
+        id: 'skill-2',
         name: 'Passo Sombrio da Maré',
         category: 'Assassino',
         rarity: 'intermediario',
-        cost: '3 Estamina',
-        action: 'Ação Bônus',
-        race: '',
+        cost: '3 Estamina + Ação Bônus',
+        actionType: 'Ação Bônus',
         exclusive: '',
-        req: '8 PP + DES 14',
-        prereq: '',
-        desc: 'Desliza pelas sombras sem provocar ataques de oportunidade por até 6 m, surgindo nas costas do alvo com Vantagem no próximo golpe.'
+        prerequisiteSkillId: 'skill-1',
+        unlockReq: 'Aprender por Mestre ou ter DES +2',
+        unlocked: true,
+        description: 'Desliza pelas sombras e névoa marítima sem provocar ataques de oportunidade, reposicionando-se até 6 m para as costas de um alvo e garantindo Vantagem no próximo golpe.'
       },
       {
-        id: 'sk-3',
-        name: 'Punho de Impacto Marinho',
-        category: 'Lutador',
-        rarity: 'avancado',
-        cost: '4 Estamina',
-        action: 'Ação Normal',
-        race: 'Homens-Peixe',
-        exclusive: '',
-        req: '14 PP + Aprender com Mestre de Karatê Tritão',
-        prereq: '',
-        desc: 'Manipula a umidade do ar em um soco devastador que atravessa defesas físicas, causando +2d6 de dano de impacto e empurrando o alvo 3 m.'
-      },
-      {
-        id: 'sk-4',
-        name: 'Sinfonia da Lua Branca',
-        category: 'Espiritualista',
+        id: 'skill-3',
+        name: 'Selo Vital da Maré Serena',
+        category: 'Curandeiro',
         rarity: 'especializado',
-        cost: '5 Estamina',
-        action: 'Ação Normal',
-        race: '',
-        exclusive: 'Soul Henri',
-        req: '20 PP + Despertar Espiritual em Cena',
-        prereq: '',
-        desc: 'Libera uma onda espectral dourada e prateada que purifica condições mentais nos aliados a até 9 m e causa 3d8 de dano espiritual aos inimigos.'
+        cost: '4 Estamina',
+        actionType: 'Ação Normal',
+        exclusive: '',
+        prerequisiteSkillId: '',
+        unlockReq: 'Ter kit médico avançado e SAB +3',
+        unlocked: true,
+        description: 'Canaliza técnicas medicinais precisas nos pontos vitais de um aliado tocado, restaurando 2d6 + mod. SAB de HP e removendo uma condição leve de sangramento ou veneno.'
       },
       {
-        id: 'sk-5',
-        name: 'Chama Carmesim do Sol Negro',
-        category: 'Akuma no Mi',
-        rarity: 'extremo',
-        cost: '7 Estamina + 3 HP',
-        action: 'Ação Completa',
-        race: 'Lunarianos',
-        exclusive: 'Akira Tansui',
-        req: '28 PP + Domínio Avançado da Chama',
-        prereq: 'Corte do Vento Salgado',
-        desc: 'Envolve o corpo e a lâmina em fogo ardente concentrado, criando uma explosão linear de 12 m que incendeia o terreno e causa 5d8 de dano ígneo.'
-      },
-      {
-        id: 'sk-6',
-        name: 'Juízo do Abismo Trovejante',
+        id: 'skill-4',
+        name: 'Rugido do Lobo Alfa',
         category: 'Invocador',
-        rarity: 'calamidade',
-        cost: '10 Estamina',
-        action: 'Ação Completa',
-        race: '',
+        rarity: 'avancado',
+        cost: '5 Estamina',
+        actionType: 'Ação Normal',
         exclusive: 'Alpha',
-        req: '40 PP + Pacto Ancestral Completo',
-        prereq: 'Passo Sombrio da Maré',
-        desc: 'Convoca uma tempestade abissal de relâmpagos violetas sobre uma área de 15 m. Todos os inimigos na zona sofrem 6d10 de dano elétrico e teste de CON para não ficarem Paralisados.'
+        prerequisiteSkillId: '',
+        unlockReq: 'Vínculo espiritual completo com a matilha',
+        unlocked: true,
+        description: 'Exclusiva de Alpha. Emite um uivo ressonante que fortalece invocações e aliados em até 9 m, concedendo +2 nas rolagens de ataque e inspirando ferocidade selvagem por 3 rodadas.'
+      },
+      {
+        id: 'skill-5',
+        name: 'Punho Incandescente do Sol Carmesim',
+        category: 'Lutador',
+        rarity: 'extremo',
+        cost: '6 Estamina + 5 Vida',
+        actionType: 'Ação Normal',
+        exclusive: 'Soul Henri',
+        prerequisiteSkillId: '',
+        unlockReq: 'Dominar o calor interno através de provação extrema',
+        unlocked: false,
+        description: 'Exclusiva de Soul Henri. Concentra calor abrasador nos punhos até a pele emitir brasa viva, desferindo um impacto devastador que ignora parte da armadura e incendeia o alvo.'
+      },
+      {
+        id: 'skill-6',
+        name: 'Juízo Tempestuoso do Céu Partido',
+        category: 'Akuma no Mi',
+        rarity: 'calamidade',
+        cost: '10 Estamina + Ação Completa',
+        actionType: 'Ação Completa',
+        exclusive: 'Akira Tansui',
+        prerequisiteSkillId: 'skill-2',
+        unlockReq: 'Despertar absoluto sob tempestade no Novo Mundo',
+        unlocked: false,
+        description: 'Exclusiva de Akira Tansui. Invoca uma descarga cataclísmica dos céus acompanhada de um corte dimensional que rasga o campo de batalha em linha reta de 18 m, paralisando sobreviventes.'
       }
     ];
 
-    let skills = JSON.parse(localStorage.getItem('opmi_skills_db_v2')) || DEFAULT_SKILLS;
-    let activeCategory = 'all';
-    let viewMode = 'category';
-    let isMasterUnlocked = false;
+    // =========================================================
+    // 3. ESTADO DA APLICAÇÃO E PERSISTÊNCIA
+    // =========================================================
+    const STORAGE_KEY = 'mar_indomavel_skills_v1';
+    let skills = loadSkills();
+    let activeCategory = 'Todas';
+    let viewMode = 'category'; // 'category' | 'evolution'
+    let isMasterMode = false;
 
-    const CATEGORIES = [
-      { id: 'all', label: 'Todas as Skills', group: 'GERAL' },
-      { id: 'Lutador', label: 'Lutador', group: 'CLASSES & ESTILOS' },
-      { id: 'Espadachim', label: 'Espadachim', group: 'CLASSES & ESTILOS' },
-      { id: 'Curandeiro', label: 'Curandeiro', group: 'CLASSES & ESTILOS' },
-      { id: 'Assassino', label: 'Assassino', group: 'CLASSES & ESTILOS' },
-      { id: 'Invocador', label: 'Invocador', group: 'CLASSES & ESTILOS' },
-      { id: 'Atirador', label: 'Atirador', group: 'CLASSES & ESTILOS' },
-      { id: 'Brutamonte', label: 'Brutamonte', group: 'CLASSES & ESTILOS' },
-      { id: 'Akuma no Mi', label: 'Akuma no Mi', group: 'CLASSES & ESTILOS' },
-      { id: 'Espiritualista', label: 'Espiritualista', group: 'CLASSES & ESTILOS' },
-      { id: 'Raça', label: 'Raças', group: 'ORIGEM & EXCLUSIVAS' },
-      { id: 'Exclusiva', label: 'Exclusivas de Players', group: 'ORIGEM & EXCLUSIVAS' }
-    ];
-
-    function saveToStorage() {
-      localStorage.setItem('opmi_skills_db_v2', JSON.stringify(skills));
+    function loadSkills() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SKILLS));
+          return [...DEFAULT_SKILLS];
+        }
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) && parsed.length ? parsed : [...DEFAULT_SKILLS];
+      } catch (e) {
+        return [...DEFAULT_SKILLS];
+      }
     }
 
+    function saveSkills() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(skills));
+      } catch (e) {
+        showToast('Aviso: não foi possível salvar no navegador.');
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.add('hidden'), 2800);
+    }
+
+    // =========================================================
+    // 4. REFERÊNCIAS DO DOM
+    // =========================================================
+    const categoryNav = document.getElementById('categoryNav');
+    const skillsContainer = document.getElementById('skillsContainer');
+    const unlockedCounter = document.getElementById('unlockedCounter');
+    const visibleCountBadge = document.getElementById('visibleCountBadge');
+    const activeSectionTitle = document.getElementById('activeSectionTitle');
+    const activeSectionSubtitle = document.getElementById('activeSectionSubtitle');
+
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const rarityFilter = document.getElementById('rarityFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const ownerFilter = document.getElementById('ownerFilter');
+
+    const viewCategoryBtn = document.getElementById('viewCategoryBtn');
+    const viewEvolutionBtn = document.getElementById('viewEvolutionBtn');
+
+    // =========================================================
+    // 5. RENDERIZAÇÃO DA SIDEBAR
+    // =========================================================
     function renderSidebar() {
-      const nav = document.getElementById('sidebarNav');
+      const groups = [
+        { key: 'geral', title: null },
+        { key: 'classes', title: 'Classes & Estilos' },
+        { key: 'racas', title: 'Linhagem' },
+        { key: 'players', title: 'Tripulação (Exclusivas)' }
+      ];
+
       let html = '';
-      let currentGroup = '';
-
-      CATEGORIES.forEach(cat => {
-        if (cat.group !== currentGroup) {
-          currentGroup = cat.group;
-          html += `<div class="nav-group-label">${currentGroup}</div>`;
+      groups.forEach(group => {
+        if (group.title) {
+          html += `<div class="pt-3 pb-1 px-3 text-[10px] uppercase tracking-[0.18em] text-sky-300/60 font-semibold">${group.title}</div>`;
         }
+        CATEGORIES.filter(c => c.group === group.key).forEach(cat => {
+          const count = cat.id === 'Todas'
+            ? skills.length
+            : cat.id === 'Exclusivas'
+              ? skills.filter(s => Boolean(s.exclusive)).length
+              : skills.filter(s => s.category === cat.id).length;
 
-        const count = skills.filter(s => {
-          if (cat.id === 'all') return true;
-          if (cat.id === 'Raça') return Boolean(s.race) || s.category === 'Raça';
-          if (cat.id === 'Exclusiva') return Boolean(s.exclusive);
-          return s.category === cat.id;
-        }).length;
+          const isActive = activeCategory === cat.id;
+          html += `
+            <button
+              type="button"
+              data-category="${cat.id}"
+              class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium ${isActive ? 'active' : 'text-slate-300'}"
+            >
+              <span class="flex items-center gap-2.5 min-w-0">
+                <span class="${isActive ? 'text-sky-300' : 'text-slate-400'} shrink-0">${cat.icon}</span>
+                <span class="truncate">${cat.label}</span>
+              </span>
+              <span class="text-[11px] px-2 py-0.5 rounded-full bg-slate-900/75 text-slate-400 border border-slate-700/60">${count}</span>
+            </button>
+          `;
+        });
+      });
 
+      // Sub-atalhos rápidos para cada player na sidebar
+      const players = ['Akira Tansui', 'Soul Henri', 'Alpha'];
+      html += `<div class="pl-4 pr-2 pt-1 space-y-1">`;
+      players.forEach(player => {
+        const pCount = skills.filter(s => s.exclusive === player).length;
+        const isPlayerActive = ownerFilter.value === player;
         html += `
-          <button class="cat-btn ${activeCategory === cat.id ? 'active' : ''}" onclick="selectCategory('${cat.id}')">
-            <span class="cat-left">
-              <span class="cat-icon">${ICONS[cat.id] || ICONS.all}</span>
-              <span>${cat.label}</span>
-            </span>
-            <span class="cat-count">${count}</span>
+          <button
+            type="button"
+            data-player-shortcut="${player}"
+            class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition ${isPlayerActive ? 'bg-amber-400/20 text-amber-200 border border-amber-400/40' : 'text-slate-400 hover:text-amber-200 hover:bg-slate-900/60'}"
+          >
+            <span class="truncate">✦ ${player}</span>
+            <span class="text-[10px] opacity-80">${pCount}</span>
           </button>
         `;
       });
+      html += `</div>`;
 
-      nav.innerHTML = html;
-    }
+      categoryNav.innerHTML = html;
 
-    function selectCategory(catId) {
-      activeCategory = catId;
-      renderSidebar();
-      render();
-    }
-
-    function setViewMode(mode) {
-      viewMode = mode;
-      document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.view === mode);
+      // Eventos dos botões da sidebar
+      categoryNav.querySelectorAll('[data-category]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeCategory = btn.dataset.category;
+          if (activeCategory !== 'Exclusivas' && ['Akira Tansui', 'Soul Henri', 'Alpha'].includes(ownerFilter.value)) {
+            ownerFilter.value = 'all';
+          }
+          closeMobileSidebar();
+          renderAll();
+        });
       });
-      render();
+
+      categoryNav.querySelectorAll('[data-player-shortcut]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const player = btn.dataset.playerShortcut;
+          activeCategory = 'Exclusivas';
+          ownerFilter.value = ownerFilter.value === player ? 'all' : player;
+          closeMobileSidebar();
+          renderAll();
+        });
+      });
     }
 
+    // =========================================================
+    // 6. FILTRAGEM DE SKILLS
+    // =========================================================
     function getFilteredSkills() {
-      const query = document.getElementById('searchInput').value.trim().toLowerCase();
-      const rarity = document.getElementById('rarityFilter').value;
-      const race = document.getElementById('raceFilter').value;
-      const player = document.getElementById('playerFilter').value;
+      const query = searchInput.value.trim().toLowerCase();
+      const rarity = rarityFilter.value;
+      const status = statusFilter.value;
+      const owner = ownerFilter.value;
 
-      return skills.filter(s => {
-        if (activeCategory !== 'all') {
-          if (activeCategory === 'Raça' && !s.race && s.category !== 'Raça') return false;
-          else if (activeCategory === 'Exclusiva' && !s.exclusive) return false;
-          else if (activeCategory !== 'Raça' && activeCategory !== 'Exclusiva' && s.category !== activeCategory) return false;
+      return skills.filter(skill => {
+        // Categoria lateral
+        if (activeCategory === 'Exclusivas') {
+          if (!skill.exclusive) return false;
+        } else if (activeCategory !== 'Todas') {
+          if (skill.category !== activeCategory) return false;
         }
-        if (rarity !== 'all' && s.rarity !== rarity) return false;
-        if (race !== 'all' && s.race !== race) return false;
-        if (player === 'geral' && s.exclusive) return false;
-        if (player !== 'all' && player !== 'geral' && s.exclusive !== player) return false;
 
+        // Raridade
+        if (rarity !== 'all' && skill.rarity !== rarity) return false;
+
+        // Status
+        if (status === 'unlocked' && !skill.unlocked) return false;
+        if (status === 'locked' && skill.unlocked) return false;
+
+        // Origem / Exclusividade
+        if (owner === 'geral' && skill.exclusive) return false;
+        if (owner !== 'all' && owner !== 'geral' && skill.exclusive !== owner) return false;
+
+        // Busca textual
         if (query) {
-          const hay = `${s.name} ${s.category} ${s.cost} ${s.desc} ${s.req} ${s.race} ${s.exclusive}`.toLowerCase();
-          if (!hay.includes(query)) return false;
+          const haystack = [
+            skill.name,
+            skill.category,
+            skill.description,
+            skill.unlockReq,
+            skill.cost,
+            skill.actionType,
+            skill.exclusive,
+            RARITIES[skill.rarity]?.label || ''
+          ].join(' ').toLowerCase();
+          if (!haystack.includes(query)) return false;
         }
+
         return true;
       });
     }
 
-    function buildCardHTML(skill) {
-      const r = RARITY_INFO[skill.rarity] || RARITY_INFO.iniciante;
-      const isCalamity = skill.rarity === 'calamidade';
+    // =========================================================
+    // 7. HELPER PARA ÍCONE DE CATEGORIA E ESTRELAS
+    // =========================================================
+    function getCategoryIcon(catName) {
+      const found = CATEGORIES.find(c => c.id === catName);
+      return found ? found.icon : CATEGORIES[0].icon;
+    }
+
+    function renderStars(count) {
+      return '★'.repeat(count);
+    }
+
+    function getSkillById(id) {
+      return skills.find(s => s.id === id);
+    }
+
+    // =========================================================
+    // 8. RENDERIZAÇÃO DO CARD INDIVIDUAL DE SKILL
+    // =========================================================
+    function createSkillCardHTML(skill, extraBadge = '') {
+      const rarityInfo = RARITIES[skill.rarity] || RARITIES.iniciante;
+      const parentSkill = skill.prerequisiteSkillId ? getSkillById(skill.prerequisiteSkillId) : null;
+
+      // Efeito SVG de raiozinhos roxos sutis exclusivamente para Calamidade
+      const calamityBoltsSVG = skill.rarity === 'calamidade' ? `
+        <svg class="calamity-bolts" viewBox="0 0 300 220" fill="none" preserveAspectRatio="none">
+          <path d="M18 10 L34 46 L22 50 L44 92" stroke="#e9d5ff" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M276 18 L256 54 L270 58 L248 102" stroke="#d8b4fe" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M140 6 L152 28 L142 32 L158 56" stroke="#f3e8ff" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+      ` : '';
 
       return `
-        <article class="skill-card rarity-${skill.rarity}">
-          ${isCalamity ? `<canvas class="lightning-canvas"></canvas>` : ''}
-          <div class="card-inner">
-            <div class="card-top">
-              <span class="class-tag">
-                ${ICONS[skill.category] || ICONS.all}
-                ${skill.category}
-              </span>
-              <span class="rarity-badge">${r.label}</span>
-            </div>
+        <article
+          data-skill-id="${skill.id}"
+          class="skill-card rarity-${skill.rarity} ${skill.unlocked ? '' : 'skill-locked'} rounded-2xl p-4 flex flex-col justify-between cursor-pointer group"
+        >
+          ${calamityBoltsSVG}
 
-            <div class="stars-row">${r.stars}</div>
-            <h3 class="skill-title">${skill.name}</h3>
+          <!-- Faixa superior de cor da raridade -->
+          <div class="rarity-bar absolute top-0 left-0 right-0 h-1"></div>
 
-            ${skill.exclusive ? `<span class="exclusive-pill">Exclusiva: ${skill.exclusive}</span>` : ''}
-            ${skill.race ? `<span class="exclusive-pill" style="border-color:rgba(78,168,255,0.45);color:#93c5fd;background:rgba(78,168,255,0.12);">Raça: ${skill.race}</span>` : ''}
-
-            <div class="compact-hint">Passe o mouse para ver detalhes</div>
-
-            <div class="card-details">
-              <div class="cost-pills">
-                <span class="pill cost">⚡ ${skill.cost}</span>
-                ${skill.action ? `<span class="pill">${skill.action}</span>` : ''}
-              </div>
-
-              <p class="skill-desc">${skill.desc}</p>
-
-              <div class="req-box">
-                <div><strong>Requisito:</strong> ${skill.req || 'Nenhum'}</div>
-                ${skill.prereq ? `<div style="margin-top:4px;"><strong>Requer Skill Anterior:</strong> ${skill.prereq}</div>` : ''}
-              </div>
-
-              <div class="card-actions">
-                <button class="copy-btn" onclick="copySkillToClipboard('${skill.id}')">📋 Copiar para Ficha</button>
-                <div class="gm-card-btns">
-                  <button class="icon-mini-btn" onclick="openSkillModal('${skill.id}')" title="Editar">✏️</button>
-                  <button class="icon-mini-btn danger" onclick="deleteSkill('${skill.id}')" title="Excluir">🗑️</button>
+          <div class="relative z-10 space-y-3">
+            <!-- Topo do Card: Ícone da Classe + Badges -->
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-slate-950/75 border border-white/15 flex items-center justify-center text-sky-200 shrink-0">
+                  ${getCategoryIcon(skill.category)}
+                </div>
+                <div>
+                  <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-300 block leading-tight">${escapeHtml(skill.category)}</span>
+                  <span class="text-[11px] tracking-widest text-amber-300/90">${renderStars(rarityInfo.stars)}</span>
                 </div>
               </div>
+
+              <div class="flex flex-col items-end gap-1">
+                <span class="badge-${skill.rarity} text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
+                  ${rarityInfo.label}
+                </span>
+                ${skill.unlocked
+                  ? `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/35">Desbloqueada</span>`
+                  : `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-900/90 text-slate-400 border border-slate-600/60">Futura / Bloqueada</span>`
+                }
+              </div>
             </div>
+
+            <!-- Tag de Exclusividade de Jogador (se houver) -->
+            ${skill.exclusive ? `
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-400/15 border border-amber-300/40 text-amber-200 text-[11px] font-semibold">
+                <span>✦ Exclusiva:</span>
+                <span>${escapeHtml(skill.exclusive)}</span>
+              </div>
+            ` : ''}
+
+            ${extraBadge}
+
+            <!-- Nome da Skill -->
+            <div>
+              <h3 class="font-title text-base sm:text-lg font-bold text-white group-hover:text-sky-200 transition leading-snug">
+                ${escapeHtml(skill.name)}
+              </h3>
+            </div>
+
+            <!-- Custo e Tipo de Ação -->
+            <div class="flex flex-wrap items-center gap-1.5 text-xs">
+              <span class="px-2.5 py-1 rounded-lg bg-slate-950/80 border border-sky-300/20 text-sky-200 font-medium">
+                ⚡ ${escapeHtml(skill.cost)}
+              </span>
+              ${skill.actionType ? `
+                <span class="px-2.5 py-1 rounded-lg bg-slate-950/70 border border-white/10 text-slate-300">
+                  ${escapeHtml(skill.actionType)}
+                </span>
+              ` : ''}
+            </div>
+
+            <!-- Descrição resumida -->
+            <p class="text-xs text-slate-300/90 line-clamp-3 leading-relaxed">
+              ${escapeHtml(skill.description)}
+            </p>
+          </div>
+
+          <!-- Rodapé: Requisito e Pré-requisito -->
+          <div class="relative z-10 mt-4 pt-3 border-t border-white/10 space-y-1.5 text-[11px]">
+            ${parentSkill ? `
+              <div class="flex items-center gap-1.5 text-purple-200 font-medium">
+                <span>↳ Requer Skill:</span>
+                <span class="underline decoration-purple-400/60 truncate">${escapeHtml(parentSkill.name)}</span>
+              </div>
+            ` : ''}
+            <div class="text-slate-400 truncate" title="${escapeHtml(skill.unlockReq)}">
+              <span class="text-slate-300 font-medium">Desbloqueio:</span> ${escapeHtml(skill.unlockReq)}
+            </div>
+
+            ${isMasterMode ? `
+              <div class="pt-2 flex items-center justify-end gap-1.5" onclick="event.stopPropagation()">
+                <button type="button" data-toggle-unlock="${skill.id}" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-sky-400/30 text-sky-200 text-[11px]">
+                  ${skill.unlocked ? 'Bloquear' : 'Desbloquear'}
+                </button>
+                <button type="button" data-edit-skill="${skill.id}" class="px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 text-amber-200 text-[11px]">
+                  Editar
+                </button>
+                <button type="button" data-delete-skill="${skill.id}" class="px-2 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/35 border border-rose-400/40 text-rose-200 text-[11px]">
+                  Excluir
+                </button>
+              </div>
+            ` : ''}
           </div>
         </article>
       `;
     }
 
-    function render() {
-      const container = document.getElementById('skillsContainer');
-      const list = getFilteredSkills();
-      const catObj = CATEGORIES.find(c => c.id === activeCategory);
-
-      document.getElementById('sectionTitle').textContent = catObj ? catObj.label : 'Skills';
-      document.getElementById('resultCount').textContent = `${list.length} habilidade(s) encontrada(s)`;
-
-      const isCompact = activeCategory === 'all' && viewMode === 'category';
-      document.getElementById('sectionSubtitle').textContent = isCompact
-        ? 'Modo compacto ativo em "Todas as Skills": passe o mouse sobre uma carta para revelar custo, descrição e requisitos.'
-        : viewMode === 'evolution'
-          ? 'Visualização organizada por estágio de poder e progressão de requisitos.'
-          : 'Visualização detalhada da categoria selecionada.';
-
-      if (!list.length) {
-        container.innerHTML = `<div style="padding:36px;text-align:center;color:var(--text-muted);background:var(--bg-panel);border-radius:16px;border:1px solid var(--border-subtle);">Nenhuma habilidade encontrada com os filtros atuais.</div>`;
+    // =========================================================
+    // 9. RENDERIZAÇÃO DOS DOIS MODOS (CATEGORIA VS EVOLUÇÃO)
+    // =========================================================
+    function renderCategoryView(filtered) {
+      if (!filtered.length) {
+        skillsContainer.innerHTML = renderEmptyState();
         return;
       }
 
-      if (viewMode === 'category') {
-        container.innerHTML = `<div class="skills-grid ${isCompact ? 'compact-mode' : ''}">${list.map(buildCardHTML).join('')}</div>`;
-      } else {
-        const orderKeys = ['iniciante', 'intermediario', 'avancado', 'especializado', 'extremo', 'calamidade'];
-        let html = '<div class="evolution-container">';
-        orderKeys.forEach(key => {
-          const group = list.filter(s => s.rarity === key);
-          if (group.length) {
-            const info = RARITY_INFO[key];
-            html += `
-              <section class="evo-tier">
-                <div class="evo-tier-title">${info.stars} Estágio ${info.label}</div>
-                <div class="skills-grid">${group.map(buildCardHTML).join('')}</div>
-              </section>
-            `;
-          }
-        });
-        html += '</div>';
-        container.innerHTML = html;
-      }
+      // Ordena por raridade crescente e nome
+      const sorted = [...filtered].sort((a, b) => {
+        const diff = (RARITIES[a.rarity]?.order || 0) - (RARITIES[b.rarity]?.order || 0);
+        return diff !== 0 ? diff : a.name.localeCompare(b.name);
+      });
 
-      initCalamityLightning();
+      skillsContainer.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          ${sorted.map(skill => createSkillCardHTML(skill)).join('')}
+        </div>
+      `;
     }
 
-    function copySkillToClipboard(id) {
-      const s = skills.find(item => item.id === id);
-      if (!s) return;
-      const r = RARITY_INFO[s.rarity]?.label || s.rarity;
-      const text = `[${s.name}] (${r} • ${s.category})
-Custo: ${s.cost}${s.action ? ' | ' + s.action : ''}
-Efeito: ${s.desc}`;
-      navigator.clipboard.writeText(text).then(() => {
-        const toast = document.getElementById('toast');
-        toast.textContent = `"${s.name}" copiada para colar na ficha!`;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2600);
+    function renderEvolutionView(filtered) {
+      if (!filtered.length) {
+        skillsContainer.innerHTML = renderEmptyState();
+        return;
+      }
+
+      // 1. Cadeias de evolução conectadas (skills que possuem pré-requisito ou são pré-requisito de outra)
+      const parentIds = new Set(filtered.map(s => s.prerequisiteSkillId).filter(Boolean));
+      const roots = filtered.filter(s => !s.prerequisiteSkillId);
+      const orphanChildren = filtered.filter(s => s.prerequisiteSkillId && !filtered.some(p => p.id === s.prerequisiteSkillId));
+
+      // Agrupamento por Tier de Progressão
+      const tiers = [
+        { title: 'Estágio I — Fundamentos (Iniciante & Intermediário)', rarities: ['iniciante', 'intermediario'] },
+        { title: 'Estágio II — Maestria (Especializado & Avançado)', rarities: ['especializado', 'avancado'] },
+        { title: 'Estágio III — Ápice do Mar (Extremo & Calamidade)', rarities: ['extremo', 'calamidade'] }
+      ];
+
+      let html = `<div class="space-y-8">`;
+
+      // Seção visual de Cadeias de Evolução Conectadas
+      const chains = [];
+      roots.forEach(root => {
+        const children = filtered.filter(s => s.prerequisiteSkillId === root.id);
+        if (children.length > 0) {
+          chains.push({ root, children });
+        }
+      });
+
+      if (chains.length > 0) {
+        html += `
+          <section class="databank-panel rounded-2xl p-4 sm:p-5 border border-purple-400/25 space-y-4">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+              <h3 class="font-title text-base sm:text-lg font-bold text-purple-200">Árvores de Evolução Conectadas</h3>
+            </div>
+            <div class="space-y-5">
+              ${chains.map(chain => `
+                <div class="p-3.5 rounded-xl bg-slate-950/65 border border-sky-300/15 flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
+                  <div class="flex-1">
+                    ${createSkillCardHTML(chain.root, `<span class="inline-block text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-sky-500/20 text-sky-200 border border-sky-400/30">Skill Base</span>`)}
+                  </div>
+                  <div class="flex items-center justify-center text-amber-300 font-bold text-xl px-2 select-none">
+                    <span class="hidden lg:inline">➔</span>
+                    <span class="lg:hidden">⬇ Evolui para</span>
+                  </div>
+                  <div class="flex-1 space-y-3">
+                    ${chain.children.map(child => createSkillCardHTML(child, `<span class="inline-block text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-purple-500/25 text-purple-200 border border-purple-400/40">Evolução Desbloqueável</span>`)).join('')}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      // Colunas / Estágios de Progressão por Nível de Força e Requisitos
+      tiers.forEach(tier => {
+        const tierSkills = filtered.filter(s => tier.rarities.includes(s.rarity));
+        if (!tierSkills.length) return;
+
+        html += `
+          <section class="space-y-3">
+            <div class="flex items-center gap-3">
+              <h3 class="font-title text-sm sm:text-base font-bold text-amber-200 tracking-wide">${tier.title}</h3>
+              <div class="h-px flex-1 bg-gradient-to-r from-amber-400/35 to-transparent"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              ${tierSkills.map(skill => createSkillCardHTML(skill)).join('')}
+            </div>
+          </section>
+        `;
+      });
+
+      if (orphanChildren.length > 0 && chains.length === 0) {
+        // Já coberto pelos estágios acima
+      }
+
+      html += `</div>`;
+      skillsContainer.innerHTML = html;
+    }
+
+    function renderEmptyState() {
+      return `
+        <div class="databank-panel rounded-2xl p-10 text-center space-y-3">
+          <div class="text-3xl">🧭</div>
+          <h3 class="font-title text-lg font-bold text-white">Nenhuma habilidade encontrada</h3>
+          <p class="text-sm text-slate-400 max-w-md mx-auto">
+            Tente limpar a pesquisa ou ajustar os filtros de raridade, status e categoria lateral.
+          </p>
+          <button type="button" onclick="resetFilters()" class="px-4 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-xs sm:text-sm text-sky-200">
+            Limpar Filtros
+          </button>
+        </div>
+      `;
+    }
+
+    function resetFilters() {
+      activeCategory = 'Todas';
+      searchInput.value = '';
+      clearSearchBtn.classList.add('hidden');
+      rarityFilter.value = 'all';
+      statusFilter.value = 'all';
+      ownerFilter.value = 'all';
+      renderAll();
+    }
+
+    // =========================================================
+    // 10. ATUALIZAÇÃO GERAL DA TELA E EVENTOS DE CARDS
+    // =========================================================
+    function renderAll() {
+      // Atualiza contador global de desbloqueadas
+      const unlockedCount = skills.filter(s => s.unlocked).length;
+      unlockedCounter.textContent = `${unlockedCount}/${skills.length}`;
+
+      // Atualiza título da seção
+      const catObj = CATEGORIES.find(c => c.id === activeCategory);
+      if (ownerFilter.value !== 'all' && ownerFilter.value !== 'geral') {
+        activeSectionTitle.textContent = `Habilidades Exclusivas — ${ownerFilter.value}`;
+        activeSectionSubtitle.textContent = `Técnicas individuais únicas pertencentes a ${ownerFilter.value}`;
+      } else {
+        activeSectionTitle.textContent = catObj ? catObj.label : 'Todas as Habilidades';
+        activeSectionSubtitle.textContent = viewMode === 'category'
+          ? 'Visualização organizada por categoria, classe e raridade'
+          : 'Visualização por árvore de evolução, pré-requisitos e estágios de poder';
+      }
+
+      renderSidebar();
+
+      const filtered = getFilteredSkills();
+      visibleCountBadge.textContent = `${filtered.length} ${filtered.length === 1 ? 'habilidade encontrada' : 'habilidades encontradas'}`;
+
+      if (viewMode === 'category') {
+        renderCategoryView(filtered);
+      } else {
+        renderEvolutionView(filtered);
+      }
+
+      bindCardEvents();
+    }
+
+    function bindCardEvents() {
+      // Abrir modal de detalhes ao clicar no card
+      skillsContainer.querySelectorAll('[data-skill-id]').forEach(card => {
+        card.addEventListener('click', () => {
+          openDetailModal(card.dataset.skillId);
+        });
+      });
+
+      // Ações rápidas do Modo Mestre
+      skillsContainer.querySelectorAll('[data-toggle-unlock]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const skill = getSkillById(btn.dataset.toggleUnlock);
+          if (!skill) return;
+          skill.unlocked = !skill.unlocked;
+          saveSkills();
+          renderAll();
+          showToast(skill.unlocked ? `"${skill.name}" marcada como Desbloqueada.` : `"${skill.name}" marcada como Futura.`);
+        });
+      });
+
+      skillsContainer.querySelectorAll('[data-edit-skill]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          openEditorModal(btn.dataset.editSkill);
+        });
+      });
+
+      skillsContainer.querySelectorAll('[data-delete-skill]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.deleteSkill;
+          const target = getSkillById(id);
+          if (!target) return;
+          skills = skills.filter(s => s.id !== id).map(s => (
+            s.prerequisiteSkillId === id ? { ...s, prerequisiteSkillId: '' } : s
+          ));
+          saveSkills();
+          renderAll();
+          showToast(`Skill "${target.name}" removida.`);
+        });
       });
     }
 
-    /* Modo Mestre */
-    function openMasterModal() {
-      if (isMasterUnlocked) {
-        isMasterUnlocked = false;
-        document.body.classList.remove('gm-unlocked');
-        document.getElementById('crownBtn').classList.remove('unlocked');
-        document.getElementById('gmToolbar').classList.remove('visible');
+    // =========================================================
+    // 11. MODAL DE DETALHES DA SKILL
+    // =========================================================
+    const detailModal = document.getElementById('detailModal');
+    const detailModalBox = document.getElementById('detailModalBox');
+
+    function openDetailModal(skillId) {
+      const skill = getSkillById(skillId);
+      if (!skill) return;
+
+      const rarityInfo = RARITIES[skill.rarity] || RARITIES.iniciante;
+      const parentSkill = skill.prerequisiteSkillId ? getSkillById(skill.prerequisiteSkillId) : null;
+      const nextSkills = skills.filter(s => s.prerequisiteSkillId === skill.id);
+
+      detailModalBox.innerHTML = `
+        <div class="rarity-${skill.rarity} border-0 rounded-2xl p-6 space-y-5 relative">
+          <div class="rarity-bar absolute top-0 left-0 right-0 h-1.5"></div>
+
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-slate-950/80 border border-white/20 flex items-center justify-center text-sky-200">
+                ${getCategoryIcon(skill.category)}
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="badge-${skill.rarity} text-xs font-bold uppercase px-2.5 py-0.5 rounded-full">${rarityInfo.label}</span>
+                  <span class="text-xs text-slate-300 font-medium">${escapeHtml(skill.category)}</span>
+                  <span class="text-xs text-amber-300">${renderStars(rarityInfo.stars)}</span>
+                </div>
+                <h3 class="font-title text-xl sm:text-2xl font-bold text-white mt-1">${escapeHtml(skill.name)}</h3>
+              </div>
+            </div>
+
+            <button id="closeDetailModalBtn" type="button" class="p-2 rounded-xl bg-slate-950/75 hover:bg-slate-800 text-slate-300 hover:text-white">✕</button>
+          </div>
+
+          ${skill.exclusive ? `
+            <div class="px-3.5 py-2 rounded-xl bg-amber-400/15 border border-amber-300/45 text-amber-200 text-xs sm:text-sm font-semibold">
+              ✦ Habilidade Individual Exclusiva de: <span class="underline">${escapeHtml(skill.exclusive)}</span>
+            </div>
+          ` : ''}
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
+            <div class="p-3 rounded-xl bg-slate-950/75 border border-white/10">
+              <span class="text-slate-400 block text-[11px] uppercase">Custo</span>
+              <span class="text-sky-200 font-semibold">⚡ ${escapeHtml(skill.cost)}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950/75 border border-white/10">
+              <span class="text-slate-400 block text-[11px] uppercase">Execução</span>
+              <span class="text-white font-semibold">${escapeHtml(skill.actionType || 'Não especificado')}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-950/75 border border-white/10">
+              <span class="text-slate-400 block text-[11px] uppercase">Status</span>
+              <span class="${skill.unlocked ? 'text-emerald-300' : 'text-slate-300'} font-semibold">
+                ${skill.unlocked ? '✓ Desbloqueada' : '🔒 Futura / Bloqueada'}
+              </span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-950/75 border border-white/10 space-y-2">
+            <h4 class="text-xs uppercase tracking-wider text-sky-300 font-semibold">Efeito & Descrição</h4>
+            <p class="text-sm text-slate-200 leading-relaxed whitespace-pre-line">${escapeHtml(skill.description)}</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-950/75 border border-amber-300/20 space-y-2 text-xs sm:text-sm">
+            <h4 class="text-xs uppercase tracking-wider text-amber-300 font-semibold">Requisitos de Desbloqueio</h4>
+            <p class="text-slate-200">${escapeHtml(skill.unlockReq)}</p>
+
+            ${parentSkill ? `
+              <div class="pt-2 border-t border-white/10 flex items-center gap-2 text-purple-200">
+                <span>↳ Depende da Skill anterior:</span>
+                <button type="button" data-jump-skill="${parentSkill.id}" class="font-semibold underline hover:text-white">${escapeHtml(parentSkill.name)}</button>
+              </div>
+            ` : ''}
+
+            ${nextSkills.length ? `
+              <div class="pt-2 border-t border-white/10 space-y-1">
+                <span class="text-emerald-300 block">⬆ Desbloqueia caminho para:</span>
+                <div class="flex flex-wrap gap-2">
+                  ${nextSkills.map(ns => `
+                    <button type="button" data-jump-skill="${ns.id}" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/35 text-emerald-200 text-xs hover:bg-emerald-500/25">
+                      ${escapeHtml(ns.name)}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+
+      detailModal.classList.remove('hidden');
+      detailModal.classList.add('flex');
+
+      document.getElementById('closeDetailModalBtn').addEventListener('click', closeDetailModal);
+      detailModalBox.querySelectorAll('[data-jump-skill]').forEach(btn => {
+        btn.addEventListener('click', () => openDetailModal(btn.dataset.jumpSkill));
+      });
+    }
+
+    function closeDetailModal() {
+      detailModal.classList.add('hidden');
+      detailModal.classList.remove('flex');
+    }
+
+    detailModal.addEventListener('click', e => {
+      if (e.target === detailModal) closeDetailModal();
+    });
+
+    // =========================================================
+    // 12. MODO MESTRE (SENHA: ChaveMestra) E CRUD DE SKILLS
+    // =========================================================
+    const masterCrownBtn = document.getElementById('masterCrownBtn');
+    const passwordModal = document.getElementById('passwordModal');
+    const passwordForm = document.getElementById('passwordForm');
+    const masterPasswordInput = document.getElementById('masterPasswordInput');
+    const passwordError = document.getElementById('passwordError');
+    const masterToolbar = document.getElementById('masterToolbar');
+
+    masterCrownBtn.addEventListener('click', () => {
+      if (isMasterMode) {
+        showToast('O Modo Mestre já está ativo.');
         return;
       }
-      document.getElementById('masterPasswordInput').value = '';
-      document.getElementById('masterModal').classList.add('open');
-      setTimeout(() => document.getElementById('masterPasswordInput').focus(), 80);
-    }
+      passwordError.classList.add('hidden');
+      masterPasswordInput.value = '';
+      passwordModal.classList.remove('hidden');
+      passwordModal.classList.add('flex');
+      setTimeout(() => masterPasswordInput.focus(), 50);
+    });
 
-    function verifyMaster() {
-      const val = document.getElementById('masterPasswordInput').value;
-      if (val === 'ChaveMestra') {
-        isMasterUnlocked = true;
-        document.body.classList.add('gm-unlocked');
-        document.getElementById('crownBtn').classList.add('unlocked');
-        document.getElementById('gmToolbar').classList.add('visible');
-        closeModal('masterModal');
+    document.getElementById('cancelPasswordBtn').addEventListener('click', () => {
+      passwordModal.classList.add('hidden');
+      passwordModal.classList.remove('flex');
+    });
+
+    passwordForm.addEventListener('submit', e => {
+      e.preventDefault();
+      if (masterPasswordInput.value === 'ChaveMestra') {
+        isMasterMode = true;
+        passwordModal.classList.add('hidden');
+        passwordModal.classList.remove('flex');
+        masterToolbar.classList.remove('hidden');
+        masterCrownBtn.classList.add('bg-amber-400', 'text-slate-950', 'border-amber-200', 'shadow-[0_0_18px_rgba(251,191,36,0.75)]');
+        renderAll();
+        showToast('Modo Mestre desbloqueado!');
       } else {
-        alert('Senha incorreta.');
+        passwordError.classList.remove('hidden');
       }
+    });
+
+    document.getElementById('logoutMasterBtn').addEventListener('click', () => {
+      isMasterMode = false;
+      masterToolbar.classList.add('hidden');
+      masterCrownBtn.classList.remove('bg-amber-400', 'text-slate-950', 'border-amber-200', 'shadow-[0_0_18px_rgba(251,191,36,0.75)]');
+      renderAll();
+      showToast('Modo Mestre encerrado.');
+    });
+
+    // Modal de Criação / Edição
+    const editorModal = document.getElementById('editorModal');
+    const skillEditorForm = document.getElementById('skillEditorForm');
+
+    function populatePrerequisiteDropdown(excludeId = '') {
+      const select = document.getElementById('fieldPrerequisiteSkill');
+      select.innerHTML = `<option value="">Nenhuma (Skill Base / Inicial)</option>`;
+      skills
+        .filter(s => s.id !== excludeId)
+        .forEach(s => {
+          select.innerHTML += `<option value="${s.id}">${escapeHtml(s.name)} (${RARITIES[s.rarity]?.label})</option>`;
+        });
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('open');
+    function openEditorModal(skillId = null) {
+      const existing = skillId ? getSkillById(skillId) : null;
+      populatePrerequisiteDropdown(skillId || '');
+
+      document.getElementById('editorModalTitle').textContent = existing ? 'Editar Habilidade' : 'Nova Habilidade';
+      document.getElementById('editSkillId').value = existing ? existing.id : '';
+      document.getElementById('fieldName').value = existing ? existing.name : '';
+      document.getElementById('fieldCategory').value = existing ? existing.category : 'Espadachim';
+      document.getElementById('fieldRarity').value = existing ? existing.rarity : 'iniciante';
+      document.getElementById('fieldCost').value = existing ? existing.cost : '';
+      document.getElementById('fieldActionType').value = existing ? existing.actionType : 'Ação Normal';
+      document.getElementById('fieldExclusive').value = existing ? existing.exclusive : '';
+      document.getElementById('fieldPrerequisiteSkill').value = existing ? existing.prerequisiteSkillId : '';
+      document.getElementById('fieldUnlockReq').value = existing ? existing.unlockReq : '';
+      document.getElementById('fieldDescription').value = existing ? existing.description : '';
+      document.getElementById('fieldUnlocked').checked = existing ? existing.unlocked : false;
+
+      editorModal.classList.remove('hidden');
+      editorModal.classList.add('flex');
     }
 
-    function openSkillModal(id = null) {
-      document.getElementById('skillModalTitle').textContent = id ? 'Editar Habilidade' : 'Nova Habilidade';
-      document.getElementById('editSkillId').value = id || '';
-
-      if (id) {
-        const s = skills.find(item => item.id === id);
-        document.getElementById('skillName').value = s.name;
-        document.getElementById('skillCategory').value = s.category;
-        document.getElementById('skillRarity').value = s.rarity;
-        document.getElementById('skillCost').value = s.cost;
-        document.getElementById('skillAction').value = s.action || '';
-        document.getElementById('skillRace').value = s.race || '';
-        document.getElementById('skillExclusive').value = s.exclusive || '';
-        document.getElementById('skillReq').value = s.req || '';
-        document.getElementById('skillPrereq').value = s.prereq || '';
-        document.getElementById('skillDesc').value = s.desc || '';
-      } else {
-        document.getElementById('skillName').value = '';
-        document.getElementById('skillCategory').value = 'Lutador';
-        document.getElementById('skillRarity').value = 'iniciante';
-        document.getElementById('skillCost').value = '2 Estamina';
-        document.getElementById('skillAction').value = 'Ação Normal';
-        document.getElementById('skillRace').value = '';
-        document.getElementById('skillExclusive').value = '';
-        document.getElementById('skillReq').value = '';
-        document.getElementById('skillPrereq').value = '';
-        document.getElementById('skillDesc').value = '';
-      }
-
-      document.getElementById('skillModal').classList.add('open');
+    function closeEditorModal() {
+      editorModal.classList.add('hidden');
+      editorModal.classList.remove('flex');
     }
 
-    function saveSkill() {
+    document.getElementById('addSkillBtn').addEventListener('click', () => openEditorModal(null));
+    document.getElementById('closeEditorBtn').addEventListener('click', closeEditorModal);
+    document.getElementById('cancelEditorBtn').addEventListener('click', closeEditorModal);
+
+    skillEditorForm.addEventListener('submit', e => {
+      e.preventDefault();
       const id = document.getElementById('editSkillId').value;
       const payload = {
-        id: id || 'sk-' + Date.now(),
-        name: document.getElementById('skillName').value.trim() || 'Skill Sem Nome',
-        category: document.getElementById('skillCategory').value,
-        rarity: document.getElementById('skillRarity').value,
-        cost: document.getElementById('skillCost').value.trim() || '0 Estamina',
-        action: document.getElementById('skillAction').value.trim(),
-        race: document.getElementById('skillRace').value,
-        exclusive: document.getElementById('skillExclusive').value,
-        req: document.getElementById('skillReq').value.trim(),
-        prereq: document.getElementById('skillPrereq').value.trim(),
-        desc: document.getElementById('skillDesc').value.trim()
+        id: id || 'skill-' + Date.now(),
+        name: document.getElementById('fieldName').value.trim(),
+        category: document.getElementById('fieldCategory').value,
+        rarity: document.getElementById('fieldRarity').value,
+        cost: document.getElementById('fieldCost').value.trim(),
+        actionType: document.getElementById('fieldActionType').value.trim(),
+        exclusive: document.getElementById('fieldExclusive').value,
+        prerequisiteSkillId: document.getElementById('fieldPrerequisiteSkill').value,
+        unlockReq: document.getElementById('fieldUnlockReq').value.trim(),
+        description: document.getElementById('fieldDescription').value.trim(),
+        unlocked: document.getElementById('fieldUnlocked').checked
       };
 
       if (id) {
-        const idx = skills.findIndex(s => s.id === id);
-        if (idx !== -1) skills[idx] = payload;
+        skills = skills.map(s => (s.id === id ? payload : s));
+        showToast(`Skill "${payload.name}" atualizada!`);
       } else {
-        skills.unshift(payload);
+        skills.push(payload);
+        showToast(`Skill "${payload.name}" adicionada ao catálogo!`);
       }
 
-      saveToStorage();
-      closeModal('skillModal');
-      renderSidebar();
-      render();
-    }
+      saveSkills();
+      closeEditorModal();
+      renderAll();
+    });
 
-    function deleteSkill(id) {
-      if (!confirm('Excluir esta habilidade permanentemente?')) return;
-      skills = skills.filter(s => s.id !== id);
-      saveToStorage();
-      renderSidebar();
-      render();
-    }
-
-    function exportSkills() {
+    // Exportar / Importar JSON / Resetar
+    document.getElementById('exportJsonBtn').addEventListener('click', () => {
       const blob = new Blob([JSON.stringify(skills, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'skills-mar-indomavel.json';
+      a.download = 'mar-indomavel-skills.json';
       a.click();
       URL.revokeObjectURL(url);
-    }
+      showToast('Arquivo JSON exportado!');
+    });
 
-    function importSkills(event) {
-      const file = event.target.files[0];
+    document.getElementById('importJsonInput').addEventListener('change', e => {
+      const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = ev => {
         try {
-          const parsed = JSON.parse(e.target.result);
-          if (Array.isArray(parsed)) {
-            skills = parsed;
-            saveToStorage();
-            renderSidebar();
-            render();
-          }
-        } catch {
-          alert('Arquivo JSON inválido.');
+          const imported = JSON.parse(ev.target.result);
+          if (!Array.isArray(imported)) throw new Error('Formato inválido');
+          skills = imported;
+          saveSkills();
+          renderAll();
+          showToast('Skills importadas com sucesso!');
+        } catch (err) {
+          showToast('Erro ao importar JSON: arquivo inválido.');
         }
       };
       reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    document.getElementById('resetDefaultBtn').addEventListener('click', () => {
+      skills = [...DEFAULT_SKILLS];
+      saveSkills();
+      renderAll();
+      showToast('Skills padrão restauradas.');
+    });
+
+    // =========================================================
+    // 13. EVENTOS DE NAVEGAÇÃO, FILTROS E MOBILE SIDEBAR
+    // =========================================================
+    viewCategoryBtn.addEventListener('click', () => {
+      viewMode = 'category';
+      viewCategoryBtn.className = 'px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition bg-sky-500/25 text-white border border-sky-400/45 shadow-[0_0_12px_rgba(56,189,248,0.2)]';
+      viewEvolutionBtn.className = 'px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-300 hover:text-white border border-transparent';
+      renderAll();
+    });
+
+    viewEvolutionBtn.addEventListener('click', () => {
+      viewMode = 'evolution';
+      viewEvolutionBtn.className = 'px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition bg-amber-500/25 text-amber-100 border border-amber-400/45 shadow-[0_0_12px_rgba(251,191,36,0.2)]';
+      viewCategoryBtn.className = 'px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-300 hover:text-white border border-transparent';
+      renderAll();
+    });
+
+    searchInput.addEventListener('input', () => {
+      clearSearchBtn.classList.toggle('hidden', !searchInput.value);
+      renderAll();
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      clearSearchBtn.classList.add('hidden');
+      renderAll();
+    });
+
+    rarityFilter.addEventListener('change', renderAll);
+    statusFilter.addEventListener('change', renderAll);
+    ownerFilter.addEventListener('change', renderAll);
+
+    // Mobile Sidebar
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function openMobileSidebar() {
+      sidebar.classList.remove('-translate-x-full');
+      sidebarBackdrop.classList.remove('hidden');
+    }
+    function closeMobileSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      sidebarBackdrop.classList.add('hidden');
     }
 
-    /* Raios dinâmicos animados dentro dos cards Calamidade */
-    let lightningRaf = null;
-    function initCalamityLightning() {
-      if (lightningRaf) cancelAnimationFrame(lightningRaf);
-      const canvases = Array.from(document.querySelectorAll('.lightning-canvas'));
-      if (!canvases.length) return;
+    document.getElementById('mobileMenuBtn').addEventListener('click', openMobileSidebar);
+    document.getElementById('closeSidebarBtn').addEventListener('click', closeMobileSidebar);
+    sidebarBackdrop.addEventListener('click', closeMobileSidebar);
 
-      const bolts = canvases.map(canvas => {
-        const rect = canvas.parentElement.getBoundingClientRect();
-        canvas.width = Math.max(220, rect.width);
-        canvas.height = Math.max(140, rect.height);
-        return { canvas, ctx: canvas.getContext('2d'), timer: Math.random() * 40, segments: [] };
-      });
-
-      function spawnBolt(w, h) {
-        const pts = [];
-        let x = Math.random() * w;
-        let y = Math.random() * (h * 0.25);
-        pts.push({ x, y });
-        const steps = 6 + Math.floor(Math.random() * 5);
-        for (let i = 0; i < steps; i++) {
-          x += (Math.random() - 0.5) * 48;
-          y += (h * 0.75) / steps;
-          pts.push({ x, y });
-        }
-        return pts;
-      }
-
-      function tick() {
-        bolts.forEach(b => {
-          const { ctx, canvas } = b;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          b.timer -= 1;
-          if (b.timer <= 0) {
-            b.segments = spawnBolt(canvas.width, canvas.height);
-            b.timer = 18 + Math.random() * 28;
-          }
-          if (b.segments.length && b.timer > 8) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(b.segments[0].x, b.segments[0].y);
-            for (let i = 1; i < b.segments.length; i++) {
-              ctx.lineTo(b.segments[i].x, b.segments[i].y);
-            }
-            ctx.strokeStyle = 'rgba(233, 213, 255, 0.85)';
-            ctx.lineWidth = 1.6;
-            ctx.shadowColor = '#c084fc';
-            ctx.shadowBlur = 12;
-            ctx.stroke();
-            ctx.restore();
-          }
-        });
-        lightningRaf = requestAnimationFrame(tick);
-      }
-      tick();
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
 
-    /* Céu Estrelado Estático em Deriva Suave (sem piscar) */
-    (function initStarfield() {
+    // =========================================================
+    // 14. ANIMAÇÃO DE CÉU ESTRELADO NO CANVAS
+    // =========================================================
+    function initStarfield() {
       const canvas = document.getElementById('starfield');
       const ctx = canvas.getContext('2d');
       let stars = [];
 
       function resize() {
-        canvas.width = window.innerWidth * 1.15;
-        canvas.height = window.innerHeight * 1.15;
-        const count = Math.floor((canvas.width * canvas.height) / 6800);
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const count = Math.min(180, Math.floor((canvas.width * canvas.height) / 8500));
         stars = Array.from({ length: count }, () => ({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          r: Math.random() * 1.5 + 0.35,
-          alpha: Math.random() * 0.65 + 0.25,
-          tint: Math.random() > 0.82 ? '#ffe8a3' : (Math.random() > 0.65 ? '#bae6fd' : '#ffffff')
+          r: Math.random() * 1.6 + 0.3,
+          alpha: Math.random() * 0.8 + 0.2,
+          speed: Math.random() * 0.015 + 0.004,
+          phase: Math.random() * Math.PI * 2,
+          tint: Math.random() > 0.78 ? '#fde68a' : Math.random() > 0.45 ? '#bae6fd' : '#ffffff'
         }));
-        draw();
       }
 
-      function draw() {
+      function draw(time) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        stars.forEach(s => {
+        for (const s of stars) {
+          const twinkle = 0.45 + 0.55 * Math.sin(time * s.speed + s.phase);
+          ctx.globalAlpha = s.alpha * twinkle;
+          ctx.fillStyle = s.tint;
           ctx.beginPath();
           ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fillStyle = s.tint;
-          ctx.globalAlpha = s.alpha;
           ctx.fill();
-        });
+        }
         ctx.globalAlpha = 1;
+        requestAnimationFrame(draw);
       }
 
       window.addEventListener('resize', resize);
       resize();
-    })();
+      requestAnimationFrame(draw);
+    }
 
-    renderSidebar();
-    render();
+    // Inicialização
+    initStarfield();
+    renderAll();
   </script>
 </body>
 </html>
